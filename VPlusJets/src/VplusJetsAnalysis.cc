@@ -114,6 +114,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 		mpfMETSign = -1;
 		mpfMETPhi   = -10.0;
 	} else {
+		std::cout<<"pfmet size="<<pfmet->size()<<std::endl;
 		mpfMET   = (*pfmet)[0].et();
 		mpfSumET = (*pfmet)[0].sumEt();
 		mpfMETSign = (*pfmet)[0].significance();
@@ -184,44 +185,22 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 			cout<<"bx="<<PVI->getBunchCrossing()<<" getTrueNumInteractions="<<PVI->getTrueNumInteractions()<<" getPU_NumInteractions()="<<PVI->getPU_NumInteractions()<<endl;
 		}
 	}
-	// fill jet branches
+
 	edm::Handle<edm::View< reco::Candidate> > boson;
 	iEvent.getByLabel( mInputBoson, boson);
 	mNVB = boson->size();
 	if( mNVB<1 ) return; // Nothing to fill
 
-
 	if(GenJetFiller.get()) GenJetFiller->fill(iEvent);
 	//if(PhotonFiller.get()) PhotonFiller->fill(iEvent);
-
-	if(CorrectedPFJetFiller.get()) CorrectedPFJetFiller->fill(iEvent);
-	if(CorrectedPFJetFillerVBFTag.get()) CorrectedPFJetFillerVBFTag->fill(iEvent);//For VBF Tag Jets
-
-
-	/**  Store groomed jet information */
-	//if(AK5groomedJetFiller.get()) AK5groomedJetFiller->fill(iEvent);
-	//if(AK7groomedJetFiller.get()) AK7groomedJetFiller->fill(iEvent);
-	//if(AK8groomedJetFiller.get()) AK8groomedJetFiller->fill(iEvent);
-	//if(CA8groomedJetFiller.get()) CA8groomedJetFiller->fill(iEvent);
-	//if(CA12groomedJetFiller.get()) CA12groomedJetFiller->fill(iEvent);
-	//if(genAK5groomedJetFiller.get()) genAK5groomedJetFiller->fill(iEvent);
-	//if(genAK7groomedJetFiller.get()) genAK7groomedJetFiller->fill(iEvent);
-	//if(genAK8groomedJetFiller.get()) genAK8groomedJetFiller->fill(iEvent);
-	//if(genCA8groomedJetFiller.get()) genCA8groomedJetFiller->fill(iEvent);
-	//if(genCA12groomedJetFiller.get()) genCA12groomedJetFiller->fill(iEvent);
-
 
 
 	/**  Store reconstructed vector boson information */
 	recoBosonFillerE->fill(iEvent, 0);
 	// if(mNVB==2) recoBosonFillerE->fill(iEvent, 1);
-
 	recoBosonFillerMu->fill(iEvent,0);
 	// if(mNVB==2) recoBosonFillerMu->fill(iEvent, 1);
-
-
-	/**  Store generated vector boson information */
-	if(genBosonFiller.get()) genBosonFiller->fill(iEvent);
+	if(genBosonFiller.get()) genBosonFiller->fill(iEvent); /**  Store generated vector boson information */
 
 
 	//Begin Jet substructure work
@@ -229,10 +208,16 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     // reading in different collections
     // ---------------------------------------------------------------------
     
+	// pf inputs NoElectron
     edm::Handle< std::vector< reco::PFCandidate > >  pfs;
     iEvent.getByLabel("pfNoElectronPFlow", pfs);
     std::cout << "pfs->size() = " << pfs->size() << std::endl;
     
+	// PileUp
+    edm::Handle< std::vector< reco::PFCandidate > >  pfs_PileUp;
+    iEvent.getByLabel("pfPileUpPFlow", pfs_PileUp);
+    std::cout << "pfs_PileUp->size() = " << pfs_PileUp->size() << std::endl;
+
     edm::Handle< std::vector< reco::GenParticle > >  gens;
     iEvent.getByLabel("genParticles", gens);
     std::cout << "gens->size() = " << gens->size() << std::endl;
@@ -244,20 +229,61 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     // ---------------------------------------------------------------------
     // filling in pseudojets to be used as input for clustering
     // ---------------------------------------------------------------------
+	
+    /*std::vector<fastjet::PseudoJet> fjinputs_gens; fjinputs_gens.clear();
+    for (unsigned int i = 0; i < gens->size(); i++){
+        const reco::GenParticle P = (gens->at(i));
+        fastjet::PseudoJet tmp_psjet( P.px(), P.py(), P.pz(), P.energy() );
+        // add user info about charge and pdgId
+        tmp_psjet.set_user_info( new PseudoJetUserInfo(P.pdgId(), P.charge()) );
+		print_p4(tmp_psjet,Form("gens_%i",i));
+        fjinputs_gens.push_back( tmp_psjet );
+    }*/
     
-    std::vector<fastjet::PseudoJet> fjinputs;
-    fjinputs.clear();
-
+    std::vector<fastjet::PseudoJet> fjinputs_gens_nonu; fjinputs_gens_nonu.clear();
     for (unsigned int i = 0; i < gens_nonu->size(); i++){
-        
         const reco::GenParticle& P = *(gens_nonu->at(i));
         fastjet::PseudoJet tmp_psjet( P.px(), P.py(), P.pz(), P.energy() );
         // add user info about charge and pdgId
         tmp_psjet.set_user_info( new PseudoJetUserInfo(P.pdgId(), P.charge()) );
-        fjinputs.push_back( tmp_psjet );
-        
+		//print_p4(tmp_psjet,Form("gens_nonu_%i",i));
+        fjinputs_gens_nonu.push_back( tmp_psjet );
+    }	
+
+    std::vector<fastjet::PseudoJet> fjinputs_pfs_charge;  fjinputs_pfs_charge.clear();
+    std::vector<fastjet::PseudoJet> fjinputs_pfs_neutral; fjinputs_pfs_neutral.clear();
+    for (unsigned int i = 0; i < pfs->size(); i++){
+        const reco::PFCandidate P = (pfs->at(i));
+        fastjet::PseudoJet tmp_psjet( P.px(), P.py(), P.pz(), P.energy() );
+        // add user info about charge and pdgId
+        tmp_psjet.set_user_info( new PseudoJetUserInfo(P.pdgId(), P.charge()) );
+		//print_p4(tmp_psjet,Form("pfs_%i",i));
+		if (P.charge()==0){
+			fjinputs_pfs_neutral.push_back( tmp_psjet );
+		}else{
+			fjinputs_pfs_charge.push_back( tmp_psjet );
+		}
     }
-    
+
+    std::vector<fastjet::PseudoJet> fjinputs_pfs_PileUp; fjinputs_pfs_PileUp.clear();
+    for (unsigned int i = 0; i < pfs_PileUp->size(); i++){
+        const reco::PFCandidate P = (pfs_PileUp->at(i));
+		if (P.charge()==0){ std::cout<<"Error! there is a neutral particle in PileUp"<<std::endl; BREAK;}
+        fastjet::PseudoJet tmp_psjet( P.px(), P.py(), P.pz(), P.energy() );
+        // add user info about charge and pdgId
+        tmp_psjet.set_user_info( new PseudoJetUserInfo(P.pdgId(), P.charge()) );
+		//print_p4(tmp_psjet,Form("pfs_PileUp_%i",i));
+        fjinputs_pfs_PileUp.push_back( tmp_psjet );
+    }
+	// Now, we get 3 collections:
+	// fjinputs_pfs_PileUp: PF charged, PileUp  
+	// fjinputs_pfs_charge: PF charged, NoPileUp
+	// fjinputs_pfs_neutral:PF neutral
+
+
+
+
+
     // ---------------------------------------------------------------------
     // recluster on the fly
     // ---------------------------------------------------------------------
@@ -273,8 +299,8 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area, fjActiveArea );
     fastjet::AreaDefinition fjAreaDefinition_wGhosts( fastjet::active_area_explicit_ghosts, fjActiveArea );
     
-    fastjet::ClusterSequenceArea* thisClustering_wGhosts_ = new fastjet::ClusterSequenceArea(fjinputs, jetDef, fjAreaDefinition_wGhosts);
-    fastjet::ClusterSequence* thisClustering_basic_ = new fastjet::ClusterSequence(fjinputs, jetDef);
+    fastjet::ClusterSequenceArea* thisClustering_wGhosts_ = new fastjet::ClusterSequenceArea(fjinputs_gens_nonu, jetDef, fjAreaDefinition_wGhosts);
+    fastjet::ClusterSequence* thisClustering_basic_ = new fastjet::ClusterSequence(fjinputs_gens_nonu, jetDef);
     
     std::vector<fastjet::PseudoJet> out_jets_wGhosts_ = sorted_by_pt(thisClustering_wGhosts_->inclusive_jets(25.0));    
     std::vector<fastjet::PseudoJet> out_jets_basic_ = sorted_by_pt(thisClustering_basic_->inclusive_jets(25.0));
@@ -309,7 +335,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     
 
 
-
+    BREAK();
 	myTree->Fill();
 
 } // analyze method
