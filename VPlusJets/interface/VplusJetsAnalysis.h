@@ -53,6 +53,9 @@
 #include "fastjet/tools/MassDropTagger.hh"
 #include "fastjet/GhostedAreaSpec.hh"
 
+#include "JetSubstructure/SubstructureTools/interface/PseudoJetUserInfo.h"
+#include "JetSubstructure/SubstructureTools/interface/JetSubstructureTools.h"
+
 
 //
 // class decleration
@@ -144,5 +147,16 @@ namespace ewk
     float mcPUbx[3];
     float mcPUnvtx[3];
   };
+}
+
+
+//some tools
+void print_p4(fastjet::PseudoJet tmpJ, std::string tmpName=""){
+	std::cout<<tmpName<<" PseudoJet(E,m,eta,phi,pdgID,charge)=("<<tmpJ.E()<<","<<tmpJ.m()<<","<<tmpJ.eta()<<","<<tmpJ.phi()<<","<<tmpJ.user_info<PseudoJetUserInfo>().pdg_id()<<","<<tmpJ.user_info<PseudoJetUserInfo>().charge()<<")"<<std::endl;
+}
+
+void BREAK(){ 
+	std::cout<<"Enter a char to continue..."<<std::endl;
+	char tmp;std::cin>>tmp;
 }
 #endif
