@@ -268,7 +268,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     std::vector<fastjet::PseudoJet> fjinputs_pfs_PileUp; fjinputs_pfs_PileUp.clear();
     for (unsigned int i = 0; i < pfs_PileUp->size(); i++){
         const reco::PFCandidate P = (pfs_PileUp->at(i));
-		if (P.charge()==0){ std::cout<<"Error! there is a neutral particle in PileUp"<<std::endl; BREAK;}
+		if (P.charge()==0){ std::cout<<"Error! there is a neutral particle in PileUp"<<std::endl; BREAK();}
         fastjet::PseudoJet tmp_psjet( P.px(), P.py(), P.pz(), P.energy() );
         // add user info about charge and pdgId
         tmp_psjet.set_user_info( new PseudoJetUserInfo(P.pdgId(), P.charge()) );
@@ -290,6 +290,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     double mJetRadius = 0.5;
     //fastjet::JetDefinition jetDef(fastjet::cambridge_algorithm, mJetRadius);
     fastjet::JetDefinition jetDef(fastjet::antikt_algorithm, mJetRadius);
+	std::cout<<"Clustered with "<< jetDef.description()<<std::endl;
     
     int activeAreaRepeats = 1;
     double ghostArea = 0.01;
@@ -319,8 +320,8 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 
     for ( unsigned int i = 0; i < out_jets_basic_.size(); i++ ){
      
-        std::cout << "out_jets_wGhosts_[i].constituents().size() = " << out_jets_wGhosts_[i].constituents().size() << std::endl;
-        std::cout << "out_jets_basic_[i].constituents().size() = " << out_jets_basic_[i].constituents().size() << std::endl;        
+        std::cout << "out_jets_wGhosts_["<<i<<"].constituents().size() = " << out_jets_wGhosts_[i].constituents().size() << std::endl;
+        std::cout << "out_jets_basic_["<<i<<"].constituents().size() = " << out_jets_basic_[i].constituents().size() << std::endl;        
         
         std::cout << "pt = " << out_jets_basic_[i].pt() << ", " << out_jets_wGhosts_[i].pt() << std::endl;
         
