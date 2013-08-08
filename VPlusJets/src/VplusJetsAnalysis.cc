@@ -21,6 +21,9 @@
 
 // user include files
 #include "ElectroWeakAnalysis/VPlusJets/interface/VplusJetsAnalysis.h" 
+
+
+
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
@@ -37,13 +40,14 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
-#include "JetSubstructure/SubstructureTools/interface/PseudoJetUserInfo.h"
-#include "JetSubstructure/SubstructureTools/interface/JetSubstructureTools.h" 
+//#include "JetSubstructure/SubstructureTools/interface/PseudoJetUserInfo.h"
+//#include "JetSubstructure/SubstructureTools/interface/JetSubstructureTools.h" 
 
 
 ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) :
 	myTree ( fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree") ), 
 	//CorrectedPFJetFiller ( iConfig.existsAs<edm::InputTag>("srcPFCor") ?  new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig) : 0),
+	AK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "selectedPatJetsPFlow", iConfig) : 0),
 	//PhotonFiller (  iConfig.existsAs<edm::InputTag>("srcPhoton") ?  new PhotonTreeFiller("PhotonFiller", myTree,  iConfig) : 0),
 	recoBosonFillerE( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
 	recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
@@ -240,6 +244,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
         fjinputs_gens.push_back( tmp_psjet );
     }*/
     
+/*
     std::vector<fastjet::PseudoJet> fjinputs_gens_nonu; fjinputs_gens_nonu.clear();
     for (unsigned int i = 0; i < gens_nonu->size(); i++){
         const reco::GenParticle& P = *(gens_nonu->at(i));
@@ -279,7 +284,6 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	// fjinputs_pfs_PileUp: PF charged, PileUp  
 	// fjinputs_pfs_charge: PF charged, NoPileUp
 	// fjinputs_pfs_neutral:PF neutral
-
 
 
 
@@ -328,8 +332,13 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
         JetSubstructureTools *tmp = new JetSubstructureTools( jetDef, out_jets_basic_[i].constituents(), out_jets_wGhosts_[i].area() );
 
         std::cout << "obj pt = " << tmp->getJet().pt() << ", jet charge = " << tmp->getJetCharge( 0.3 ) << std::endl;
+		print_p4(tmp->getJet(),"fulljet");
+		print_p4(tmp->getJet_wGhostes(),"fulljet_wGhost");
+		print_p4(tmp->getJet_basic(),"basic jet");
         
     }
+*/
+	if(AK5groomedJetFiller.get() )AK5groomedJetFiller->fill(iEvent);
     
    
     
