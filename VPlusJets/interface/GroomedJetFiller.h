@@ -5,6 +5,7 @@
  *
  *
  * Authors:
+ *   Zijun Xu, PKU - zijun.xu@cern.ch
  *   Nhan V Tran, Fermilab - kalanand@fnal.gov
  *   Kalanand Mishra, Fermilab - kalanand@fnal.gov
  *
@@ -65,20 +66,20 @@ namespace ewk
 			/// specify the name of the TTree, and the configuration for it
 			GroomedJetFiller(const char *name, 
 						TTree* tree, 
-						const std::string jetLabel,
-						const std::string srcGroomedJet,
+						const std::string jetAlgorithmLabel,
+						//const std::string srcGroomedJet,
 						const edm::ParameterSet& iConfig, bool isGen = 0);
 
 			/// default constructor
 			GroomedJetFiller() {};
-
 			/// Destructor, does nothing 
 			//~GroomedJetFiller(){  if(jec_) delete jec_;  if(jecUnc_) delete jecUnc_; };
 			~GroomedJetFiller(){ };
 
 			/// To be called once per event to fill the values for groomed jets
-			void fill(const edm::Event& iEvent);        
+			void fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles);        
 
+			// ----------member data ---------------------------
 			static const int NUM_JET_MAX = 6;
 
 		protected:
@@ -96,6 +97,7 @@ namespace ewk
 			float computeJetCharge( std::vector<fastjet::PseudoJet> constits, std::vector<float> pdgIds, float Ejet );        
 			float getPdgIdCharge( float fid );        
 
+			// ----------member data ---------------------------
 			TTree* tree_;
 			bool runningOverMC_;
 			bool applyJECToGroomedJets_;
@@ -103,11 +105,11 @@ namespace ewk
 			FactorizedJetCorrector* jec_;
 			JetCorrectionUncertainty* jecUnc_;
 
-			std::string jetLabel_;
+			std::string jetAlgorithmLabel_;
 			std::string JetsFor_rho;
 			std::string JEC_GlobalTag_forGroomedJet;
 			edm::InputTag mPrimaryVertex;
-			std::string mGroomedJet;
+			//std::string mGroomedJet;
 
 			// specific parameters
 			double mJetRadius;
@@ -115,11 +117,11 @@ namespace ewk
 			std::string lableGen;        
 
 			double mJetChargeKappa;
-			bool mDoQJets; 
-			int mQJetsPreclustering;
-			int mQJetsN;
+			bool   mDoQJets; 
+			int    mQJetsPreclustering;
+			int    mQJetsN;
 			double mNsubjettinessKappa;
-			bool mSaveConstituents;
+			bool   mSaveConstituents;
 
 		private:
 
