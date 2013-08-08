@@ -78,7 +78,8 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
        #'/store/user/lnujj/PatTuples_8TeV_53X/custodio/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/SQWaT_PAT_53X_Summer12_v1/829f288d768dd564418efaaf3a8ab9aa/pat_53x_test_v03_9_1_Xuv.root'
        #'/store/user/lnujj/PatTuples_8TeV_53X-v1/jdamgov/SingleMu/SQWaT_PAT_53X_2012B-13Jul2012-v1_part1v3/3e4086321697e2c39c90dad08848274b/pat_53x_test_v03_data_9_0_BNS.root'
-	   'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July17/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
+	   #'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July17/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
+	   'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July29/B2G/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
 ) )
 
 
@@ -143,14 +144,12 @@ process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis",
     bTagger=cms.string("simpleSecondaryVertexHighEffBJetTags"),
 
     applyJECToGroomedJets=cms.bool(True),
-    #doGroomedAK5 = cms.bool(True),
-    #doGroomedAK7 = cms.bool(True),
-    #doGroomedAK8 = cms.bool(False),
-    doGroomedAK5 = cms.bool(False),
+    doGroomedAK5 = cms.bool(True),
     doGroomedAK7 = cms.bool(False),
     doGroomedAK8 = cms.bool(False),
-    doGroomedCA8 = cms.bool(True),
-    doGroomedCA12 = cms.bool(False)
+    doGroomedAK12= cms.bool(False),
+    doGroomedCA8 = cms.bool(False),
+    doGroomedCA12= cms.bool(False)
 )
 
 if isMC:
