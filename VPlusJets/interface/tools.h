@@ -59,7 +59,7 @@
 
 
 void print_p4(fastjet::PseudoJet tmpJ, std::string tmpName="",bool extra_info=0);
-void BREAK();
+void BREAK(std::string info="");
 
 #endif   /* ----- #ifndef TOOLS_INC  ----- */
 
