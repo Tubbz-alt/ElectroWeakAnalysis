@@ -26,8 +26,8 @@ void print_p4(fastjet::PseudoJet tmpJ, std::string tmpName,bool extra_info){
 	}
 }
 
-void BREAK(){ 
-	std::cout<<"Enter a char to continue..."<<std::endl;
+void BREAK(std::string info){ 
+	std::cout<<info<<std::endl<<"Enter a char to continue..."<<std::endl;
 	char tmp;std::cin>>tmp;
 }
 
