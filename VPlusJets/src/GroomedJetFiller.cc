@@ -53,138 +53,127 @@
 
 ewk::GroomedJetFiller::GroomedJetFiller(const char *name, 
 			TTree* tree, 
-			const std::string jetLabel,
-			const std::string srcGroomedJet,
+			const std::string jetAlgorithmLabel,
+			//const std::string srcGroomedJet,
 			const edm::ParameterSet& iConfig,bool isGen)
 {
 	tree_     = tree;
-	jetLabel_ = jetLabel;
-	isGenJ = isGen;
 
-	lableGen = "";
-	if(isGen) lableGen = "Gen";
+	//Gen Jet
+	isGenJ = isGen;
+	if(isGen){ lableGen = "Gen"; } else{ lableGen = ""; }
+
 	// get algo and radius
-	unsigned int labelSize = jetLabel.size();
+	jetAlgorithmLabel_ = jetAlgorithmLabel;
+	unsigned int labelSize = jetAlgorithmLabel.size();
 	mJetAlgo = "";
-	mJetAlgo.push_back( jetLabel.at(0) ); mJetAlgo.push_back( jetLabel.at(1) );
-	if (labelSize == 3){
-		const char* tmp1 = &jetLabel.at(2);
-		mJetRadius = atof( tmp1 );
-	}
-	else if (labelSize == 4){
-		const char* tmp1 = &jetLabel.at(2);
-		//        const char* tmp2 = &jetLabel.at(3);        
-		//        mJetRadius = atof( tmp1 )*10. + atof( tmp2 );        
-		mJetRadius = atof( tmp1 );                
-	}
-	else{
+	mJetAlgo.push_back( jetAlgorithmLabel.at(0) ); mJetAlgo.push_back( jetAlgorithmLabel.at(1) );
+	if (labelSize == 3 || labelSize == 4 ){
+		const char* tmp1 = &jetAlgorithmLabel.at(2);
+		mJetRadius = atof( tmp1 )/10.;
+	} else{
 		std::cout << "problem in defining jet type!" << std::endl;
 	}
 	std::cout << "jet algo: " << mJetAlgo << ", jet radius: " << mJetRadius << std::endl;
-	mJetRadius /= 10.;
+	BREAK();
 
 	// Declare all the branches of the tree
-	SetBranch( jetpt_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_uncorr");
-	SetBranch( jetmass_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_mass_uncorr");
-	SetBranch( jetmass_tr_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_mass_tr_uncorr");
-	SetBranch( jetmass_ft_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_mass_ft_uncorr");
-	SetBranch( jetmass_pr_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_mass_pr_uncorr");
-	SetBranch( tau2tau1, lableGen + "GroomedJet_" + jetLabel_ + "_tau2tau1");
-	SetBranch( tau1, lableGen + "GroomedJet_" + jetLabel_ + "_tau1");
-	SetBranch( tau2, lableGen + "GroomedJet_" + jetLabel_ + "_tau2");
-	SetBranch( tau3, lableGen + "GroomedJet_" + jetLabel_ + "_tau3");
-	SetBranch( tau4, lableGen + "GroomedJet_" + jetLabel_ + "_tau4");
-	SetBranch( massdrop_pr_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_massdrop_pr_uncorr");
+	SetBranch( jetpt_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt_uncorr");
+	SetBranch( jetmass_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass_uncorr");
+	SetBranch( jetmass_tr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass_tr_uncorr");
+	SetBranch( jetmass_ft_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass_ft_uncorr");
+	SetBranch( jetmass_pr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass_pr_uncorr");
+	SetBranch( tau2tau1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_tau2tau1");
+	SetBranch( tau1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_tau1");
+	SetBranch( tau2, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_tau2");
+	SetBranch( tau3, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_tau3");
+	SetBranch( tau4, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_tau4");
+	SetBranch( massdrop_pr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_massdrop_pr_uncorr");
 
-	SetBranch( jetpt, lableGen + "GroomedJet_" + jetLabel_ + "_pt");
-	SetBranch( jeteta, lableGen + "GroomedJet_" + jetLabel_ + "_eta");
-	SetBranch( jetphi, lableGen + "GroomedJet_" + jetLabel_ + "_phi");
-	SetBranch( jete, lableGen + "GroomedJet_" + jetLabel_ + "_e");
-	SetBranch( jetpt_tr_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_tr_uncorr");
-	SetBranch( jetpt_tr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_tr");
-	SetBranch( jeteta_tr, lableGen + "GroomedJet_" + jetLabel_ + "_eta_tr");
-	SetBranch( jetphi_tr, lableGen + "GroomedJet_" + jetLabel_ + "_phi_tr");
-	SetBranch( jete_tr, lableGen + "GroomedJet_" + jetLabel_ + "_e_tr");
-	SetBranch( jetpt_ft_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_ft_uncorr");
-	SetBranch( jetpt_ft, lableGen + "GroomedJet_" + jetLabel_ + "_pt_ft");
-	SetBranch( jeteta_ft, lableGen + "GroomedJet_" + jetLabel_ + "_eta_ft");
-	SetBranch( jetphi_ft, lableGen + "GroomedJet_" + jetLabel_ + "_phi_ft");
-	SetBranch( jete_ft, lableGen + "GroomedJet_" + jetLabel_ + "_e_ft");
-	SetBranch( jetpt_pr_uncorr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_pr_uncorr");
-	SetBranch( jetpt_pr, lableGen + "GroomedJet_" + jetLabel_ + "_pt_pr");
-	SetBranch( jeteta_pr, lableGen + "GroomedJet_" + jetLabel_ + "_eta_pr");
-	SetBranch( jetphi_pr, lableGen + "GroomedJet_" + jetLabel_ + "_phi_pr");
-	SetBranch( jete_pr, lableGen + "GroomedJet_" + jetLabel_ + "_e_pr");
+	SetBranch( jetpt, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt");
+	SetBranch( jeteta, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_eta");
+	SetBranch( jetphi, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_phi");
+	SetBranch( jete, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_e");
+	SetBranch( jetpt_tr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt_tr_uncorr");
+	SetBranch( jetpt_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt_tr");
+	SetBranch( jeteta_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_eta_tr");
+	SetBranch( jetphi_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_phi_tr");
+	SetBranch( jete_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_e_tr");
+	SetBranch( jetpt_ft_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt_ft_uncorr");
+	SetBranch( jetpt_ft, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt_ft");
+	SetBranch( jeteta_ft, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_eta_ft");
+	SetBranch( jetphi_ft, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_phi_ft");
+	SetBranch( jete_ft, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_e_ft");
+	SetBranch( jetpt_pr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt_pr_uncorr");
+	SetBranch( jetpt_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_pt_pr");
+	SetBranch( jeteta_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_eta_pr");
+	SetBranch( jetphi_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_phi_pr");
+	SetBranch( jete_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_e_pr");
 
-	SetBranch( prsubjet1_px, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet1_px");
-	SetBranch( prsubjet1_py, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet1_py");
-	SetBranch( prsubjet1_pz, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet1_pz");
-	SetBranch( prsubjet1_e, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet1_e");
-	SetBranch( prsubjet2_px, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet2_px");
-	SetBranch( prsubjet2_py, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet2_py");
-	SetBranch( prsubjet2_pz, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet2_pz");
-	SetBranch( prsubjet2_e, lableGen + "GroomedJet_" + jetLabel_ + "_prsubjet2_e");
+	SetBranch( prsubjet1_px, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet1_px");
+	SetBranch( prsubjet1_py, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet1_py");
+	SetBranch( prsubjet1_pz, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet1_pz");
+	SetBranch( prsubjet1_e, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet1_e");
+	SetBranch( prsubjet2_px, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet2_px");
+	SetBranch( prsubjet2_py, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet2_py");
+	SetBranch( prsubjet2_pz, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet2_pz");
+	SetBranch( prsubjet2_e, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_prsubjet2_e");
 
-	SetBranch( jetmass, lableGen + "GroomedJet_" + jetLabel_ + "_mass");
-	SetBranch( jetmass_tr, lableGen + "GroomedJet_" + jetLabel_ + "_mass_tr");
-	SetBranch( jetmass_ft, lableGen + "GroomedJet_" + jetLabel_ + "_mass_ft");
-	SetBranch( jetmass_pr, lableGen + "GroomedJet_" + jetLabel_ + "_mass_pr");
-	SetBranch( massdrop_pr, lableGen + "GroomedJet_" + jetLabel_ + "_massdrop_pr");
-	SetBranch( jetarea, lableGen + "GroomedJet_" + jetLabel_ + "_area");
-	SetBranch( jetarea_tr, lableGen + "GroomedJet_" + jetLabel_ + "_area_tr");
-	SetBranch( jetarea_ft, lableGen + "GroomedJet_" + jetLabel_ + "_area_ft");
-	SetBranch( jetarea_pr, lableGen + "GroomedJet_" + jetLabel_ + "_area_pr");
-	SetBranch( jetconstituents, lableGen + "GroomedJet_" + jetLabel_ + "_jetconstituents");
-	SetBranch( jetcharge, lableGen + "GroomedJet_" + jetLabel_ + "_jetcharge");
+	SetBranch( jetmass, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass");
+	SetBranch( jetmass_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass_tr");
+	SetBranch( jetmass_ft, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass_ft");
+	SetBranch( jetmass_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_mass_pr");
+	SetBranch( massdrop_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_massdrop_pr");
+	SetBranch( jetarea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_area");
+	SetBranch( jetarea_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_area_tr");
+	SetBranch( jetarea_ft, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_area_ft");
+	SetBranch( jetarea_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_area_pr");
+	SetBranch( jetconstituents, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_jetconstituents");
+	SetBranch( jetcharge, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_jetcharge");
 
 	// cores
-	tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_rcores").c_str(), rcores, (lableGen + "GroomedJet_" + jetLabel_ + "_rcores"+"[11][6]/F").c_str() );
-	bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_rcores").c_str() );
-	tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_ptcores").c_str(), ptcores, (lableGen + "GroomedJet_" + jetLabel_ + "_ptcores"+"[11][6]/F").c_str() );
-	bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_ptcores").c_str() );
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_rcores").c_str(), rcores, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_rcores"+"[11][6]/F").c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_rcores").c_str() );
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_ptcores").c_str(), ptcores, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_ptcores"+"[11][6]/F").c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_ptcores").c_str() );
 
 	//planarflow
-	tree_->Branch((lableGen + "GroomedJet_" + jetLabel_ + "_planarflow").c_str(),planarflow, (lableGen + "GroomedJet_" + jetLabel_ + "_planarflow"+"[11][6]/F").c_str());
-	bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_planarflow").c_str() );
+	tree_->Branch((lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_planarflow").c_str(),planarflow, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_planarflow"+"[11][6]/F").c_str());
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_planarflow").c_str() );
 
 	// qjets
-	tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_qjetmass").c_str(), qjetmass, (lableGen + "GroomedJet_" + jetLabel_ + "_qjetmass"+"[50]/F").c_str() );
-	bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_qjetmass").c_str() );
-	tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_qjetmassdrop").c_str(), qjetmassdrop, (lableGen + "GroomedJet_" + jetLabel_ + "_qjetmassdrop"+"[50]/F").c_str() );
-	bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_qjetmassdrop").c_str() );
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_qjetmass").c_str(), qjetmass, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_qjetmass"+"[50]/F").c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_qjetmass").c_str() );
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_qjetmassdrop").c_str(), qjetmassdrop, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_qjetmassdrop"+"[50]/F").c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_qjetmassdrop").c_str() );
 
 	if( iConfig.existsAs<bool>("GroomedJet_saveConstituents") ) 
 	  mSaveConstituents=iConfig.getParameter< bool >("GroomedJet_saveConstituents");
 	else mSaveConstituents = true;
 
 	if (mSaveConstituents){
-		tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_eta").c_str(), constituents0_eta, (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_eta"+"[100]/F").c_str() );
-		bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_eta").c_str() );   
-		tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_phi").c_str(), constituents0_phi, (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_phi"+"[100]/F").c_str() );
-		bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_phi").c_str() );   
-		tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_e").c_str(), constituents0_e, (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_e"+"[100]/F").c_str() );
-		bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0_e").c_str() );   
-		SetBranchSingle( &nconstituents0, lableGen + "GroomedJet_" + jetLabel_ + "_nconstituents0" );
+		tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_eta").c_str(), constituents0_eta, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_eta"+"[100]/F").c_str() );
+		bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_eta").c_str() );   
+		tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_phi").c_str(), constituents0_phi, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_phi"+"[100]/F").c_str() );
+		bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_phi").c_str() );   
+		tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_e").c_str(), constituents0_e, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_e"+"[100]/F").c_str() );
+		bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0_e").c_str() );   
+		SetBranchSingle( &nconstituents0, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_nconstituents0" );
 
-		tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_eta").c_str(), constituents0pr_eta, (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_eta"+"[100]/F").c_str() );
-		bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_eta").c_str() );   
-		tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_phi").c_str(), constituents0pr_phi, (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_phi"+"[100]/F").c_str() );
-		bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_phi").c_str() );   
-		tree_->Branch( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_e").c_str(), constituents0pr_e, (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_e"+"[100]/F").c_str() );
-		bnames.push_back( (lableGen + "GroomedJet_" + jetLabel_ + "_constituents0pr_e").c_str() );   
-		SetBranchSingle( &nconstituents0pr, lableGen + "GroomedJet_" + jetLabel_ + "_nconstituents0pr" );
+		tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_eta").c_str(), constituents0pr_eta, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_eta"+"[100]/F").c_str() );
+		bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_eta").c_str() );   
+		tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_phi").c_str(), constituents0pr_phi, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_phi"+"[100]/F").c_str() );
+		bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_phi").c_str() );   
+		tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_e").c_str(), constituents0pr_e, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_e"+"[100]/F").c_str() );
+		bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_constituents0pr_e").c_str() );   
+		SetBranchSingle( &nconstituents0pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + "_nconstituents0pr" );
 	}
 
 	////////////////////////////////////
 	// CORRECTIONS ON THE FLY
 	////////////////////////////////////     
 	//// --- groomed jet label -------
-	/*if(  iConfig.existsAs<std::string>("srcGroomedJet") )
-	  mGroomedJet = iConfig.getParameter<std::string>("srcGroomedJet"); 
-	else mGroomedJet =  "pfInputsCA8";*/
-
-	mGroomedJet =  srcGroomedJet;
-	std::cout<<srcGroomedJet<<endl; BREAK();
+	//mGroomedJet =  srcGroomedJet;
 
 	// --- Are we running over Monte Carlo ? --- 
 	if( iConfig.existsAs<bool>("runningOverMC") ) 
@@ -199,8 +188,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	//// --- fastjet rho label -------
 	JetsFor_rho =  iConfig.getParameter<std::string>("srcJetsforRho") ; 
 	if(applyJECToGroomedJets_)
-	  JEC_GlobalTag_forGroomedJet 
-		  =  iConfig.getParameter<std::string>("JEC_GlobalTag_forGroomedJet") ; 
+	  JEC_GlobalTag_forGroomedJet = iConfig.getParameter<std::string>("JEC_GlobalTag_forGroomedJet") ; 
 
 	//// --- primary vertex -------
 	if(  iConfig.existsAs<edm::InputTag>("srcPrimaryVertex") )
@@ -226,7 +214,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 			jecStr.push_back( fDir + "_L3Absolute_AK7PFchs.txt" );
 			if (!runningOverMC_)
 			  jecStr.push_back( fDir + "_L2L3Residual_AK7PFchs.txt" );
-		}        
+		}
 
 		for (unsigned int i = 0; i < jecStr.size(); ++i){
 			JetCorrectorParameters* ijec = new JetCorrectorParameters( jecStr[i] );
@@ -311,7 +299,7 @@ void ewk::GroomedJetFiller::SetBranch( int* x, std::string name)
 
 
 // ------------ method called to produce the data  ------------
-void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
+void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles) {
 
 	////----------
 	// init
@@ -378,36 +366,6 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
 	}
 
 
-	// ----- get handles... --------    
-	std::string pfinput_ = mGroomedJet;    
-	edm::Handle< std::vector<float> > PF_px_handle;
-	edm::Handle< std::vector<float> > PF_py_handle;
-	edm::Handle< std::vector<float> > PF_pz_handle;
-	edm::Handle< std::vector<float> > PF_en_handle;
-	edm::Handle< std::vector<float> > PF_id_handle;
-
-	std::vector<float>  PF_id_handle_AK5;
-	std::vector<float>  PF_id_handle_Gen;
-
-	edm::Handle< reco::PFCandidateCollection > pfCandidates;
-	edm::Handle<reco::GenParticleRefVector> genParticles;
-	reco::GenParticleRefVector genParticlesforJets;
-
-	if( isGenJ ) {
-		iEvent.getByLabel(mGroomedJet, genParticles);
-		genParticlesforJets = *genParticles;
-	}else{
-		if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
-			iEvent.getByLabel(mGroomedJet,"pfCandidates",pfCandidates);
-		}else{
-			iEvent.getByLabel( pfinput_, "px" ,    PF_px_handle);
-			iEvent.getByLabel( pfinput_, "py" ,    PF_py_handle);
-			iEvent.getByLabel( pfinput_, "pz" ,    PF_pz_handle);
-			iEvent.getByLabel( pfinput_, "energy", PF_en_handle);
-			iEvent.getByLabel( pfinput_, "pdgId", PF_id_handle);
-		}
-	}
-
 	// ------ get rho --------    
 	rhoVal_ = -99.;
 	edm::Handle<double> rho;
@@ -431,43 +389,19 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
 
 	// ----------------------------
 	// ------ start processing ------    
-	PF_id_handle_AK5.clear();
-	PF_id_handle_Gen.clear();
-	charge_handle_Gen.clear();
-	std::vector<fastjet::PseudoJet> FJparticles;
-	if(isGenJ){
-
-		for(size_t i = 0; i < genParticles->size(); ++ i) {
-			const reco::GenParticle&    P = *(genParticlesforJets[i]);
-			FJparticles.push_back( fastjet::PseudoJet( P.px(), 
-							P.py(),
-							P.pz(),
-							P.energy() ) );
-			PF_id_handle_Gen.push_back(P.pdgId());
-			charge_handle_Gen.push_back(P.charge());
-		}
-
-	}else{
-		if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
-			for( reco::PFCandidateCollection::const_iterator ci  = pfCandidates->begin(); ci!=pfCandidates->end(); ++ci)  {
-				FJparticles.push_back( fastjet::PseudoJet( ci->px(), 
-								ci->py(),
-								ci->pz(),
-								ci->energy() ) );
-				PF_id_handle_AK5.push_back(ci->translateTypeToPdgId(ci->particleId()));
-			}
-		}else{
-			for (unsigned i = 0; i < PF_px_handle->size() ; i++){
-				FJparticles.push_back( fastjet::PseudoJet( PF_px_handle->at(i), 
-								PF_py_handle->at(i), 
-								PF_pz_handle->at(i), 
-								PF_en_handle->at(i) ) );
-			}
-		}
-	}
-
-	// std::cout << "FJparticles.size() = " << FJparticles.size() << std::endl;
+	std::cout << "FJparticles.size() = " << FJparticles.size() << std::endl; 
 	if (FJparticles.size() < 1) return;
+
+
+	std::vector<float>  PF_id_handle;
+	PF_id_handle.clear();
+	charge_handle_Gen.clear();
+
+	for(size_t i = 0; i < FJparticles.size(); ++ i) {
+		fastjet::PseudoJet  P = FJparticles[i];
+		PF_id_handle.push_back(P.user_info<PseudoJetUserInfo>().pdg_id());
+		if(isGenJ)charge_handle_Gen.push_back(P.user_info<PseudoJetUserInfo>().charge());
+	}
 
 	// do re-clustering
 	fastjet::JetDefinition jetDef(fastjet::cambridge_algorithm, mJetRadius);
@@ -723,7 +657,8 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
 			for (unsigned jj = 0; jj < FJparticles.size(); jj++){
 				//                std::cout << ii << ", " << jj << ": " << FJparticles.at(jj).pt() << ", " << out_jets_basic.at(j).constituents().at(ii).pt() << std::endl;
 				if (FJparticles.at(jj).pt() == out_jets_basic.at(j).constituents().at(ii).pt()){
-					if(!isGenJ) {
+					pdgIds.push_back(PF_id_handle.at(jj));
+					/*if(!isGenJ) {
 						if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
 							pdgIds.push_back(PF_id_handle_AK5.at(jj));
 						}else{
@@ -731,7 +666,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
 						}
 					}else{
 						pdgIds.push_back(PF_id_handle_Gen.at(jj));
-					}
+					}*/
 					break;
 				}
 			}
@@ -744,14 +679,8 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent) {
 
 
 
-double ewk::GroomedJetFiller::getJEC(double curJetEta, 
-			double curJetPt, 
-			double curJetE, 
-			double curJetArea){
-
-	// -------
+double ewk::GroomedJetFiller::getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea){
 	// Jet energy corrections, something like this...
-	// -------
 	jec_->setJetEta( curJetEta );
 	jec_->setJetPt ( curJetPt );
 	jec_->setJetE  ( curJetE );
@@ -762,11 +691,7 @@ double ewk::GroomedJetFiller::getJEC(double curJetEta,
 	return corr;
 }
 
-
-
-
 TLorentzVector ewk::GroomedJetFiller::getCorrectedJet(fastjet::PseudoJet& jet) {
-
 	double jecVal = 1.0;
 
 	if(applyJECToGroomedJets_ && !isGenJ) 
@@ -876,6 +801,7 @@ float ewk::GroomedJetFiller::getPdgIdCharge( float fid ){
 		qq = -1.;
 	}
 	else{
+		BREAK("unknown PDG id");
 		throw cms::Exception("GroomedJetFiller") << " unknown PDG id " << id << std::endl;
 	}
 	return qq;
