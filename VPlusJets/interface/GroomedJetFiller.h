@@ -67,7 +67,7 @@ namespace ewk
 			GroomedJetFiller(const char *name, 
 						TTree* tree, 
 						const std::string jetAlgorithmLabel,
-						//const std::string srcGroomedJet,
+						const std::string additionalLabel,
 						const edm::ParameterSet& iConfig, bool isGen = 0);
 
 			/// default constructor
