@@ -47,7 +47,9 @@
 ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) :
 	myTree ( fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree") ), 
 	//CorrectedPFJetFiller ( iConfig.existsAs<edm::InputTag>("srcPFCor") ?  new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig) : 0),
-	AK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "selectedPatJetsPFlow", iConfig) : 0),
+	AK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_passCHS", iConfig) : 0),
+	AK8groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_passCHS", iConfig) : 0),
+	AK12groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_passCHS", iConfig) : 0),
 	//PhotonFiller (  iConfig.existsAs<edm::InputTag>("srcPhoton") ?  new PhotonTreeFiller("PhotonFiller", myTree,  iConfig) : 0),
 	recoBosonFillerE( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
 	recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
@@ -244,7 +246,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
         fjinputs_gens.push_back( tmp_psjet );
     }*/
     
-/*
+
     std::vector<fastjet::PseudoJet> fjinputs_gens_nonu; fjinputs_gens_nonu.clear();
     for (unsigned int i = 0; i < gens_nonu->size(); i++){
         const reco::GenParticle& P = *(gens_nonu->at(i));
@@ -255,6 +257,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
         fjinputs_gens_nonu.push_back( tmp_psjet );
     }	
 
+    std::vector<fastjet::PseudoJet> fjinputs_pfs;  fjinputs_pfs.clear();
     std::vector<fastjet::PseudoJet> fjinputs_pfs_charge;  fjinputs_pfs_charge.clear();
     std::vector<fastjet::PseudoJet> fjinputs_pfs_neutral; fjinputs_pfs_neutral.clear();
     for (unsigned int i = 0; i < pfs->size(); i++){
@@ -262,7 +265,8 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
         fastjet::PseudoJet tmp_psjet( P.px(), P.py(), P.pz(), P.energy() );
         // add user info about charge and pdgId
         tmp_psjet.set_user_info( new PseudoJetUserInfo(P.pdgId(), P.charge()) );
-		//print_p4(tmp_psjet,Form("pfs_%i",i));
+		//print_p4(tmp_psjet,Form("pfs_%i",i),1);
+		fjinputs_pfs.push_back( tmp_psjet );
 		if (P.charge()==0){
 			fjinputs_pfs_neutral.push_back( tmp_psjet );
 		}else{
@@ -284,6 +288,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	// fjinputs_pfs_PileUp: PF charged, PileUp  
 	// fjinputs_pfs_charge: PF charged, NoPileUp
 	// fjinputs_pfs_neutral:PF neutral
+	// fjinputs_pfs: PF neutral + charge
 
 
 
@@ -337,15 +342,17 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 		print_p4(tmp->getJet_basic(),"basic jet");
         
     }
-*/
-	if(AK5groomedJetFiller.get() )AK5groomedJetFiller->fill(iEvent);
+
+	if(AK5groomedJetFiller.get() )AK5groomedJetFiller->fill(iEvent, fjinputs_pfs);
+	if(AK8groomedJetFiller.get() )AK8groomedJetFiller->fill(iEvent, fjinputs_pfs);
+	if(AK12groomedJetFiller.get())AK12groomedJetFiller->fill(iEvent, fjinputs_pfs);
     
    
     
     
 
 
-    BREAK();
+    //BREAK();
 	myTree->Fill();
 
 } // analyze method
