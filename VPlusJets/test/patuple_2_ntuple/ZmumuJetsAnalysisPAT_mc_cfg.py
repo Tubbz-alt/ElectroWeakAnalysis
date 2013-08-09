@@ -146,8 +146,8 @@ process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis",
     applyJECToGroomedJets=cms.bool(True),
     doGroomedAK5 = cms.bool(True),
     doGroomedAK7 = cms.bool(False),
-    doGroomedAK8 = cms.bool(False),
-    doGroomedAK12= cms.bool(False),
+    doGroomedAK8 = cms.bool(True),
+    doGroomedAK12= cms.bool(True),
     doGroomedCA8 = cms.bool(False),
     doGroomedCA12= cms.bool(False)
 )
