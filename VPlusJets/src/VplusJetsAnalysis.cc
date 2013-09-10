@@ -43,35 +43,29 @@
 //#include "JetSubstructure/SubstructureTools/interface/PseudoJetUserInfo.h"
 //#include "JetSubstructure/SubstructureTools/interface/JetSubstructureTools.h" 
 
-
 ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) :
 	myTree ( fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree") ), 
-	//CorrectedPFJetFiller ( iConfig.existsAs<edm::InputTag>("srcPFCor") ?  new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig) : 0),
-	AK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_passCHS", iConfig) : 0),
+	CorrectedPFJetFiller ( iConfig.existsAs<edm::InputTag>("srcPFCor") ?  new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig) : 0),
+	AK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_passCHS", iConfig) : 0), 
 	AK8groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_passCHS", iConfig) : 0),
-	AK12groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_passCHS", iConfig) : 0),
+	AK12groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_passCHS", iConfig) : 0), 
 	//PhotonFiller (  iConfig.existsAs<edm::InputTag>("srcPhoton") ?  new PhotonTreeFiller("PhotonFiller", myTree,  iConfig) : 0),
 	recoBosonFillerE( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
-	recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
-	genBosonFiller( (iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC")) ?  new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) : 0)
-{
+	recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ), genBosonFiller( (iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC")) ?  new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) : 0) {
 	// Are we running over Monte Carlo ?
 	if( iConfig.existsAs<bool>("runningOverMC") ) runningOverMC_=iConfig.getParameter< bool >("runningOverMC");
 	else runningOverMC_= false;
 
-	if(  iConfig.existsAs<edm::InputTag>("srcVectorBoson") ) mInputBoson = iConfig.getParameter<edm::InputTag>("srcVectorBoson"); 
-	LeptonType_ = iConfig.getParameter<std::string>("LeptonType");
+	if(  iConfig.existsAs<edm::InputTag>("srcVectorBoson") ) mInputBoson = iConfig.getParameter<edm::InputTag>("srcVectorBoson"); LeptonType_ = iConfig.getParameter<std::string>("LeptonType");
 	VBosonType_ = iConfig.getParameter<std::string>("VBosonType");
 
 	if(  iConfig.existsAs<edm::InputTag>("srcPrimaryVertex") ) mPrimaryVertex = iConfig.getParameter<edm::InputTag>("srcPrimaryVertex"); 
 	else mPrimaryVertex =  edm::InputTag("offlinePrimaryVertices");
 
-	if(  iConfig.existsAs<edm::InputTag>("srcMet") ) mInputMet = iConfig.getParameter<edm::InputTag>("srcMet");
-
-	//if(  iConfig.existsAs<edm::InputTag>("srcMetMVA") ) mInputMetMVA = iConfig.getParameter<edm::InputTag>("srcMetMVA");
+	if(  iConfig.existsAs<edm::InputTag>("srcMet") ) mInputMet = iConfig.getParameter<edm::InputTag>("srcMet"); //if(  iConfig.existsAs<edm::InputTag>("srcMetMVA") ) mInputMetMVA = iConfig.getParameter<edm::InputTag>("srcMetMVA");
 
 	//*********************  Run Over AOD or PAT  ***********//
-	if( iConfig.existsAs<bool>("runningOverAOD")) runoverAOD = iConfig.getParameter<bool>("runningOverAOD");
+	//if( iConfig.existsAs<bool>("runningOverAOD")) runoverAOD = iConfig.getParameter<bool>("runningOverAOD");
 
 	//JetsFor_rho =  iConfig.getParameter<std::string>("srcJetsforRho") ; 
 
@@ -85,9 +79,7 @@ ewk::VplusJetsAnalysis::~VplusJetsAnalysis() {}
 
 
 void ewk::VplusJetsAnalysis::beginJob() {
-
-	// Declare all the branches of the tree
-	declareTreeBranches();
+	declareTreeBranches(); // Declare all the branches of the tree
 	std::cout<<"VplusJetsAnalysis begin work!"<<std::endl;
 }
 
@@ -96,20 +88,17 @@ void ewk::VplusJetsAnalysis::beginJob() {
 // ------------ method called to produce the data  ------------
 void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent, 
 			const edm::EventSetup& iSetup) {
-
 	// write event information: run, event, bunch crossing, ....
 	run   = iEvent.id().run();
 	event = iEvent.id().event();
 	lumi  = iEvent.luminosityBlock();
 	bunch = iEvent.bunchCrossing();
 
-
 	// primary/secondary vertices
 	// edm::Handle<reco::VertexCollection > recVtxs;
 	edm::Handle <edm::View<reco::Vertex> > recVtxs;
 	iEvent.getByLabel( mPrimaryVertex, recVtxs);
 	nPV = recVtxs->size();
-
 
 	/////// PfMET information /////
 	edm::Handle<edm::View<reco::MET> > pfmet;
@@ -127,7 +116,6 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 		mpfMETPhi   = (*pfmet)[0].phi();
 	}
 
-
 	/*/////// MVA MET information /////
 	edm::Handle<edm::View<reco::MET> > metMVA;
 	iEvent.getByLabel(mInputMetMVA, metMVA);
@@ -142,7 +130,6 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 		mvaMETSign = (*metMVA)[0].significance();
 		mvaMETPhi   = (*metMVA)[0].phi();
 	}*/
-
 	
 	/*/////// Pileup density "rho" in the event from fastJet pileup calculation /////
 	edm::Handle<double> rho;
@@ -150,9 +137,6 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	iEvent.getByLabel(eventrho,rho);
 	if( *rho == *rho) fastJetRho = *rho;
 	else  fastJetRho =  -999999.9;*/
-	
-
-
 
 	/////////// GenMET information & MC Pileup Summary Info  //////////
 	mcPUtrueInteractions = 0;
@@ -303,7 +287,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     
     int activeAreaRepeats = 1;
     double ghostArea = 0.01;
-    double ghostEtaMax = 7.0;
+    double ghostEtaMax = 5.0;
     
     fastjet::GhostedAreaSpec fjActiveArea(ghostEtaMax,activeAreaRepeats,ghostArea);
     fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area, fjActiveArea );
@@ -312,8 +296,8 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     fastjet::ClusterSequenceArea* thisClustering_wGhosts_ = new fastjet::ClusterSequenceArea(fjinputs_gens_nonu, jetDef, fjAreaDefinition_wGhosts);
     fastjet::ClusterSequence* thisClustering_basic_ = new fastjet::ClusterSequence(fjinputs_gens_nonu, jetDef);
     
-    std::vector<fastjet::PseudoJet> out_jets_wGhosts_ = sorted_by_pt(thisClustering_wGhosts_->inclusive_jets(25.0));    
-    std::vector<fastjet::PseudoJet> out_jets_basic_ = sorted_by_pt(thisClustering_basic_->inclusive_jets(25.0));
+    std::vector<fastjet::PseudoJet> out_jets_wGhosts_ = sorted_by_pt(thisClustering_wGhosts_->inclusive_jets(15.0));    
+    std::vector<fastjet::PseudoJet> out_jets_basic_ = sorted_by_pt(thisClustering_basic_->inclusive_jets(15.0));
     
     std::cout << "out_jets_wGhosts_->size() = " << out_jets_wGhosts_.size() << std::endl;
     std::cout << "out_jets_basic_->size() = " << out_jets_basic_.size() << std::endl;    
@@ -346,13 +330,14 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	if(AK5groomedJetFiller.get() )AK5groomedJetFiller->fill(iEvent, fjinputs_pfs);
 	if(AK8groomedJetFiller.get() )AK8groomedJetFiller->fill(iEvent, fjinputs_pfs);
 	if(AK12groomedJetFiller.get())AK12groomedJetFiller->fill(iEvent, fjinputs_pfs);
+	if(CorrectedPFJetFiller.get())CorrectedPFJetFiller->fill(iEvent);
     
    
     
     
 
 
-    //BREAK();
+    BREAK();
 	myTree->Fill();
 
 } // analyze method
