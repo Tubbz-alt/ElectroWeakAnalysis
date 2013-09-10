@@ -47,10 +47,8 @@ ewk::JetTreeFiller::JetTreeFiller(const char *name, TTree* tree, const std::stri
 	  mInputJets = iConfig.getParameter<edm::InputTag>("srcPFCorVBFTag"); 
 
 
-	if(  iConfig.existsAs<edm::InputTag>("srcMet") )
-	  mInputMet = iConfig.getParameter<edm::InputTag>("srcMet");
-	if(  iConfig.existsAs<edm::InputTag>("srcMetMVA") )
-	  mInputMetMVA = iConfig.getParameter<edm::InputTag>("srcMetMVA");
+	if(  iConfig.existsAs<edm::InputTag>("srcMet") ) mInputMet = iConfig.getParameter<edm::InputTag>("srcMet");
+	if(  iConfig.existsAs<edm::InputTag>("srcMetMVA") ) mInputMetMVA = iConfig.getParameter<edm::InputTag>("srcMetMVA");
 
 	// ********** Vector boson ********** //
 	if(  iConfig.existsAs<edm::InputTag>("srcVectorBoson") )
@@ -207,7 +205,7 @@ void ewk::JetTreeFiller::SetBranches()
 		SetBranch( PFqgLikelihood, "Jet" + jetType_ + "_QGLikelihood");
 	}
 
-	SetBranchSingle( &V2jMassMVAMET,  "MassV2j_" + jetType_ + "_MVAMET");
+	/*SetBranchSingle( &V2jMassMVAMET,  "MassV2j_" + jetType_ + "_MVAMET");
 	SetBranchSingle( &V2jMass,  "MassV2j_" + jetType_);
 	SetBranchSingle( &V3jMass, "MassV3j_" + jetType_);
 	SetBranchSingle( &V4jMass, "MassV4j_" + jetType_);
@@ -217,10 +215,10 @@ void ewk::JetTreeFiller::SetBranches()
 	SetBranchSingle( &c3jMass, "Mass3j_" + jetType_);
 	SetBranchSingle( &c4jMass, "Mass4j_" + jetType_);
 	SetBranchSingle( &c5jMass, "Mass5j_" + jetType_);
-	SetBranchSingle( &c6jMass, "Mass6j_" + jetType_);
+	SetBranchSingle( &c6jMass, "Mass6j_" + jetType_);*/
 
 
-	SetBranchSingle( &V2jCosJacksonAngle, "cosJacksonAngleV2j_" + jetType_);
+	/*SetBranchSingle( &V2jCosJacksonAngle, "cosJacksonAngleV2j_" + jetType_);
 	SetBranchSingle( &c2jCosJacksonAngle, "cosJacksonAngle2j_" + jetType_);
 	SetBranchSingle( &V3jCosJacksonAngle, "cosJacksonAngleV3j_" + jetType_);
 	SetBranchSingle( &c3jCosJacksonAngle12, "cosJacksonAngle3j12_" + jetType_);
@@ -257,13 +255,13 @@ void ewk::JetTreeFiller::SetBranches()
 		SetBranchSingle( &b1Hel_HiggsCM, "cosThetaV1HiggsCM_" + jetType_);
 		SetBranchSingle( &b2Hel_HiggsCM, "cosThetaV2HiggsCM_" + jetType_);
 
-	}
+	}*/
 
-	if( jetType_ == "PF" || jetType_ == "PFCor" || jetType_ == "PFCorVBFTag") {
+	/*if( jetType_ == "PF" || jetType_ == "PFCor" || jetType_ == "PFCorVBFTag") {
 		SetBranch( isPileUpJetLoose, "Jet" + jetType_ + "_isPileUpJetLoose");
 		SetBranch( isPileUpJetMedium, "Jet" + jetType_ + "_isPileUpJetMedium");
 		SetBranch( isPileUpJetTight, "Jet" + jetType_ + "_isPileUpJetTight");
-	}
+	}*/
 }
 
 
@@ -451,12 +449,12 @@ void ewk::JetTreeFiller::init()   {
 	colorCorr35 = -10.0;
 	colorCorr45 = -10.0;
 
-	j1Hel_HiggsCM = -10.0;;
-	j2Hel_HiggsCM = -10.0;;
-	l1Hel_HiggsCM = -10.0;;
-	l2Hel_HiggsCM = -10.0;;
-	b1Hel_HiggsCM = -10.0;;
-	b2Hel_HiggsCM = -10.0;;
+	/*j1Hel_HiggsCM = -10.0;
+	j2Hel_HiggsCM = -10.0;
+	l1Hel_HiggsCM = -10.0;
+	l2Hel_HiggsCM = -10.0;
+	b1Hel_HiggsCM = -10.0;
+	b2Hel_HiggsCM = -10.0;*/
 
 }
 
@@ -476,7 +474,8 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 	const reco::Candidate *Vboson2(0);
 	if( nBoson==2) Vboson2  = &((*boson)[1]);
 
-	edm::Handle<edm::View<reco::Jet> > jets;
+	//edm::Handle<edm::View<reco::Jet> > jets;
+	edm::Handle<edm::View<pat::Jet> > jets;
 	iEvent.getByLabel( mInputJets, jets ); 
 
 	if(jets->size() < 1) return;
@@ -529,7 +528,6 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 	NumJets = 0;
 	numBTags = 0;
 
-
 	/////// Pileup density "rho" in the event from fastJet pileup calculation /////
 	float fastjet_rho = -999999.9;
 	edm::Handle<double> rho;
@@ -542,11 +540,11 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 	//   if(runoverAOD) iEvent.getByLabel("particleFlow", PFCandidates);
 
 	// Fill pile Up jet id info
-	if(mInputJets.label()!="Gen") fillPileUpJetID (jets);     
+	//if(mInputJets.label()!="Gen") fillPileUpJetID (jets);     
 
 
 	// Loop over reco jets 
-	edm::View<reco::Jet>::const_iterator jet, endpjets = jets->end(); 
+	edm::View<pat::Jet>::const_iterator jet, endpjets = jets->end(); 
 	for (jet = jets->begin();  jet != endpjets;  ++jet, ++iJet) {
 		if( !(iJet< (unsigned int) NUM_JET_MAX) ) break;
 
@@ -568,14 +566,16 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 		if ( type == typeid(reco::PFJet) || type == typeid(pat::Jet)) {
 
 			// PFJet specific quantities
-			std::vector<reco::PFCandidatePtr> pfCandidates;
+			std::vector<reco::PFCandidatePtr> pfCandidates;/*
 			if(type == typeid(reco::PFJet)) {
 				reco::PFJet pfjet  = static_cast<const reco::PFJet &>(*jet);
 				fillEnergyFractionsPFjets(pfjet, iJet);
 				pfCandidates = pfjet.getPFConstituents();
-			}
+			}*/
 			if(type == typeid(pat::Jet)) {
-				pat::Jet pfjet  = static_cast<const pat::Jet &>(*jet);
+				//std::cout<<"type Name="<<type.name()<<", reco::PFJet"<<typeid(reco::PFJet).name()<<", pat::Jet"<<typeid(pat::Jet).name()<<endl;
+				//pat::Jet pfjet  = static_cast<const pat::Jet &>(*jet);
+				pat::Jet pfjet  = (*jet);
 				if(pfjet.isPFJet()) {
 					fillEnergyFractionsPFjets(pfjet, iJet);
 					pfCandidates = pfjet.getPFConstituents();
@@ -592,7 +592,7 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 	NumJets = (int) iJet;
 
 
-	// get 4-vectors for the two daughters of vector boson
+	/*// get 4-vectors for the two daughters of vector boson
 	TLorentzVector p4lepton1;
 	TLorentzVector p4lepton2;
 
@@ -656,7 +656,7 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 
 	// Cos(theta*) or Helicity Angles in Higgs rest frame
 	fillHelicityIn4bodyFrame( p4lepton1, p4lepton2);
-
+    */
 
 	//FillBranches();
 }
@@ -674,6 +674,13 @@ void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet,
 			const reco::Candidate* Vboson2, 
 			const reco::MET met) 
 {
+	//print_p4((fastjet::PseudoJet)pfjet,"jet from PAT");
+	std::cout<<"jet beforjec (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(0)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(0)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"jet from PAT (pt,eta,phi,E,m)=("<<pfjet.pt()<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()<<","<<pfjet.mass()<<")"<<endl; 
+	//std::cout<<"jecVal="<<pfjet.jecFactor(0)<<","<<pfjet.jecFactor(1)<<","<<pfjet.jecFactor(2)<<","<<pfjet.jecFactor(3)<<endl;
+	//std::cout<<"jecVal="<<pfjet.jecFactor("Uncorrected")<<","<<pfjet.jecFactor("L1FastJet")<<","<<pfjet.jecFactor("L2Relative")<<","<<pfjet.jecFactor("L3Absolute")<<endl;
+	//std::cout<<"jec="<<pfjet.currentJECLevel()<<" ,"<<pfjet.currentJECSet()<<endl;
+	
 	Et[iJet] = pfjet.et();
 	Pt[iJet] = pfjet.pt();
 	Eta[iJet] = pfjet.eta();
@@ -728,11 +735,11 @@ void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet,
 		nConstituents[iJet]  = pfjet.nConstituents();
 	}
 }
-template 
+/*template 
 void ewk::JetTreeFiller::fillBasicJetQuantities(int, const reco::PFJet&,
 			const reco::Candidate* Vboson, 
 			const reco::Candidate* Vboson2, 
-			const reco::MET met);
+			const reco::MET met);*/
 template 
 void ewk::JetTreeFiller::fillBasicJetQuantities(int, const pat::Jet&,
 			const reco::Candidate* Vboson, 
@@ -1182,23 +1189,14 @@ void ewk::JetTreeFiller::fillPileUpJetID (const edm::Handle<edm::View<T1> > & je
 	for (itJet = jets->begin();  itJet != endpjets;  ++iJet, ++itJet) {
 
 		if( !(iJet< (unsigned int) NUM_JET_MAX) ) break;
-
 		const std::type_info & type = typeid(*itJet);
-
 		if ( type == typeid(pat::Jet)){
-
 			edm::Ptr<T1> ptrJet = jets->ptrAt(itJet - jets->begin());
-
 			if (ptrJet.isNonnull() && ptrJet.isAvailable() ) {
-
-
 				const pat::Jet* pjet = dynamic_cast<const pat::Jet *>(ptrJet.get()) ;
-
-
 				if((*pjet).userInt("PUChargedWorkingPoint") == 3 )                                     isPileUpJetTight[iJet] = true ;
 				if((*pjet).userInt("PUChargedWorkingPoint") == 2 || isPileUpJetTight[iJet]  == true )  isPileUpJetMedium[iJet] = true ;
 				if((*pjet).userInt("PUChargedWorkingPoint") == 1 || isPileUpJetMedium[iJet] == true )  isPileUpJetLoose[iJet] = true ;
-
 			}
 		}  
 	}
