@@ -58,7 +58,8 @@ numEventsToRun = 2000
 process.load("ElectroWeakAnalysis.VPlusJets.ZmumuCollectionsPAT_cfi")
 
 ##---------  Jet Collection ----------------
-process.load("ElectroWeakAnalysis.VPlusJets.JetCollectionsPAT_cfi")
+#process.load("ElectroWeakAnalysis.VPlusJets.JetCollectionsPAT_cfi")
+process.load("ElectroWeakAnalysis.VPlusJets.B2GJetCollectionsPAT_cfi")
 
 ##---------  Vertex and track Collections -----------
 process.load("ElectroWeakAnalysis.VPlusJets.TrackCollections_cfi")
@@ -76,10 +77,8 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 #process.options = cms.untracked.PSet( SkipEvent = cms.untracked.vstring('ProductNotFound')
 #)
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
-       #'/store/user/lnujj/PatTuples_8TeV_53X/custodio/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/SQWaT_PAT_53X_Summer12_v1/829f288d768dd564418efaaf3a8ab9aa/pat_53x_test_v03_9_1_Xuv.root'
-       #'/store/user/lnujj/PatTuples_8TeV_53X-v1/jdamgov/SingleMu/SQWaT_PAT_53X_2012B-13Jul2012-v1_part1v3/3e4086321697e2c39c90dad08848274b/pat_53x_test_v03_data_9_0_BNS.root'
-	   #'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July17/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
-	   'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July29/B2G/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
+	   #'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July29/B2G/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_90_1_7J2.root'
 ) )
 
 
@@ -137,24 +136,25 @@ process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis",
     srcGenParticles  = cms.InputTag("genParticles"),
     srcTcMet    = cms.InputTag("patMETsAK5TC"),
     srcJetsforRho = cms.string("kt6PFJetsPFlow"),                               
-    srcJetsforRho_lepIso = cms.string("kt6PFJetsForIsolation"),       
-    srcJetsforRhoCHS = cms.string("kt6PFJetsChsPFlow"),
-    srcJetsforRho_lepIsoCHS = cms.string("kt6PFJetsChsForIsolationPFlow"),
+    #srcJetsforRho_lepIso = cms.string("kt6PFJetsForIsolation"),       
+    #srcJetsforRhoCHS = cms.string("kt6PFJetsChsPFlow"),
+    #srcJetsforRho_lepIsoCHS = cms.string("kt6PFJetsChsForIsolationPFlow"),
     srcFlavorByValue = cms.InputTag("ak5tagJet"),
     bTagger=cms.string("simpleSecondaryVertexHighEffBJetTags"),
 
     applyJECToGroomedJets=cms.bool(True),
     doGroomedAK5 = cms.bool(True),
     doGroomedAK7 = cms.bool(False),
-    doGroomedAK8 = cms.bool(True),
-    doGroomedAK12= cms.bool(True),
+    doGroomedAK8 = cms.bool(False),
+    doGroomedAK12= cms.bool(False),
     doGroomedCA8 = cms.bool(False),
     doGroomedCA12= cms.bool(False),
     GroomedJet_doQJets = cms.bool(False)#drop QJets process
 )
 
 if isMC:
-    process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("START53_V15")
+    #process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("START53_V15")
+    process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("START53_V7G")
 else:
     process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("FT_53_V10_AN3")
     #process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("GR_R_53_V10")
@@ -209,10 +209,10 @@ process.myseq = cms.Sequence(
     process.patMetShiftCorrected *
     process.TrackVtxPath *
     process.HLTMu *
-    process.ZPath 
+    process.ZPath*
     #process.GenJetPath *
     #process.TagJetPath *
-    #process.PFJetPath 
+    process.B2GPFJetPath 
     #process.RequireTwoJetsORboostedV *
     #process.RequireTwoJetsORboostedVStep
     )
