@@ -47,6 +47,8 @@
 #include "fastjet/tools/Pruner.hh"
 #include "fastjet/tools/MassDropTagger.hh"
 #include "fastjet/GhostedAreaSpec.hh"
+#include "fastjet/tools/JetMedianBackgroundEstimator.hh"
+#include "fastjet/tools/GridMedianBackgroundEstimator.hh"
 
 #include "TVector3.h"
 #include "TMath.h"
@@ -78,6 +80,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 
 	// Declare all the branches of the tree
 	SetBranch( jetpt_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_uncorr");
+	SetBranchSingle( &number_jet_central, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_number_jet_central");
 	SetBranch( jetmass_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_uncorr");
 	SetBranch( jetmass_tr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_tr_uncorr");
 	SetBranch( jetmass_ft_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_ft_uncorr");
@@ -196,13 +199,15 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 
 	// ---- setting up the jec on-the-fly from text files...    
 	//    std::string fDir = "JEC/" + JEC_GlobalTag_forGroomedJet;   
-	std::string fDir = JEC_GlobalTag_forGroomedJet;   
+	//std::string fDir = JEC_GlobalTag_forGroomedJet;   
+	std::string fDir = "JEC/"+JEC_GlobalTag_forGroomedJet;   
+	//std::cout<<"JEC_GlobalTag_forGroomedJet="<<JEC_GlobalTag_forGroomedJet<<std::endl;
 	std::vector< JetCorrectorParameters > jecPars;
 	std::vector< std::string > jecStr;
 
 	if(applyJECToGroomedJets_) {
 		if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
-			jecStr.push_back( fDir + "_L1FastJet_AK5PFchs.txt" );
+			jecStr.push_back( fDir +  "_L1FastJet_AK5PFchs.txt" );
 			jecStr.push_back( fDir + "_L2Relative_AK5PFchs.txt" );
 			jecStr.push_back( fDir + "_L3Absolute_AK5PFchs.txt" );
 			if (!runningOverMC_)
@@ -313,6 +318,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		tau3[j] = -1.;
 		tau4[j] = -1.;
 		massdrop_pr_uncorr[j] = -1.; 
+		number_jet_central=0.;
 		jetpt_uncorr[j] = -1.;
 		jetpt[j] = -1.;
 		jeteta[j] = -10.;
@@ -365,12 +371,6 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	}
 
 
-	// ------ get rho --------    
-	rhoVal_ = -99.;
-	edm::Handle<double> rho;
-	const edm::InputTag eventrho(JetsFor_rho, "rho");
-	iEvent.getByLabel(eventrho,rho);
-	rhoVal_ = *rho;
 
 	// ------ get nPV: primary/secondary vertices------ 
 	nPV_ = 0.;
@@ -417,12 +417,28 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area_explicit_ghosts, fjActiveArea );
 
 	fastjet::ClusterSequenceArea thisClustering(FJparticles, jetDef, fjAreaDefinition);
-	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt(thisClustering.inclusive_jets(20.0));
+	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt(thisClustering.inclusive_jets(15.0));
 	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets = sorted_by_pt(thisClustering.inclusive_jets(20.0));
 	
 	fastjet::ClusterSequence thisClustering_basic(FJparticles, jetDef);
-	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt(thisClustering_basic.inclusive_jets(20.0));
+	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt(thisClustering_basic.inclusive_jets(15.0));
 	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets_basic = sorted_by_pt(thisClustering_basic.inclusive_jets(20.0));    
+
+	// ------ get rho --------    
+	rhoVal_ = -99.;
+	edm::Handle<double> rho;
+	const edm::InputTag eventrho(JetsFor_rho, "rho");//kt6PFJetsPFlow
+	iEvent.getByLabel(eventrho,rho);
+	rhoVal_ = *rho;
+	std::cout<<"Default rho = "<<rhoVal_<<std::endl;
+	// ------ get rho by hand--------    
+	fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(ghostEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition );
+	fastjet::GridMedianBackgroundEstimator bge_grid(ghostEtaMax, 0.7);
+	bge_medi.set_particles(FJparticles);
+	bge_grid.set_particles(FJparticles);
+	std::cout<<"medi rho = "<<bge_medi.rho()<<" , "<<bge_medi.sigma()<<endl;
+	std::cout<<"grid rho = "<<bge_grid.rho()<<" , "<<bge_grid.sigma()<<endl;
+
 
 	// define groomers
 	fastjet::Filter trimmer( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.03)));
@@ -451,8 +467,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	// s t a r t   l o o p   o n   j e t s
 	// -----------------------------------------------
 	// -----------------------------------------------
-	//      cout<<mJetAlgo<<"\t"<<mJetRadius<<endl;
-
+	std::cout<<mJetAlgo<<"\t"<<mJetRadius<<" out_jets size="<<out_jets.size()<<std::endl;
 
 	for (unsigned j = 0; j < out_jets.size()&&int(j)<NUM_JET_MAX; j++) {
 
@@ -470,7 +485,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		if( !(j< (unsigned int) NUM_JET_MAX) ) break;            
 		jetmass_uncorr[j] = out_jets.at(j).m();
 		jetpt_uncorr[j] = out_jets.at(j).pt();
-		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j));
+		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j),1);
 		jetmass[j] = jet_corr.M();
 		jetpt[j] = jet_corr.Pt();
 		jeteta[j] = jet_corr.Eta();
@@ -478,6 +493,12 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		jete[j]   = jet_corr.Energy();
 		jetarea[j] = out_jets.at(j).area();
 		jetconstituents[j] = out_jets_basic.at(j).constituents().size();
+		if(mJetAlgo=="AK"&& mJetRadius ==0.5){
+			print_p4(out_jets.at(j),"**jet before corr");
+			print_p4(jet_corr,      "--jet after  corr");
+		}
+		if(jet_corr.Eta()<2.4 && jet_corr.Eta()>-2.4 && jet_corr.Pt()>20.)number_jet_central++;
+		std::cout<<"number_jet_central="<<number_jet_central<<std::endl;
 
 		// pruning, trimming, filtering  -------------
 		int transctr = 0;
@@ -688,12 +709,13 @@ double ewk::GroomedJetFiller::getJEC(double curJetEta, double curJetPt, double c
 	return corr;
 }
 
-TLorentzVector ewk::GroomedJetFiller::getCorrectedJet(fastjet::PseudoJet& jet) {
+TLorentzVector ewk::GroomedJetFiller::getCorrectedJet(fastjet::PseudoJet& jet, bool debug) {
 	double jecVal = 1.0;
 
 	if(applyJECToGroomedJets_ && !isGenJ) 
 	  jecVal = getJEC( jet.eta(), jet.pt(), jet.e(), jet.area() );   
 
+	if(debug)std::cout<<"jecVal="<<jecVal<<std::endl;
 	TLorentzVector jet_corr(jet.px() * jecVal, 
 				jet.py() * jecVal, 
 				jet.pz() * jecVal, 
