@@ -49,6 +49,7 @@
 
 
 #include "CMGTools/External/interface/PileupJetIdentifier.h"
+#include "ElectroWeakAnalysis/VPlusJets/interface/tools.h"
 
 namespace ewk {
 
