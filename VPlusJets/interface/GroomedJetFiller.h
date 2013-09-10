@@ -91,7 +91,7 @@ namespace ewk
 			void SetBranchSingle( float* x, std::string name);
 			void SetBranchSingle( int* x, std::string name);
 			double getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
-			TLorentzVector getCorrectedJet(fastjet::PseudoJet& jet);
+			TLorentzVector getCorrectedJet(fastjet::PseudoJet& jet, bool debug=0);
 			void computeCore( std::vector<fastjet::PseudoJet> constits, double Rval, float &m_core, float &pt_core );
 			void computePlanarflow(std::vector<fastjet::PseudoJet> constits,double Rval,fastjet::PseudoJet jet,std::string mJetAlgo,float &planarflow);
 			float computeJetCharge( std::vector<fastjet::PseudoJet> constits, std::vector<float> pdgIds, float Ejet );        
@@ -138,6 +138,7 @@ namespace ewk
 			float tau4[NUM_JET_MAX];
 			float massdrop_pr_uncorr[NUM_JET_MAX];
 
+			int   number_jet_central;
 			float jetpt_uncorr[NUM_JET_MAX];
 			float jetpt[NUM_JET_MAX];
 			float jeteta[NUM_JET_MAX];
