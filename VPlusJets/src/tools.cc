@@ -20,9 +20,9 @@
 
 void print_p4(fastjet::PseudoJet tmpJ, std::string tmpName,bool extra_info){
 	if(extra_info){ 
-		std::cout<<tmpName<<" PseudoJet(E,m,pt,eta,phi,pdgID,charge)=("<<tmpJ.E()<<","<<tmpJ.m()<<","<<tmpJ.pt()<<","<<tmpJ.eta()<<","<<tmpJ.phi()<<","<<tmpJ.user_info<PseudoJetUserInfo>().pdg_id()<<","<<tmpJ.user_info<PseudoJetUserInfo>().charge()<<")"<<std::endl;
+		std::cout<<tmpName<<" PseudoJet(pt,eta,phi,E,m,pdgID,charge)=("<<tmpJ.pt()<<","<<tmpJ.eta()<<","<<tmpJ.phi()<<","<<tmpJ.E()<<","<<tmpJ.m()<<","<<tmpJ.user_info<PseudoJetUserInfo>().pdg_id()<<","<<tmpJ.user_info<PseudoJetUserInfo>().charge()<<")"<<std::endl;
 	}else{
-		std::cout<<tmpName<<" PseudoJet(E,m,pt,eta,phi)=("<<tmpJ.E()<<","<<tmpJ.m()<<","<<tmpJ.pt()<<","<<tmpJ.eta()<<","<<tmpJ.phi()<<")"<<std::endl;
+		std::cout<<tmpName<<" PseudoJet(pt,eta,phi,E,m)=("<<tmpJ.pt()<<","<<tmpJ.eta()<<","<<tmpJ.phi()<<","<<tmpJ.E()<<","<<tmpJ.m()<<")"<<std::endl;
 	}
 }
 
