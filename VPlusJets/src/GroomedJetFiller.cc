@@ -179,7 +179,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	}
 	SetBranchSingle( &rhoVal_, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhoSW" );
 	SetBranchSingle( &rhoVal_hand, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhohand" );
-	SetBranchSingle( &rhoVal_hand1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhohand1" );
+	SetBranchSingle( &rhoVal_hand2, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhohand2" );
 	SetBranchSingle( &rhoVal_grid, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhogrid" );
 
 	////////////////////////////////////
@@ -481,7 +481,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) );
 	bge_medi.set_particles(FJparticles);
 	std::cout<<"medi rho = "<<bge_medi.rho()<<" , "<<bge_medi.sigma()<<endl;
-	rhoVal_hand1 = bge_medi.rho();
+	rhoVal_hand2 = bge_medi.rho();
 	fastjet::Subtractor subtractor_medi(&bge_medi);
 
 	fastjet::GridMedianBackgroundEstimator bge_grid(rhoEtaMax, 0.55);
