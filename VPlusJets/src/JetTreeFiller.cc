@@ -79,6 +79,7 @@ void ewk::JetTreeFiller::SetBranches()
 	SetBranchSingle( &numBTags, "num" + jetType_ + "JetBTags");
 	SetBranch( Et, "Jet" + jetType_ + "_Et");
 	SetBranch( Pt, "Jet" + jetType_ + "_Pt");
+	SetBranch( Pt_uncorr, "Jet" + jetType_ + "_Pt_uncorr");
 	SetBranch( Eta, "Jet" + jetType_ + "_Eta");
 	SetBranch( Phi, "Jet" + jetType_ + "_Phi");
 	SetBranch( Theta, "Jet" + jetType_ + "_Theta");
@@ -331,6 +332,7 @@ void ewk::JetTreeFiller::init()   {
 	for (int j =0; j< NUM_JET_MAX; ++j) {
 		Et[j] = -1.0;
 		Pt[j] = -1.0;
+		Pt_uncorr[j] = -1.0;
 		Eta[j] = -10.0;
 		Phi[j] = -10.0;
 		Theta[j] = -10.0;
@@ -675,14 +677,12 @@ void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet,
 			const reco::MET met) 
 {
 	//print_p4((fastjet::PseudoJet)pfjet,"jet from PAT");
-	std::cout<<"jet beforjec (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(0)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(0)<<","<<pfjet.mass()<<")"<<endl; 
-	std::cout<<"jet from PAT (pt,eta,phi,E,m)=("<<pfjet.pt()<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()<<","<<pfjet.mass()<<")"<<endl; 
-	//std::cout<<"jecVal="<<pfjet.jecFactor(0)<<","<<pfjet.jecFactor(1)<<","<<pfjet.jecFactor(2)<<","<<pfjet.jecFactor(3)<<endl;
-	//std::cout<<"jecVal="<<pfjet.jecFactor("Uncorrected")<<","<<pfjet.jecFactor("L1FastJet")<<","<<pfjet.jecFactor("L2Relative")<<","<<pfjet.jecFactor("L3Absolute")<<endl;
-	//std::cout<<"jec="<<pfjet.currentJECLevel()<<" ,"<<pfjet.currentJECSet()<<endl;
+	//std::cout<<"jet beforjec (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(0)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(0)<<","<<pfjet.mass()<<")"<<endl; 
+	//std::cout<<"jet from PAT (pt,eta,phi,E,m)=("<<pfjet.pt()<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()<<","<<pfjet.mass()<<")"<<endl; 
 	
 	Et[iJet] = pfjet.et();
 	Pt[iJet] = pfjet.pt();
+	Pt_uncorr[iJet] = pfjet.pt()*pfjet.jecFactor(0);//before jec
 	Eta[iJet] = pfjet.eta();
 	Phi[iJet] = pfjet.phi();
 	Theta[iJet] = pfjet.theta();
