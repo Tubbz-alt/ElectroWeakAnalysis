@@ -327,7 +327,7 @@ void ewk::VtoMuonTreeFiller::fill(const edm::Event& iEvent, int vecBosonIndex)
 		throw cms::Exception( "***Error: V boson has < 2 daughters !\n");
 		return;  // if no muon found, then return
 	} 
-	std::cout << "number of daugters " << Vboson->numberOfDaughters() <<std::endl;
+	//std::cout << "number of daugters " << Vboson->numberOfDaughters() <<std::endl;
 	// get the two daughters
 	reco::CandidateBaseRef m0 = Vboson->daughter(0)->masterClone();
 	reco::CandidateBaseRef m1 = Vboson->daughter(1)->masterClone();
@@ -342,7 +342,7 @@ void ewk::VtoMuonTreeFiller::fill(const edm::Event& iEvent, int vecBosonIndex)
 		if( type0 == typeid(reco::Muon) ){ mu1 = dynamic_cast<const reco::Muon *>( &*m0 ); }
 	} else{
 		if( type0 == typeid(pat::Muon) ) {
-			  std::cout << " boson daughter - pat mu 1 " << std::endl;
+			  //std::cout << " boson daughter - pat mu 1 " << std::endl;
 
 			//  std::cout << "ptr is nonnull " << m0.isNonnull() <<std::endl ;
 			//   std::cout << "charge from Ptr = " << m0->charge() << std::endl;
