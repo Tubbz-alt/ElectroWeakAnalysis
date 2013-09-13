@@ -48,8 +48,8 @@ else:
     process.GlobalTag.globaltag = 'START53_V7E::All'
 
 OutputFileName = "zmumujetsanalysisntuple.root"
-numEventsToRun = 2000
-#numEventsToRun = -1
+#numEventsToRun = 4000
+numEventsToRun = -1
 ############################################
 ########################################################################################
 ########################################################################################
@@ -78,7 +78,26 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 #)
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 	   #'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July29/B2G/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_90_1_7J2.root'
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_90_1_7J2.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_100_1_pQ0.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_101_1_pSM.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_102_1_5fo.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_103_1_x3K.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_104_1_NJx.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_105_1_4bY.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_106_1_JUM.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_107_1_2hy.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_108_1_6is.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_109_1_4B2.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_110_1_GjM.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_111_1_fRz.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_112_1_Tzx.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_113_1_ydz.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_114_1_D4s.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_115_1_FYR.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_116_1_Op0.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_117_1_Aue.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_118_1_C5o.root'
 ) )
 
 
