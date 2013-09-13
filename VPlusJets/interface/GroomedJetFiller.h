@@ -225,7 +225,7 @@ namespace ewk
 
 			double rhoVal_;//rho kt6PF SW
 			double rhoVal_hand;//rho kt6PF Hand
-			double rhoVal_hand1;//rho kt6PF Hand1 
+			double rhoVal_hand2;//rho kt6PF Hand2 
 			double rhoVal_grid;//rho Grid
 			double nPV_;
 			bool isGenJ;
