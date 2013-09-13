@@ -160,6 +160,7 @@ namespace ewk {
     int NumJets; 
     float Et[NUM_JET_MAX];
     float Pt[NUM_JET_MAX];
+    float Pt_uncorr[NUM_JET_MAX];
     float Eta[NUM_JET_MAX];
     float Phi[NUM_JET_MAX];
     float Theta[NUM_JET_MAX];
