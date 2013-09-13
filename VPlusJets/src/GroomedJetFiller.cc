@@ -440,7 +440,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	fjActiveArea.set_fj2_placement(true);
 	fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area_explicit_ghosts, fjActiveArea );
 
-	fastjet::Selector selected_rapidity = fastjet::SelectorAbsRapMax(2.4);
+	fastjet::Selector selected_rapidity = fastjet::SelectorAbsEtaMax(2.4);
 
 	fastjet::ClusterSequenceArea thisClustering(FJparticles, jetDef, fjAreaDefinition);
 	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt( selected_rapidity(thisClustering.inclusive_jets(15.0)) );
