@@ -49,6 +49,7 @@
 #include "fastjet/GhostedAreaSpec.hh"
 #include "fastjet/tools/JetMedianBackgroundEstimator.hh"
 #include "fastjet/tools/GridMedianBackgroundEstimator.hh"
+#include "fastjet/tools/Subtractor.hh"
 
 #include "TVector3.h"
 #include "TMath.h"
@@ -76,7 +77,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	} else{
 		std::cout << "problem in defining jet type!" << std::endl;
 	}
-	std::cout << "jet algo: " << mJetAlgo << ", jet radius: " << mJetRadius << std::endl;
+	//std::cout << "jet algo: " << mJetAlgo << ", jet radius: " << mJetRadius << std::endl;
 
 	// Declare all the branches of the tree
 	SetBranch( jetpt_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_uncorr");
@@ -96,6 +97,12 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	SetBranch( jeteta, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_eta");
 	SetBranch( jetphi, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_phi");
 	SetBranch( jete, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_e");
+
+	SetBranch( jetpt_L1_rhoSW, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_L1_rhoSW");
+	SetBranch( jetpt_L1_rhoHand, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_L1_rhoHand");
+	SetBranch( jetpt_L1_rhoHand2, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_L1_rhoHand2");
+	SetBranch( jetpt_L1_rhoGrid, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_L1_rhoGrid");
+
 	SetBranch( jetpt_tr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_tr_uncorr");
 	SetBranch( jetpt_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_tr");
 	SetBranch( jeteta_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_eta_tr");
@@ -170,6 +177,10 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 		bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_constituents0pr_e").c_str() );   
 		SetBranchSingle( &nconstituents0pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_nconstituents0pr" );
 	}
+	SetBranchSingle( &rhoVal_, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhoSW" );
+	SetBranchSingle( &rhoVal_hand, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhohand" );
+	SetBranchSingle( &rhoVal_hand1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhohand1" );
+	SetBranchSingle( &rhoVal_grid, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_rhogrid" );
 
 	////////////////////////////////////
 	// CORRECTIONS ON THE FLY
@@ -199,8 +210,8 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 
 	// ---- setting up the jec on-the-fly from text files...    
 	//    std::string fDir = "JEC/" + JEC_GlobalTag_forGroomedJet;   
-	//std::string fDir = JEC_GlobalTag_forGroomedJet;   
-	std::string fDir = "JEC/"+JEC_GlobalTag_forGroomedJet;   
+	std::string fDir = JEC_GlobalTag_forGroomedJet;   
+	//std::string fDir = "JEC/"+JEC_GlobalTag_forGroomedJet;   
 	//std::cout<<"JEC_GlobalTag_forGroomedJet="<<JEC_GlobalTag_forGroomedJet<<std::endl;
 	std::vector< JetCorrectorParameters > jecPars;
 	std::vector< std::string > jecStr;
@@ -276,6 +287,12 @@ void ewk::GroomedJetFiller::SetBranchSingle( float* x, std::string name)
 	bnames.push_back( name );
 }
 
+void ewk::GroomedJetFiller::SetBranchSingle( double* x, std::string name)
+{
+	tree_->Branch( name.c_str(), x, ( name+"/D").c_str() );
+	bnames.push_back( name );
+}
+
 void ewk::GroomedJetFiller::SetBranchSingle( int* x, std::string name)
 {
 	tree_->Branch( name.c_str(), x, ( name+"/I").c_str() );
@@ -325,6 +342,12 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		jetphi[j] = -10.;
 		jete[j] = -1.;
 		jetmass[j] = -1.;
+
+		jetpt_L1_rhoSW[j] = -1.;
+		jetpt_L1_rhoHand[j] = -1.;
+		jetpt_L1_rhoHand2[j] = -1.;
+		jetpt_L1_rhoGrid[j] = -1.;
+
 		jetmass_tr[j] = -1.;
 		jetmass_ft[j] = -1.;
 		jetmass_pr[j] = -1.;
@@ -388,7 +411,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 
 	// ----------------------------
 	// ------ start processing ------    
-	std::cout << "FJparticles.size() = " << FJparticles.size() << std::endl; 
+	//std::cout << "FJparticles.size() = " << FJparticles.size() << std::endl; 
 	if (FJparticles.size() < 1) return;
 
 
@@ -410,11 +433,12 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 
 	int activeAreaRepeats = 1;
 	double ghostArea = 0.01;
-	double ghostEtaMax = 5.0;
+	double ghostEtaMax = 4.4;
 	// fastjet::ActiveAreaSpec fjActiveArea(ghostEtaMax,activeAreaRepeats,ghostArea);
 	fastjet::GhostedAreaSpec fjActiveArea(ghostEtaMax,activeAreaRepeats,ghostArea);
 	fjActiveArea.set_fj2_placement(true);
 	fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area_explicit_ghosts, fjActiveArea );
+
 
 	fastjet::ClusterSequenceArea thisClustering(FJparticles, jetDef, fjAreaDefinition);
 	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt(thisClustering.inclusive_jets(15.0));
@@ -430,14 +454,41 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	const edm::InputTag eventrho(JetsFor_rho, "rho");//kt6PFJetsPFlow
 	iEvent.getByLabel(eventrho,rho);
 	rhoVal_ = *rho;
-	std::cout<<"Default rho = "<<rhoVal_<<std::endl;
+	std::cout<<"(kt6PF rho in SW) = "<<rhoVal_<<std::endl;
+
 	// ------ get rho by hand--------    
-	fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(ghostEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition );
-	fastjet::GridMedianBackgroundEstimator bge_grid(ghostEtaMax, 0.7);
+	std::auto_ptr<double> rho_on_the_fly(new double(0.0));
+	std::auto_ptr<double> sigma_on_the_fly(new double(0.0));
+	double mean_area = 0;
+
+	//ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition ) );
+	ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) ) );
+	fastjet::ClusterSequenceAreaBase const* clusterSequenceWithArea = dynamic_cast<fastjet::ClusterSequenceAreaBase const *> ( &*fjClusterSeq_ );
+
+	double rhoEtaMax=4.4;
+	RangeDefPtr fjRangeDef_ = RangeDefPtr( new fastjet::RangeDefinition(rhoEtaMax) );
+
+	clusterSequenceWithArea->get_median_rho_and_sigma(*fjRangeDef_,false,*rho_on_the_fly,*sigma_on_the_fly,mean_area);
+	if((*rho_on_the_fly < 0)|| (std::isnan(*rho_on_the_fly))) { //edm::LogError("BadRho") << "rho_on_the_fly value is " << *rho_on_the_fly << " area:" << mean_area << " and n_empty_jets: " << clusterSequenceWithArea->n_empty_jets(*fjRangeDef_) << " with range " << fjRangeDef_->description() <<". Setting rho_on_the_fly to rezo.";
+		*rho_on_the_fly = 0;
+	}
+	//std::cout << "(kt6PF rho by hand) = " << *rho_on_the_fly << " area:" << mean_area << " and sigma: " << *sigma_on_the_fly <<endl;
+	std::cout << "(kt6PF rho by hand) = " << *rho_on_the_fly  << " , " << *sigma_on_the_fly <<endl;
+	rhoVal_hand = *rho_on_the_fly;
+
+
+	//fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition );
+	fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) );
 	bge_medi.set_particles(FJparticles);
-	bge_grid.set_particles(FJparticles);
 	std::cout<<"medi rho = "<<bge_medi.rho()<<" , "<<bge_medi.sigma()<<endl;
+	rhoVal_hand1 = bge_medi.rho();
+	fastjet::Subtractor subtractor_medi(&bge_medi);
+
+	fastjet::GridMedianBackgroundEstimator bge_grid(rhoEtaMax, 0.55);
+	bge_grid.set_particles(FJparticles);
 	std::cout<<"grid rho = "<<bge_grid.rho()<<" , "<<bge_grid.sigma()<<endl;
+	rhoVal_grid = bge_grid.rho();
+	fastjet::Subtractor subtractor_grid(&bge_grid);
 
 
 	// define groomers
@@ -467,7 +518,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	// s t a r t   l o o p   o n   j e t s
 	// -----------------------------------------------
 	// -----------------------------------------------
-	std::cout<<mJetAlgo<<"\t"<<mJetRadius<<" out_jets size="<<out_jets.size()<<std::endl;
+	//std::cout<<mJetAlgo<<"\t"<<mJetRadius<<" out_jets size="<<out_jets.size()<<std::endl;
 
 	for (unsigned j = 0; j < out_jets.size()&&int(j)<NUM_JET_MAX; j++) {
 
@@ -485,20 +536,35 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		if( !(j< (unsigned int) NUM_JET_MAX) ) break;            
 		jetmass_uncorr[j] = out_jets.at(j).m();
 		jetpt_uncorr[j] = out_jets.at(j).pt();
-		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j),1);
+		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j),0);
 		jetmass[j] = jet_corr.M();
 		jetpt[j] = jet_corr.Pt();
 		jeteta[j] = jet_corr.Eta();
 		jetphi[j] = jet_corr.Phi();
 		jete[j]   = jet_corr.Energy();
 		jetarea[j] = out_jets.at(j).area();
+		//std::cout<<"jetarea="<<out_jets.at(j).area()<<std::endl; 
 		jetconstituents[j] = out_jets_basic.at(j).constituents().size();
-		if(mJetAlgo=="AK"&& mJetRadius ==0.5){
-			print_p4(out_jets.at(j),"**jet before corr");
-			print_p4(jet_corr,      "--jet after  corr");
-		}
+		/*if(mJetAlgo=="AK"&& mJetRadius ==0.5){
+			print_p4(out_jets.at(j),"  jet before    corr");
+			print_p4(jet_corr,      "--jet after All corr");
+		}*/
 		if(jet_corr.Eta()<2.4 && jet_corr.Eta()>-2.4 && jet_corr.Pt()>20.)number_jet_central++;
-		std::cout<<"number_jet_central="<<number_jet_central<<std::endl;
+		//std::cout<<"number_jet_central="<<number_jet_central<<std::endl;
+
+
+		//fast::subtractor is used for rho*area_4vector
+		fastjet::PseudoJet jet_corr_medi = subtractor_medi(out_jets.at(j));
+		//print_p4(jet_corr_medi,      "--jet after L1medi corr");
+		fastjet::PseudoJet jet_corr_grid = subtractor_grid(out_jets.at(j));
+		//print_p4(jet_corr_grid,      "--jet after L1grid corr");
+
+		jetpt_L1_rhoSW[j] = out_jets.at(j).pt() - rhoVal_*out_jets.at(j).area();
+		jetpt_L1_rhoHand[j] = out_jets.at(j).pt() - *rho_on_the_fly*out_jets.at(j).area();
+		jetpt_L1_rhoHand2[j]= out_jets.at(j).pt() - bge_medi.rho()*out_jets.at(j).area();
+		jetpt_L1_rhoGrid[j] = out_jets.at(j).pt() - bge_grid.rho()*out_jets.at(j).area();
+		//std::cout<<"L1 p1={ "<<jetpt_L1_rhoSW[j]<<","<<jetpt_L1_rhoHand[j]<<","<<jetpt_L1_rhoHand2[j]<<","<<jetpt_L1_rhoGrid[j]<<std::endl;
+
 
 		// pruning, trimming, filtering  -------------
 		int transctr = 0;
@@ -677,14 +743,14 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 				if (FJparticles.at(jj).pt() == out_jets_basic.at(j).constituents().at(ii).pt()){
 					pdgIds.push_back(PF_id_handle.at(jj));
 					/*if(!isGenJ) {
-						if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
-							pdgIds.push_back(PF_id_handle_AK5.at(jj));
-						}else{
-							pdgIds.push_back(PF_id_handle->at(jj));
-						}
-					}else{
-						pdgIds.push_back(PF_id_handle_Gen.at(jj));
-					}*/
+					  if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
+					  pdgIds.push_back(PF_id_handle_AK5.at(jj));
+					  }else{
+					  pdgIds.push_back(PF_id_handle->at(jj));
+					  }
+					  }else{
+					  pdgIds.push_back(PF_id_handle_Gen.at(jj));
+					  }*/
 					break;
 				}
 			}
