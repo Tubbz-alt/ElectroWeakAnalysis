@@ -61,6 +61,14 @@
 //
 namespace ewk
 {
+
+	// typedefs
+	typedef boost::shared_ptr<fastjet::ClusterSequence>        ClusterSequencePtr;
+	typedef boost::shared_ptr<fastjet::JetDefinition::Plugin>  PluginPtr;
+	typedef boost::shared_ptr<fastjet::JetDefinition>          JetDefPtr;
+	typedef boost::shared_ptr<fastjet::GhostedAreaSpec>        ActiveAreaSpecPtr;
+	typedef boost::shared_ptr<fastjet::AreaDefinition>         AreaDefinitionPtr;
+	typedef boost::shared_ptr<fastjet::RangeDefinition>        RangeDefPtr;
 	class GroomedJetFiller {
 		public:
 			/// specify the name of the TTree, and the configuration for it
@@ -88,6 +96,7 @@ namespace ewk
 			/// Helper function for main constructor
 			void SetBranch( float* x, std::string name);
 			void SetBranch( int* x, std::string name);
+			void SetBranchSingle( double* x, std::string name);
 			void SetBranchSingle( float* x, std::string name);
 			void SetBranchSingle( int* x, std::string name);
 			double getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
@@ -144,6 +153,11 @@ namespace ewk
 			float jeteta[NUM_JET_MAX];
 			float jetphi[NUM_JET_MAX];
 			float jete[NUM_JET_MAX];
+
+			float jetpt_L1_rhoSW[NUM_JET_MAX];//rho from kt6PF SW
+			float jetpt_L1_rhoHand[NUM_JET_MAX];//rho from kt6PF Hand
+			float jetpt_L1_rhoHand2[NUM_JET_MAX];//rho from kt6PF Hand2
+			float jetpt_L1_rhoGrid[NUM_JET_MAX];//rho from kt6PF Grid
 
 			float jetpt_tr_uncorr[NUM_JET_MAX];
 			float jetpt_tr[NUM_JET_MAX];
@@ -209,7 +223,10 @@ namespace ewk
 			std::vector<float>  charge_handle_Gen;
 
 
-			double rhoVal_;
+			double rhoVal_;//rho kt6PF SW
+			double rhoVal_hand;//rho kt6PF Hand
+			double rhoVal_hand1;//rho kt6PF Hand1 
+			double rhoVal_grid;//rho Grid
 			double nPV_;
 			bool isGenJ;
 	};
