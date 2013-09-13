@@ -50,6 +50,7 @@
 #include "fastjet/tools/JetMedianBackgroundEstimator.hh"
 #include "fastjet/tools/GridMedianBackgroundEstimator.hh"
 #include "fastjet/tools/Subtractor.hh"
+#include "fastjet/Selector.hh"
 
 #include "TVector3.h"
 #include "TMath.h"
@@ -439,13 +440,14 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	fjActiveArea.set_fj2_placement(true);
 	fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area_explicit_ghosts, fjActiveArea );
 
+	fastjet::Selector selected_rapidity = fastjet::SelectorAbsRapMax(2.4);
 
 	fastjet::ClusterSequenceArea thisClustering(FJparticles, jetDef, fjAreaDefinition);
-	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt(thisClustering.inclusive_jets(15.0));
+	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt( selected_rapidity(thisClustering.inclusive_jets(15.0)) );
 	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets = sorted_by_pt(thisClustering.inclusive_jets(20.0));
 	
 	fastjet::ClusterSequence thisClustering_basic(FJparticles, jetDef);
-	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt(thisClustering_basic.inclusive_jets(15.0));
+	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_rapidity(thisClustering_basic.inclusive_jets(15.0)) );
 	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets_basic = sorted_by_pt(thisClustering_basic.inclusive_jets(20.0));    
 
 	// ------ get rho --------    
