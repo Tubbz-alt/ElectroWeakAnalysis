@@ -80,6 +80,8 @@ void ewk::JetTreeFiller::SetBranches()
 	SetBranch( Et, "Jet" + jetType_ + "_Et");
 	SetBranch( Pt, "Jet" + jetType_ + "_Pt");
 	SetBranch( Pt_uncorr, "Jet" + jetType_ + "_Pt_uncorr");
+	SetBranch( Pt_afterL1, "Jet" + jetType_ + "_Pt_afterL1");
+	SetBranch( Pt_afterL2, "Jet" + jetType_ + "_Pt_afterL2");
 	SetBranch( Eta, "Jet" + jetType_ + "_Eta");
 	SetBranch( Phi, "Jet" + jetType_ + "_Phi");
 	SetBranch( Theta, "Jet" + jetType_ + "_Theta");
@@ -333,6 +335,8 @@ void ewk::JetTreeFiller::init()   {
 		Et[j] = -1.0;
 		Pt[j] = -1.0;
 		Pt_uncorr[j] = -1.0;
+		Pt_afterL1[j] = -1.0;
+		Pt_afterL2[j] = -1.0;
 		Eta[j] = -10.0;
 		Phi[j] = -10.0;
 		Theta[j] = -10.0;
@@ -677,12 +681,17 @@ void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet,
 			const reco::MET met) 
 {
 	//print_p4((fastjet::PseudoJet)pfjet,"jet from PAT");
-	//std::cout<<"jet beforjec (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(0)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(0)<<","<<pfjet.mass()<<")"<<endl; 
-	//std::cout<<"jet from PAT (pt,eta,phi,E,m)=("<<pfjet.pt()<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"    raw pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(0)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(0)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"L1  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(1)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(1)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"L2  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(2)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(2)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"L3  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(3)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(3)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"All jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()<<","<<pfjet.mass()<<")"<<endl; 
 	
 	Et[iJet] = pfjet.et();
 	Pt[iJet] = pfjet.pt();
 	Pt_uncorr[iJet] = pfjet.pt()*pfjet.jecFactor(0);//before jec
+	Pt_afterL1[iJet] = pfjet.pt()*pfjet.jecFactor(1);//after L1 jec
+	Pt_afterL2[iJet] = pfjet.pt()*pfjet.jecFactor(2);//after L2 jec
 	Eta[iJet] = pfjet.eta();
 	Phi[iJet] = pfjet.phi();
 	Theta[iJet] = pfjet.theta();
@@ -693,6 +702,7 @@ void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet,
 	Y[iJet]  = pfjet.rapidity();
 	Mass[iJet] = pfjet.mass();
 	Area[iJet] = pfjet.jetArea();
+	std::cout<<"pat::jet area= "<<Area[iJet]<<endl;
 
 
 
