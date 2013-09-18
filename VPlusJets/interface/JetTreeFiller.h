@@ -161,6 +161,8 @@ namespace ewk {
     float Et[NUM_JET_MAX];
     float Pt[NUM_JET_MAX];
     float Pt_uncorr[NUM_JET_MAX];
+    float Pt_afterL1[NUM_JET_MAX];
+    float Pt_afterL2[NUM_JET_MAX];
     float Eta[NUM_JET_MAX];
     float Phi[NUM_JET_MAX];
     float Theta[NUM_JET_MAX];
