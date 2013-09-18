@@ -440,14 +440,14 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	fjActiveArea.set_fj2_placement(true);
 	fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area_explicit_ghosts, fjActiveArea );
 
-	fastjet::Selector selected_rapidity = fastjet::SelectorAbsEtaMax(2.4);
+	fastjet::Selector selected_eta = fastjet::SelectorAbsEtaMax(2.4);
 
 	fastjet::ClusterSequenceArea thisClustering(FJparticles, jetDef, fjAreaDefinition);
-	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt( selected_rapidity(thisClustering.inclusive_jets(15.0)) );
+	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt( selected_eta(thisClustering.inclusive_jets(15.0)) );
 	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets = sorted_by_pt(thisClustering.inclusive_jets(20.0));
 	
 	fastjet::ClusterSequence thisClustering_basic(FJparticles, jetDef);
-	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_rapidity(thisClustering_basic.inclusive_jets(15.0)) );
+	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_eta(thisClustering_basic.inclusive_jets(15.0)) );
 	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets_basic = sorted_by_pt(thisClustering_basic.inclusive_jets(20.0));    
 
 	// ------ get rho --------    
@@ -464,7 +464,8 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	double mean_area = 0;
 
 	//ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition ) );
-	ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) ) );
+	ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, 
+					fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) ) );
 	fastjet::ClusterSequenceAreaBase const* clusterSequenceWithArea = dynamic_cast<fastjet::ClusterSequenceAreaBase const *> ( &*fjClusterSeq_ );
 
 	double rhoEtaMax=4.4;
@@ -474,14 +475,17 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	if((*rho_on_the_fly < 0)|| (std::isnan(*rho_on_the_fly))) { //edm::LogError("BadRho") << "rho_on_the_fly value is " << *rho_on_the_fly << " area:" << mean_area << " and n_empty_jets: " << clusterSequenceWithArea->n_empty_jets(*fjRangeDef_) << " with range " << fjRangeDef_->description() <<". Setting rho_on_the_fly to rezo.";
 		*rho_on_the_fly = 0;
 	}
-	//std::cout << "(kt6PF rho by hand) = " << *rho_on_the_fly << " area:" << mean_area << " and sigma: " << *sigma_on_the_fly <<endl;
-	std::cout << "(kt6PF rho by hand) = " << *rho_on_the_fly  << " , " << *sigma_on_the_fly <<endl;
+	//cout<<"first track area hand : "<<clusterSequenceWithArea->area(FJparticles[0]);
+
+	std::cout << "(kt6PF rho by hand) = " << *rho_on_the_fly << ", mean area = " << mean_area << ", and sigma: " << *sigma_on_the_fly <<endl;
 	rhoVal_hand = *rho_on_the_fly;
 
 
 	//fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition );
-	fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) );
+	fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), 
+				fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) );
 	bge_medi.set_particles(FJparticles);
+	//cout<<"first track area hand2: "<<FJparticles[0].area();
 	std::cout<<"medi rho = "<<bge_medi.rho()<<" , "<<bge_medi.sigma()<<endl;
 	rhoVal_hand2 = bge_medi.rho();
 	fastjet::Subtractor subtractor_medi(&bge_medi);
@@ -522,7 +526,8 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	// -----------------------------------------------
 	//std::cout<<mJetAlgo<<"\t"<<mJetRadius<<" out_jets size="<<out_jets.size()<<std::endl;
 
-	for (unsigned j = 0; j < out_jets.size()&&int(j)<NUM_JET_MAX; j++) {
+	number_jet_central = out_jets.size();
+	for (int j = 0; j < number_jet_central && j<NUM_JET_MAX; j++) {
 
 		if (mSaveConstituents && j==0){
 			if (out_jets_basic.at(j).constituents().size() >= 100) nconstituents0 = 100;
@@ -535,7 +540,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 			}
 		}
 
-		if( !(j< (unsigned int) NUM_JET_MAX) ) break;            
+		if( !(j< NUM_JET_MAX) ) break;            
 		jetmass_uncorr[j] = out_jets.at(j).m();
 		jetpt_uncorr[j] = out_jets.at(j).pt();
 		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j),0);
@@ -545,14 +550,12 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		jetphi[j] = jet_corr.Phi();
 		jete[j]   = jet_corr.Energy();
 		jetarea[j] = out_jets.at(j).area();
-		//std::cout<<"jetarea="<<out_jets.at(j).area()<<std::endl; 
+		std::cout<<"jetarea="<<out_jets.at(j).area()<<std::endl; 
 		jetconstituents[j] = out_jets_basic.at(j).constituents().size();
-		/*if(mJetAlgo=="AK"&& mJetRadius ==0.5){
+		if(mJetAlgo=="AK"&& mJetRadius ==0.5){
 			print_p4(out_jets.at(j),"  jet before    corr");
 			print_p4(jet_corr,      "--jet after All corr");
-		}*/
-		if(jet_corr.Eta()<2.4 && jet_corr.Eta()>-2.4 && jet_corr.Pt()>20.)number_jet_central++;
-		//std::cout<<"number_jet_central="<<number_jet_central<<std::endl;
+		}
 
 
 		//fast::subtractor is used for rho*area_4vector
