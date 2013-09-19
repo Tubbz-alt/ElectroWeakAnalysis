@@ -11,6 +11,8 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include "iostream"
+using namespace std;
 
 // Header file for the classes stored in the TTree if any.
 
@@ -27,6 +29,8 @@ public :
    Float_t         JetPFCor_Et[8];
    Float_t         JetPFCor_Pt[8];
    Float_t         JetPFCor_Pt_uncorr[8];
+   Float_t         JetPFCor_Pt_afterL1[8];
+   Float_t         JetPFCor_Pt_afterL2[8];
    Float_t         JetPFCor_Eta[8];
    Float_t         JetPFCor_Phi[8];
    Float_t         JetPFCor_Theta[8];
@@ -158,7 +162,7 @@ public :
    Int_t           GroomedJet_AK5_PF_nconstituents0pr;
    Double_t        GroomedJet_AK5_PF_rhoSW;
    Double_t        GroomedJet_AK5_PF_rhohand;
-   Double_t        GroomedJet_AK5_PF_rhohand1;
+   Double_t        GroomedJet_AK5_PF_rhohand2;
    Double_t        GroomedJet_AK5_PF_rhogrid;
    Float_t         GroomedJet_AK5_PFCHS_pt_uncorr[6];
    Int_t           GroomedJet_AK5_PFCHS_number_jet_central;
@@ -229,7 +233,7 @@ public :
    Int_t           GroomedJet_AK5_PFCHS_nconstituents0pr;
    Double_t        GroomedJet_AK5_PFCHS_rhoSW;
    Double_t        GroomedJet_AK5_PFCHS_rhohand;
-   Double_t        GroomedJet_AK5_PFCHS_rhohand1;
+   Double_t        GroomedJet_AK5_PFCHS_rhohand2;
    Double_t        GroomedJet_AK5_PFCHS_rhogrid;
    Float_t         GenGroomedJet_AK5_GEN_pt_uncorr[6];
    Int_t           GenGroomedJet_AK5_GEN_number_jet_central;
@@ -300,7 +304,7 @@ public :
    Int_t           GenGroomedJet_AK5_GEN_nconstituents0pr;
    Double_t        GenGroomedJet_AK5_GEN_rhoSW;
    Double_t        GenGroomedJet_AK5_GEN_rhohand;
-   Double_t        GenGroomedJet_AK5_GEN_rhohand1;
+   Double_t        GenGroomedJet_AK5_GEN_rhohand2;
    Double_t        GenGroomedJet_AK5_GEN_rhogrid;
    Float_t         Z_mass;
    Float_t         Z_mt;
@@ -431,6 +435,8 @@ public :
    TBranch        *b_JetPFCor_Et;   //!
    TBranch        *b_JetPFCor_Pt;   //!
    TBranch        *b_JetPFCor_Pt_uncorr;   //!
+   TBranch        *b_JetPFCor_Pt_afterL1;   //!
+   TBranch        *b_JetPFCor_Pt_afterL2;   //!
    TBranch        *b_JetPFCor_Eta;   //!
    TBranch        *b_JetPFCor_Phi;   //!
    TBranch        *b_JetPFCor_Theta;   //!
@@ -562,7 +568,7 @@ public :
    TBranch        *b_GroomedJet_AK5_PF_nconstituents0pr;   //!
    TBranch        *b_GroomedJet_AK5_PF_rhoSW;   //!
    TBranch        *b_GroomedJet_AK5_PF_rhohand;   //!
-   TBranch        *b_GroomedJet_AK5_PF_rhohand1;   //!
+   TBranch        *b_GroomedJet_AK5_PF_rhohand2;   //!
    TBranch        *b_GroomedJet_AK5_PF_rhogrid;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_pt_uncorr;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_number_jet_central;   //!
@@ -633,7 +639,7 @@ public :
    TBranch        *b_GroomedJet_AK5_PFCHS_nconstituents0pr;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_rhoSW;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_rhohand;   //!
-   TBranch        *b_GroomedJet_AK5_PFCHS_rhohand1;   //!
+   TBranch        *b_GroomedJet_AK5_PFCHS_rhohand2;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_rhogrid;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_pt_uncorr;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_number_jet_central;   //!
@@ -704,7 +710,7 @@ public :
    TBranch        *b_GenGroomedJet_AK5_GEN_nconstituents0pr;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_rhoSW;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_rhohand;   //!
-   TBranch        *b_GenGroomedJet_AK5_GEN_rhohand1;   //!
+   TBranch        *b_GenGroomedJet_AK5_GEN_rhohand2;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_rhogrid;   //!
    TBranch        *b_Z_mass;   //!
    TBranch        *b_Z_mt;   //!
@@ -904,6 +910,8 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("JetPFCor_Et", JetPFCor_Et, &b_JetPFCor_Et);
    fChain->SetBranchAddress("JetPFCor_Pt", JetPFCor_Pt, &b_JetPFCor_Pt);
    fChain->SetBranchAddress("JetPFCor_Pt_uncorr", JetPFCor_Pt_uncorr, &b_JetPFCor_Pt_uncorr);
+   fChain->SetBranchAddress("JetPFCor_Pt_afterL1", JetPFCor_Pt_afterL1, &b_JetPFCor_Pt_afterL1);
+   fChain->SetBranchAddress("JetPFCor_Pt_afterL2", JetPFCor_Pt_afterL2, &b_JetPFCor_Pt_afterL2);
    fChain->SetBranchAddress("JetPFCor_Eta", JetPFCor_Eta, &b_JetPFCor_Eta);
    fChain->SetBranchAddress("JetPFCor_Phi", JetPFCor_Phi, &b_JetPFCor_Phi);
    fChain->SetBranchAddress("JetPFCor_Theta", JetPFCor_Theta, &b_JetPFCor_Theta);
@@ -1035,7 +1043,7 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GroomedJet_AK5_PF_nconstituents0pr", &GroomedJet_AK5_PF_nconstituents0pr, &b_GroomedJet_AK5_PF_nconstituents0pr);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_rhoSW", &GroomedJet_AK5_PF_rhoSW, &b_GroomedJet_AK5_PF_rhoSW);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_rhohand", &GroomedJet_AK5_PF_rhohand, &b_GroomedJet_AK5_PF_rhohand);
-   fChain->SetBranchAddress("GroomedJet_AK5_PF_rhohand1", &GroomedJet_AK5_PF_rhohand1, &b_GroomedJet_AK5_PF_rhohand1);
+   fChain->SetBranchAddress("GroomedJet_AK5_PF_rhohand2", &GroomedJet_AK5_PF_rhohand2, &b_GroomedJet_AK5_PF_rhohand2);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_rhogrid", &GroomedJet_AK5_PF_rhogrid, &b_GroomedJet_AK5_PF_rhogrid);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_pt_uncorr", GroomedJet_AK5_PFCHS_pt_uncorr, &b_GroomedJet_AK5_PFCHS_pt_uncorr);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_number_jet_central", &GroomedJet_AK5_PFCHS_number_jet_central, &b_GroomedJet_AK5_PFCHS_number_jet_central);
@@ -1106,7 +1114,7 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_nconstituents0pr", &GroomedJet_AK5_PFCHS_nconstituents0pr, &b_GroomedJet_AK5_PFCHS_nconstituents0pr);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhoSW", &GroomedJet_AK5_PFCHS_rhoSW, &b_GroomedJet_AK5_PFCHS_rhoSW);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhohand", &GroomedJet_AK5_PFCHS_rhohand, &b_GroomedJet_AK5_PFCHS_rhohand);
-   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhohand1", &GroomedJet_AK5_PFCHS_rhohand1, &b_GroomedJet_AK5_PFCHS_rhohand1);
+   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhohand2", &GroomedJet_AK5_PFCHS_rhohand2, &b_GroomedJet_AK5_PFCHS_rhohand2);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhogrid", &GroomedJet_AK5_PFCHS_rhogrid, &b_GroomedJet_AK5_PFCHS_rhogrid);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_pt_uncorr", GenGroomedJet_AK5_GEN_pt_uncorr, &b_GenGroomedJet_AK5_GEN_pt_uncorr);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_number_jet_central", &GenGroomedJet_AK5_GEN_number_jet_central, &b_GenGroomedJet_AK5_GEN_number_jet_central);
@@ -1177,7 +1185,7 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_nconstituents0pr", &GenGroomedJet_AK5_GEN_nconstituents0pr, &b_GenGroomedJet_AK5_GEN_nconstituents0pr);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhoSW", &GenGroomedJet_AK5_GEN_rhoSW, &b_GenGroomedJet_AK5_GEN_rhoSW);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhohand", &GenGroomedJet_AK5_GEN_rhohand, &b_GenGroomedJet_AK5_GEN_rhohand);
-   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhohand1", &GenGroomedJet_AK5_GEN_rhohand1, &b_GenGroomedJet_AK5_GEN_rhohand1);
+   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhohand2", &GenGroomedJet_AK5_GEN_rhohand2, &b_GenGroomedJet_AK5_GEN_rhohand2);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhogrid", &GenGroomedJet_AK5_GEN_rhogrid, &b_GenGroomedJet_AK5_GEN_rhogrid);
    fChain->SetBranchAddress("Z_mass", &Z_mass, &b_Z_mass);
    fChain->SetBranchAddress("Z_mt", &Z_mt, &b_Z_mt);
