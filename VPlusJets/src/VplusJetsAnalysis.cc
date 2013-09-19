@@ -335,11 +335,15 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
     }*/
 
 
+	std::cout<<"====================== GEN JET =========================="<<std::endl;
 	if(genAK5groomedJetFiller.get() )genAK5groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
-	if(AK5groomedJetFiller_PFCHS.get() )AK5groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	std::cout<<"====================== ak5 PF JET =========================="<<std::endl;
 	if(AK5groomedJetFiller_PF.get() )AK5groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS);
-	if(AK8groomedJetFiller.get() )AK8groomedJetFiller->fill(iEvent, fjinputs_pfs);
-	if(AK12groomedJetFiller.get())AK12groomedJetFiller->fill(iEvent, fjinputs_pfs);
+	std::cout<<"====================== ak5 PFCHS JET =========================="<<std::endl;
+	if(AK5groomedJetFiller_PFCHS.get() )AK5groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//if(AK8groomedJetFiller.get() )AK8groomedJetFiller->fill(iEvent, fjinputs_pfs);
+	//if(AK12groomedJetFiller.get())AK12groomedJetFiller->fill(iEvent, fjinputs_pfs);
+	std::cout<<"====================== PAT::JET =========================="<<std::endl;
 	if(CorrectedPFJetFiller.get())CorrectedPFJetFiller->fill(iEvent);
     
    
