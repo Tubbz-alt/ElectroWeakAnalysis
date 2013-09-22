@@ -55,6 +55,11 @@
 #include "JetSubstructure/SubstructureTools/interface/PseudoJetUserInfo.h"
 #include "JetSubstructure/SubstructureTools/interface/JetSubstructureTools.h"
 
+#include "ElectroWeakAnalysis/VPlusJets/interface/GenericSubtractor.hh"
+#include "ElectroWeakAnalysis/VPlusJets/interface/ExampleShapes.hh"
+
+#include "iostream"
+using namespace std;
 
 //
 // class decleration
@@ -101,6 +106,7 @@ namespace ewk
 			void SetBranchSingle( int* x, std::string name);
 			double getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
 			TLorentzVector getCorrectedJet(fastjet::PseudoJet& jet, bool debug=0);
+			fastjet::PseudoJet getScaledJet(fastjet::PseudoJet& jet, double scale);
 			void computeCore( std::vector<fastjet::PseudoJet> constits, double Rval, float &m_core, float &pt_core );
 			void computePlanarflow(std::vector<fastjet::PseudoJet> constits,double Rval,fastjet::PseudoJet jet,std::string mJetAlgo,float &planarflow);
 			float computeJetCharge( std::vector<fastjet::PseudoJet> constits, std::vector<float> pdgIds, float Ejet );        
@@ -188,6 +194,12 @@ namespace ewk
 
 
 			float jetmass[NUM_JET_MAX];
+			float jetmass_rhoArea[NUM_JET_MAX];
+			float jetmass_rhoGArea[NUM_JET_MAX];
+			float jetmass_rho4Area[NUM_JET_MAX];
+			float jetmass_rhoG4Area[NUM_JET_MAX];
+			float jetmass_rhom4Area[NUM_JET_MAX];
+			float jetmass_cleansing[NUM_JET_MAX];
 			float jetmass_tr[NUM_JET_MAX];
 			float jetmass_ft[NUM_JET_MAX];
 			float jetmass_pr[NUM_JET_MAX];
