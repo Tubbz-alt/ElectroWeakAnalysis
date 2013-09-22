@@ -55,6 +55,10 @@
 #include "TVector3.h"
 #include "TMath.h"
 
+#include "ElectroWeakAnalysis/VPlusJets/interface/ExampleShapes.hh"
+#include "ElectroWeakAnalysis/VPlusJets/interface/GenericSubtractor.hh"
+
+
 ewk::GroomedJetFiller::GroomedJetFiller(const char *name, 
 			TTree* tree, 
 			const std::string jetAlgorithmLabel,
@@ -130,6 +134,12 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	SetBranch( prsubjet2_e, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_prsubjet2_e");
 
 	SetBranch( jetmass, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass");
+	SetBranch( jetmass_rhoArea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoArea");
+	SetBranch( jetmass_rhoGArea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoGArea");
+	SetBranch( jetmass_rho4Area, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rho4Area");
+	SetBranch( jetmass_rhoG4Area, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoG4Area");
+	SetBranch( jetmass_rhom4Area, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhom4Area");
+	SetBranch( jetmass_cleansing, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_cleansing");
 	SetBranch( jetmass_tr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_tr");
 	SetBranch( jetmass_ft, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_ft");
 	SetBranch( jetmass_pr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_pr");
@@ -343,6 +353,12 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		jetphi[j] = -10.;
 		jete[j] = -1.;
 		jetmass[j] = -1.;
+		jetmass_rhoArea[j] = -1.;
+		jetmass_rhoGArea[j] = -1.;
+		jetmass_rho4Area[j] = -1.;
+		jetmass_rhoG4Area[j] = -1.;
+		jetmass_rhom4Area[j] = -1.;
+		jetmass_cleansing[j] = -1.;
 
 		jetpt_L1_rhoSW[j] = -1.;
 		jetpt_L1_rhoHand[j] = -1.;
@@ -569,6 +585,54 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		jetpt_L1_rhoHand2[j]= out_jets.at(j).pt() - bge_medi.rho()*out_jets.at(j).area();
 		jetpt_L1_rhoGrid[j] = out_jets.at(j).pt() - bge_grid.rho()*out_jets.at(j).area();
 		//std::cout<<"L1 p1={ "<<jetpt_L1_rhoSW[j]<<","<<jetpt_L1_rhoHand[j]<<","<<jetpt_L1_rhoHand2[j]<<","<<jetpt_L1_rhoGrid[j]<<std::endl;
+		
+		//========== jet shape correction
+
+		//1) jec factorization 
+		double factor_jec_rhoHand=jetpt_L1_rhoHand[j]/out_jets.at(j).pt();
+		fastjet::PseudoJet jet_scale_rhoHand = getScaledJet(out_jets.at(j),factor_jec_rhoHand);
+		jetmass_rhoArea[j]= jet_scale_rhoHand.m();
+
+		double factor_jec_rhoGrid=jetpt_L1_rhoGrid[j]/out_jets.at(j).pt();
+		fastjet::PseudoJet jet_scale_rhoGrid = getScaledJet(out_jets.at(j),factor_jec_rhoGrid);
+		jetmass_rhoGArea[j]= jet_scale_rhoGrid.m();
+
+		//2) rho*4_area
+		jetmass_rho4Area[j]= jet_corr_medi.m();
+		jetmass_rhoG4Area[j]= jet_corr_grid.m();
+
+		//3) rhom*4_area, arXiv 1211.2811
+		//Angularity shape(1.0); // angularity with alpha=1.0
+		Mass jetshape_mass; 
+		GenericSubtractor gen_sub(&bge_medi);
+		GenericSubtractorInfo info;
+
+		std::cout << gen_sub.description() << std::endl;
+		std::cout << setprecision(4);
+
+		// uncomment this if you also want rho_m to be estimated (using the
+		// same background estimator)
+		//gen_sub.use_common_bge_for_rho_and_rhom(true);
+
+		// compute the subtracted shape, and retrieve additional information
+		double subtracted_jetshape_mass = gen_sub(jetshape_mass, out_jets.at(j), info);
+		cout<< "uncorr angularity = " << jetshape_mass(out_jets.at(j)) << endl;
+		cout<< "jetshape_mass corr  = " << subtracted_jetshape_mass << endl;
+		cout << "  rho  = " << info.rho() << endl;
+		cout << "  rhom = " << info.rhom() << endl;
+		cout << "  1st derivative: " << info.first_derivative() << endl;
+		cout << "  2nd derivative: " << info.second_derivative() << endl;
+		cout << "  unsubtracted: " << info.unsubtracted() << endl;
+		cout << "  1st order: " << info.first_order_subtracted() << endl;
+		cout << "# step used: " << info.ghost_scale_used() << endl;
+
+		jetmass_rhom4Area[j]=subtracted_jetshape_mass;
+		//4) jet cleansing
+
+		jetmass_cleansing[j]=-1;
+
+
+
 
 
 		// pruning, trimming, filtering  -------------
@@ -792,6 +856,11 @@ TLorentzVector ewk::GroomedJetFiller::getCorrectedJet(fastjet::PseudoJet& jet, b
 				jet.pz() * jecVal, 
 				jet.e() * jecVal);
 	return jet_corr;
+}
+
+fastjet::PseudoJet ewk::GroomedJetFiller::getScaledJet(fastjet::PseudoJet& jet, double scale) {
+	fastjet::PseudoJet jet_scale(jet.px() * scale, jet.py() * scale, jet.pz() * scale, jet.e()  * scale);
+	return jet_scale;
 }
 
 void ewk::GroomedJetFiller::computeCore( std::vector<fastjet::PseudoJet> constits, double Rval, float &m_core, float &pt_core ){
