@@ -49,11 +49,12 @@ ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) :
 	genAK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("genGroomedJetFiller", myTree, "AK5", "_GEN", iConfig, 1) : 0), //Gen
 	AK5groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PF", iConfig) : 0), 
 	AK5groomedJetFiller_PFCHS ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PFCHS", iConfig) : 0), 
-	AK8groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_passCHS", iConfig) : 0),
-	AK12groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_passCHS", iConfig) : 0), 
+	AK8groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PF", iConfig) : 0),
+	AK12groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_PF", iConfig) : 0), 
 	//PhotonFiller (  iConfig.existsAs<edm::InputTag>("srcPhoton") ?  new PhotonTreeFiller("PhotonFiller", myTree,  iConfig) : 0),
 	recoBosonFillerE( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
-	recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ), genBosonFiller( (iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC")) ?  new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) : 0) {
+	recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ), genBosonFiller( (iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC")) ?  new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) : 0) 
+{
 	// Are we running over Monte Carlo ?
 	if( iConfig.existsAs<bool>("runningOverMC") ) runningOverMC_=iConfig.getParameter< bool >("runningOverMC");
 	else runningOverMC_= false;
@@ -278,7 +279,8 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	// fjinputs_pfs_PileUp: PF charged, PileUp  
 	// fjinputs_pfs_charge: PF charged, NoPileUp
 	// fjinputs_pfs_neutral:PF neutral
-	// fjinputs_pfs: PF neutral + charge
+	// fjinputs_pfs: PF neutral + charge, after CHS
+	// fjinputs_pfs_noLep_noCHS: PF neutral + charge, no CHS
 
 
 
@@ -338,10 +340,14 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	std::cout<<"====================== GEN JET =========================="<<std::endl;
 	if(genAK5groomedJetFiller.get() )genAK5groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
 	std::cout<<"====================== ak5 PF JET =========================="<<std::endl;
-	if(AK5groomedJetFiller_PF.get() )AK5groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS);
+	bool doJetCleansing=1;
+	//if(AK5groomedJetFiller_PF.get() )AK5groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS,doJetCleansing,);
+	if(AK5groomedJetFiller_PF.get() )AK5groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);//full event, bool, hard charge, pile up charge, full neutral
 	std::cout<<"====================== ak5 PFCHS JET =========================="<<std::endl;
 	if(AK5groomedJetFiller_PFCHS.get() )AK5groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
-	//if(AK8groomedJetFiller.get() )AK8groomedJetFiller->fill(iEvent, fjinputs_pfs);
+	std::cout<<"====================== ak8 PF JET =========================="<<std::endl;
+	if(AK8groomedJetFiller_PF.get() )AK8groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);//full event, bool, hard charge, pile up charge, full neutral
+	//std::cout<<"====================== ak12 PF JET =========================="<<std::endl;
 	//if(AK12groomedJetFiller.get())AK12groomedJetFiller->fill(iEvent, fjinputs_pfs);
 	std::cout<<"====================== PAT::JET =========================="<<std::endl;
 	if(CorrectedPFJetFiller.get())CorrectedPFJetFiller->fill(iEvent);
