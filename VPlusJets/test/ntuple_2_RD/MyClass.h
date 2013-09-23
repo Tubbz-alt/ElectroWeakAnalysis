@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Sun Sep 22 22:34:08 2013 by ROOT version 5.32/00
+// Mon Sep 23 12:57:52 2013 by ROOT version 5.32/00
 // from TTree ZJet/V+jets Tree
 // found on file: zmumujetsanalysisntuple.root
 //////////////////////////////////////////////////////////
@@ -11,9 +11,6 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
-#include "iostream"
-using namespace std;
-
 
 // Header file for the classes stored in the TTree if any.
 
@@ -258,6 +255,88 @@ public :
    Double_t        GroomedJet_AK5_PFCHS_rhohand;
    Double_t        GroomedJet_AK5_PFCHS_rhohand2;
    Double_t        GroomedJet_AK5_PFCHS_rhogrid;
+   Float_t         GroomedJet_AK8_PF_pt_uncorr[6];
+   Int_t           GroomedJet_AK8_PF_number_jet_central;
+   Float_t         GroomedJet_AK8_PF_mass_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_mass_tr_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_mass_ft_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_mass_pr_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_tau2tau1[6];
+   Float_t         GroomedJet_AK8_PF_tau1[6];
+   Float_t         GroomedJet_AK8_PF_tau2[6];
+   Float_t         GroomedJet_AK8_PF_tau3[6];
+   Float_t         GroomedJet_AK8_PF_tau4[6];
+   Float_t         GroomedJet_AK8_PF_massdrop_pr_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_pt[6];
+   Float_t         GroomedJet_AK8_PF_eta[6];
+   Float_t         GroomedJet_AK8_PF_phi[6];
+   Float_t         GroomedJet_AK8_PF_e[6];
+   Float_t         GroomedJet_AK8_PF_pt_L1_rhoSW[6];
+   Float_t         GroomedJet_AK8_PF_pt_L1_rhoHand[6];
+   Float_t         GroomedJet_AK8_PF_pt_L1_rhoHand2[6];
+   Float_t         GroomedJet_AK8_PF_pt_L1_rhoGrid[6];
+   Float_t         GroomedJet_AK8_PF_pt_tr_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_pt_tr[6];
+   Float_t         GroomedJet_AK8_PF_eta_tr[6];
+   Float_t         GroomedJet_AK8_PF_phi_tr[6];
+   Float_t         GroomedJet_AK8_PF_e_tr[6];
+   Float_t         GroomedJet_AK8_PF_pt_ft_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_pt_ft[6];
+   Float_t         GroomedJet_AK8_PF_eta_ft[6];
+   Float_t         GroomedJet_AK8_PF_phi_ft[6];
+   Float_t         GroomedJet_AK8_PF_e_ft[6];
+   Float_t         GroomedJet_AK8_PF_pt_pr_uncorr[6];
+   Float_t         GroomedJet_AK8_PF_pt_pr[6];
+   Float_t         GroomedJet_AK8_PF_eta_pr[6];
+   Float_t         GroomedJet_AK8_PF_phi_pr[6];
+   Float_t         GroomedJet_AK8_PF_e_pr[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet1_px[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet1_py[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet1_pz[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet1_e[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet2_px[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet2_py[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet2_pz[6];
+   Float_t         GroomedJet_AK8_PF_prsubjet2_e[6];
+   Float_t         GroomedJet_AK8_PF_mass[6];
+   Float_t         GroomedJet_AK8_PF_mass_rhoArea[6];
+   Float_t         GroomedJet_AK8_PF_mass_rhoGArea[6];
+   Float_t         GroomedJet_AK8_PF_mass_rho4Area[6];
+   Float_t         GroomedJet_AK8_PF_mass_rhoG4Area[6];
+   Float_t         GroomedJet_AK8_PF_mass_rhom4Area[6];
+   Float_t         GroomedJet_AK8_PF_mass_cleansingATLASjvf[6];
+   Float_t         GroomedJet_AK8_PF_mass_cleansingATLASlin[6];
+   Float_t         GroomedJet_AK8_PF_mass_cleansingATLASgau[6];
+   Float_t         GroomedJet_AK8_PF_mass_cleansingCMSjvf[6];
+   Float_t         GroomedJet_AK8_PF_mass_cleansingCMSlin[6];
+   Float_t         GroomedJet_AK8_PF_mass_cleansingCMSgau[6];
+   Float_t         GroomedJet_AK8_PF_mass_tr[6];
+   Float_t         GroomedJet_AK8_PF_mass_ft[6];
+   Float_t         GroomedJet_AK8_PF_mass_pr[6];
+   Float_t         GroomedJet_AK8_PF_massdrop_pr[6];
+   Float_t         GroomedJet_AK8_PF_area[6];
+   Float_t         GroomedJet_AK8_PF_area_tr[6];
+   Float_t         GroomedJet_AK8_PF_area_ft[6];
+   Float_t         GroomedJet_AK8_PF_area_pr[6];
+   Float_t         GroomedJet_AK8_PF_jetconstituents[6];
+   Float_t         GroomedJet_AK8_PF_jetcharge[6];
+   Float_t         GroomedJet_AK8_PF_rcores[11][6];
+   Float_t         GroomedJet_AK8_PF_ptcores[11][6];
+   Float_t         GroomedJet_AK8_PF_planarflow[11][6];
+   Float_t         GroomedJet_AK8_PF_qjetmass[50];
+   Float_t         GroomedJet_AK8_PF_qjetmassdrop[50];
+   Float_t         GroomedJet_AK8_PF_constituents0_eta[100];
+   Float_t         GroomedJet_AK8_PF_constituents0_phi[100];
+   Float_t         GroomedJet_AK8_PF_constituents0_e[100];
+   Int_t           GroomedJet_AK8_PF_nconstituents0;
+   Float_t         GroomedJet_AK8_PF_constituents0pr_eta[100];
+   Float_t         GroomedJet_AK8_PF_constituents0pr_phi[100];
+   Float_t         GroomedJet_AK8_PF_constituents0pr_e[100];
+   Int_t           GroomedJet_AK8_PF_nconstituents0pr;
+   Double_t        GroomedJet_AK8_PF_rhoSW;
+   Double_t        GroomedJet_AK8_PF_rhohand;
+   Double_t        GroomedJet_AK8_PF_rhohand2;
+   Double_t        GroomedJet_AK8_PF_rhogrid;
    Float_t         GenGroomedJet_AK5_GEN_pt_uncorr[6];
    Int_t           GenGroomedJet_AK5_GEN_number_jet_central;
    Float_t         GenGroomedJet_AK5_GEN_mass_uncorr[6];
@@ -340,6 +419,88 @@ public :
    Double_t        GenGroomedJet_AK5_GEN_rhohand;
    Double_t        GenGroomedJet_AK5_GEN_rhohand2;
    Double_t        GenGroomedJet_AK5_GEN_rhogrid;
+   Float_t         GenGroomedJet_AK8_GEN_pt_uncorr[6];
+   Int_t           GenGroomedJet_AK8_GEN_number_jet_central;
+   Float_t         GenGroomedJet_AK8_GEN_mass_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_tr_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_ft_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_pr_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_tau2tau1[6];
+   Float_t         GenGroomedJet_AK8_GEN_tau1[6];
+   Float_t         GenGroomedJet_AK8_GEN_tau2[6];
+   Float_t         GenGroomedJet_AK8_GEN_tau3[6];
+   Float_t         GenGroomedJet_AK8_GEN_tau4[6];
+   Float_t         GenGroomedJet_AK8_GEN_massdrop_pr_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt[6];
+   Float_t         GenGroomedJet_AK8_GEN_eta[6];
+   Float_t         GenGroomedJet_AK8_GEN_phi[6];
+   Float_t         GenGroomedJet_AK8_GEN_e[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_L1_rhoSW[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_L1_rhoHand[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_L1_rhoHand2[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_L1_rhoGrid[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_tr_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_tr[6];
+   Float_t         GenGroomedJet_AK8_GEN_eta_tr[6];
+   Float_t         GenGroomedJet_AK8_GEN_phi_tr[6];
+   Float_t         GenGroomedJet_AK8_GEN_e_tr[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_ft_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_ft[6];
+   Float_t         GenGroomedJet_AK8_GEN_eta_ft[6];
+   Float_t         GenGroomedJet_AK8_GEN_phi_ft[6];
+   Float_t         GenGroomedJet_AK8_GEN_e_ft[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_pr_uncorr[6];
+   Float_t         GenGroomedJet_AK8_GEN_pt_pr[6];
+   Float_t         GenGroomedJet_AK8_GEN_eta_pr[6];
+   Float_t         GenGroomedJet_AK8_GEN_phi_pr[6];
+   Float_t         GenGroomedJet_AK8_GEN_e_pr[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet1_px[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet1_py[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet1_pz[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet1_e[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet2_px[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet2_py[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet2_pz[6];
+   Float_t         GenGroomedJet_AK8_GEN_prsubjet2_e[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_rhoArea[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_rhoGArea[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_rho4Area[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_rhoG4Area[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_rhom4Area[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_cleansingATLASjvf[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_cleansingATLASlin[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_cleansingATLASgau[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_cleansingCMSjvf[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_cleansingCMSlin[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_cleansingCMSgau[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_tr[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_ft[6];
+   Float_t         GenGroomedJet_AK8_GEN_mass_pr[6];
+   Float_t         GenGroomedJet_AK8_GEN_massdrop_pr[6];
+   Float_t         GenGroomedJet_AK8_GEN_area[6];
+   Float_t         GenGroomedJet_AK8_GEN_area_tr[6];
+   Float_t         GenGroomedJet_AK8_GEN_area_ft[6];
+   Float_t         GenGroomedJet_AK8_GEN_area_pr[6];
+   Float_t         GenGroomedJet_AK8_GEN_jetconstituents[6];
+   Float_t         GenGroomedJet_AK8_GEN_jetcharge[6];
+   Float_t         GenGroomedJet_AK8_GEN_rcores[11][6];
+   Float_t         GenGroomedJet_AK8_GEN_ptcores[11][6];
+   Float_t         GenGroomedJet_AK8_GEN_planarflow[11][6];
+   Float_t         GenGroomedJet_AK8_GEN_qjetmass[50];
+   Float_t         GenGroomedJet_AK8_GEN_qjetmassdrop[50];
+   Float_t         GenGroomedJet_AK8_GEN_constituents0_eta[100];
+   Float_t         GenGroomedJet_AK8_GEN_constituents0_phi[100];
+   Float_t         GenGroomedJet_AK8_GEN_constituents0_e[100];
+   Int_t           GenGroomedJet_AK8_GEN_nconstituents0;
+   Float_t         GenGroomedJet_AK8_GEN_constituents0pr_eta[100];
+   Float_t         GenGroomedJet_AK8_GEN_constituents0pr_phi[100];
+   Float_t         GenGroomedJet_AK8_GEN_constituents0pr_e[100];
+   Int_t           GenGroomedJet_AK8_GEN_nconstituents0pr;
+   Double_t        GenGroomedJet_AK8_GEN_rhoSW;
+   Double_t        GenGroomedJet_AK8_GEN_rhohand;
+   Double_t        GenGroomedJet_AK8_GEN_rhohand2;
+   Double_t        GenGroomedJet_AK8_GEN_rhogrid;
    Float_t         Z_mass;
    Float_t         Z_mt;
    Float_t         Z_mtMVA;
@@ -697,6 +858,88 @@ public :
    TBranch        *b_GroomedJet_AK5_PFCHS_rhohand;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_rhohand2;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_rhogrid;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_number_jet_central;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_tr_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_ft_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_pr_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_tau2tau1;   //!
+   TBranch        *b_GroomedJet_AK8_PF_tau1;   //!
+   TBranch        *b_GroomedJet_AK8_PF_tau2;   //!
+   TBranch        *b_GroomedJet_AK8_PF_tau3;   //!
+   TBranch        *b_GroomedJet_AK8_PF_tau4;   //!
+   TBranch        *b_GroomedJet_AK8_PF_massdrop_pr_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt;   //!
+   TBranch        *b_GroomedJet_AK8_PF_eta;   //!
+   TBranch        *b_GroomedJet_AK8_PF_phi;   //!
+   TBranch        *b_GroomedJet_AK8_PF_e;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_L1_rhoSW;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_L1_rhoHand;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_L1_rhoHand2;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_L1_rhoGrid;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_tr_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_tr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_eta_tr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_phi_tr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_e_tr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_ft_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_ft;   //!
+   TBranch        *b_GroomedJet_AK8_PF_eta_ft;   //!
+   TBranch        *b_GroomedJet_AK8_PF_phi_ft;   //!
+   TBranch        *b_GroomedJet_AK8_PF_e_ft;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_pr_uncorr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_pt_pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_eta_pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_phi_pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_e_pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet1_px;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet1_py;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet1_pz;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet1_e;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet2_px;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet2_py;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet2_pz;   //!
+   TBranch        *b_GroomedJet_AK8_PF_prsubjet2_e;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_rhoArea;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_rhoGArea;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_rho4Area;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_rhoG4Area;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_rhom4Area;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_cleansingATLASjvf;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_cleansingATLASlin;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_cleansingATLASgau;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_cleansingCMSjvf;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_cleansingCMSlin;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_cleansingCMSgau;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_tr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_ft;   //!
+   TBranch        *b_GroomedJet_AK8_PF_mass_pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_massdrop_pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_area;   //!
+   TBranch        *b_GroomedJet_AK8_PF_area_tr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_area_ft;   //!
+   TBranch        *b_GroomedJet_AK8_PF_area_pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_jetconstituents;   //!
+   TBranch        *b_GroomedJet_AK8_PF_jetcharge;   //!
+   TBranch        *b_GroomedJet_AK8_PF_rcores;   //!
+   TBranch        *b_GroomedJet_AK8_PF_ptcores;   //!
+   TBranch        *b_GroomedJet_AK8_PF_planarflow;   //!
+   TBranch        *b_GroomedJet_AK8_PF_qjetmass;   //!
+   TBranch        *b_GroomedJet_AK8_PF_qjetmassdrop;   //!
+   TBranch        *b_GroomedJet_AK8_PF_constituents0_eta;   //!
+   TBranch        *b_GroomedJet_AK8_PF_constituents0_phi;   //!
+   TBranch        *b_GroomedJet_AK8_PF_constituents0_e;   //!
+   TBranch        *b_GroomedJet_AK8_PF_nconstituents0;   //!
+   TBranch        *b_GroomedJet_AK8_PF_constituents0pr_eta;   //!
+   TBranch        *b_GroomedJet_AK8_PF_constituents0pr_phi;   //!
+   TBranch        *b_GroomedJet_AK8_PF_constituents0pr_e;   //!
+   TBranch        *b_GroomedJet_AK8_PF_nconstituents0pr;   //!
+   TBranch        *b_GroomedJet_AK8_PF_rhoSW;   //!
+   TBranch        *b_GroomedJet_AK8_PF_rhohand;   //!
+   TBranch        *b_GroomedJet_AK8_PF_rhohand2;   //!
+   TBranch        *b_GroomedJet_AK8_PF_rhogrid;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_pt_uncorr;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_number_jet_central;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_mass_uncorr;   //!
@@ -779,6 +1022,88 @@ public :
    TBranch        *b_GenGroomedJet_AK5_GEN_rhohand;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_rhohand2;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_rhogrid;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_number_jet_central;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_tr_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_ft_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_pr_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_tau2tau1;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_tau1;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_tau2;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_tau3;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_tau4;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_massdrop_pr_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_eta;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_phi;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_e;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_L1_rhoSW;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_L1_rhoHand;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_L1_rhoHand2;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_L1_rhoGrid;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_tr_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_tr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_eta_tr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_phi_tr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_e_tr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_ft_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_ft;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_eta_ft;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_phi_ft;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_e_ft;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_pr_uncorr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_pt_pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_eta_pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_phi_pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_e_pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet1_px;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet1_py;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet1_pz;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet1_e;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet2_px;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet2_py;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet2_pz;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_prsubjet2_e;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_rhoArea;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_rhoGArea;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_rho4Area;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_rhoG4Area;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_rhom4Area;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_cleansingATLASjvf;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_cleansingATLASlin;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_cleansingATLASgau;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_cleansingCMSjvf;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_cleansingCMSlin;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_cleansingCMSgau;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_tr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_ft;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_mass_pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_massdrop_pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_area;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_area_tr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_area_ft;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_area_pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_jetconstituents;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_jetcharge;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_rcores;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_ptcores;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_planarflow;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_qjetmass;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_qjetmassdrop;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_constituents0_eta;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_constituents0_phi;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_constituents0_e;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_nconstituents0;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_constituents0pr_eta;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_constituents0pr_phi;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_constituents0pr_e;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_nconstituents0pr;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_rhoSW;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_rhohand;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_rhohand2;   //!
+   TBranch        *b_GenGroomedJet_AK8_GEN_rhogrid;   //!
    TBranch        *b_Z_mass;   //!
    TBranch        *b_Z_mt;   //!
    TBranch        *b_Z_mtMVA;   //!
@@ -1205,6 +1530,88 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhohand", &GroomedJet_AK5_PFCHS_rhohand, &b_GroomedJet_AK5_PFCHS_rhohand);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhohand2", &GroomedJet_AK5_PFCHS_rhohand2, &b_GroomedJet_AK5_PFCHS_rhohand2);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_rhogrid", &GroomedJet_AK5_PFCHS_rhogrid, &b_GroomedJet_AK5_PFCHS_rhogrid);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_uncorr", GroomedJet_AK8_PF_pt_uncorr, &b_GroomedJet_AK8_PF_pt_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_number_jet_central", &GroomedJet_AK8_PF_number_jet_central, &b_GroomedJet_AK8_PF_number_jet_central);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_uncorr", GroomedJet_AK8_PF_mass_uncorr, &b_GroomedJet_AK8_PF_mass_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_tr_uncorr", GroomedJet_AK8_PF_mass_tr_uncorr, &b_GroomedJet_AK8_PF_mass_tr_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_ft_uncorr", GroomedJet_AK8_PF_mass_ft_uncorr, &b_GroomedJet_AK8_PF_mass_ft_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_pr_uncorr", GroomedJet_AK8_PF_mass_pr_uncorr, &b_GroomedJet_AK8_PF_mass_pr_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_tau2tau1", GroomedJet_AK8_PF_tau2tau1, &b_GroomedJet_AK8_PF_tau2tau1);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_tau1", GroomedJet_AK8_PF_tau1, &b_GroomedJet_AK8_PF_tau1);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_tau2", GroomedJet_AK8_PF_tau2, &b_GroomedJet_AK8_PF_tau2);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_tau3", GroomedJet_AK8_PF_tau3, &b_GroomedJet_AK8_PF_tau3);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_tau4", GroomedJet_AK8_PF_tau4, &b_GroomedJet_AK8_PF_tau4);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_massdrop_pr_uncorr", GroomedJet_AK8_PF_massdrop_pr_uncorr, &b_GroomedJet_AK8_PF_massdrop_pr_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt", GroomedJet_AK8_PF_pt, &b_GroomedJet_AK8_PF_pt);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_eta", GroomedJet_AK8_PF_eta, &b_GroomedJet_AK8_PF_eta);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_phi", GroomedJet_AK8_PF_phi, &b_GroomedJet_AK8_PF_phi);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_e", GroomedJet_AK8_PF_e, &b_GroomedJet_AK8_PF_e);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_L1_rhoSW", GroomedJet_AK8_PF_pt_L1_rhoSW, &b_GroomedJet_AK8_PF_pt_L1_rhoSW);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_L1_rhoHand", GroomedJet_AK8_PF_pt_L1_rhoHand, &b_GroomedJet_AK8_PF_pt_L1_rhoHand);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_L1_rhoHand2", GroomedJet_AK8_PF_pt_L1_rhoHand2, &b_GroomedJet_AK8_PF_pt_L1_rhoHand2);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_L1_rhoGrid", GroomedJet_AK8_PF_pt_L1_rhoGrid, &b_GroomedJet_AK8_PF_pt_L1_rhoGrid);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_tr_uncorr", GroomedJet_AK8_PF_pt_tr_uncorr, &b_GroomedJet_AK8_PF_pt_tr_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_tr", GroomedJet_AK8_PF_pt_tr, &b_GroomedJet_AK8_PF_pt_tr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_eta_tr", GroomedJet_AK8_PF_eta_tr, &b_GroomedJet_AK8_PF_eta_tr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_phi_tr", GroomedJet_AK8_PF_phi_tr, &b_GroomedJet_AK8_PF_phi_tr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_e_tr", GroomedJet_AK8_PF_e_tr, &b_GroomedJet_AK8_PF_e_tr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_ft_uncorr", GroomedJet_AK8_PF_pt_ft_uncorr, &b_GroomedJet_AK8_PF_pt_ft_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_ft", GroomedJet_AK8_PF_pt_ft, &b_GroomedJet_AK8_PF_pt_ft);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_eta_ft", GroomedJet_AK8_PF_eta_ft, &b_GroomedJet_AK8_PF_eta_ft);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_phi_ft", GroomedJet_AK8_PF_phi_ft, &b_GroomedJet_AK8_PF_phi_ft);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_e_ft", GroomedJet_AK8_PF_e_ft, &b_GroomedJet_AK8_PF_e_ft);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_pr_uncorr", GroomedJet_AK8_PF_pt_pr_uncorr, &b_GroomedJet_AK8_PF_pt_pr_uncorr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_pt_pr", GroomedJet_AK8_PF_pt_pr, &b_GroomedJet_AK8_PF_pt_pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_eta_pr", GroomedJet_AK8_PF_eta_pr, &b_GroomedJet_AK8_PF_eta_pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_phi_pr", GroomedJet_AK8_PF_phi_pr, &b_GroomedJet_AK8_PF_phi_pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_e_pr", GroomedJet_AK8_PF_e_pr, &b_GroomedJet_AK8_PF_e_pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet1_px", GroomedJet_AK8_PF_prsubjet1_px, &b_GroomedJet_AK8_PF_prsubjet1_px);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet1_py", GroomedJet_AK8_PF_prsubjet1_py, &b_GroomedJet_AK8_PF_prsubjet1_py);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet1_pz", GroomedJet_AK8_PF_prsubjet1_pz, &b_GroomedJet_AK8_PF_prsubjet1_pz);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet1_e", GroomedJet_AK8_PF_prsubjet1_e, &b_GroomedJet_AK8_PF_prsubjet1_e);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet2_px", GroomedJet_AK8_PF_prsubjet2_px, &b_GroomedJet_AK8_PF_prsubjet2_px);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet2_py", GroomedJet_AK8_PF_prsubjet2_py, &b_GroomedJet_AK8_PF_prsubjet2_py);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet2_pz", GroomedJet_AK8_PF_prsubjet2_pz, &b_GroomedJet_AK8_PF_prsubjet2_pz);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_prsubjet2_e", GroomedJet_AK8_PF_prsubjet2_e, &b_GroomedJet_AK8_PF_prsubjet2_e);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass", GroomedJet_AK8_PF_mass, &b_GroomedJet_AK8_PF_mass);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_rhoArea", GroomedJet_AK8_PF_mass_rhoArea, &b_GroomedJet_AK8_PF_mass_rhoArea);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_rhoGArea", GroomedJet_AK8_PF_mass_rhoGArea, &b_GroomedJet_AK8_PF_mass_rhoGArea);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_rho4Area", GroomedJet_AK8_PF_mass_rho4Area, &b_GroomedJet_AK8_PF_mass_rho4Area);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_rhoG4Area", GroomedJet_AK8_PF_mass_rhoG4Area, &b_GroomedJet_AK8_PF_mass_rhoG4Area);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_rhom4Area", GroomedJet_AK8_PF_mass_rhom4Area, &b_GroomedJet_AK8_PF_mass_rhom4Area);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_cleansingATLASjvf", GroomedJet_AK8_PF_mass_cleansingATLASjvf, &b_GroomedJet_AK8_PF_mass_cleansingATLASjvf);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_cleansingATLASlin", GroomedJet_AK8_PF_mass_cleansingATLASlin, &b_GroomedJet_AK8_PF_mass_cleansingATLASlin);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_cleansingATLASgau", GroomedJet_AK8_PF_mass_cleansingATLASgau, &b_GroomedJet_AK8_PF_mass_cleansingATLASgau);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_cleansingCMSjvf", GroomedJet_AK8_PF_mass_cleansingCMSjvf, &b_GroomedJet_AK8_PF_mass_cleansingCMSjvf);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_cleansingCMSlin", GroomedJet_AK8_PF_mass_cleansingCMSlin, &b_GroomedJet_AK8_PF_mass_cleansingCMSlin);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_cleansingCMSgau", GroomedJet_AK8_PF_mass_cleansingCMSgau, &b_GroomedJet_AK8_PF_mass_cleansingCMSgau);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_tr", GroomedJet_AK8_PF_mass_tr, &b_GroomedJet_AK8_PF_mass_tr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_ft", GroomedJet_AK8_PF_mass_ft, &b_GroomedJet_AK8_PF_mass_ft);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_mass_pr", GroomedJet_AK8_PF_mass_pr, &b_GroomedJet_AK8_PF_mass_pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_massdrop_pr", GroomedJet_AK8_PF_massdrop_pr, &b_GroomedJet_AK8_PF_massdrop_pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_area", GroomedJet_AK8_PF_area, &b_GroomedJet_AK8_PF_area);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_area_tr", GroomedJet_AK8_PF_area_tr, &b_GroomedJet_AK8_PF_area_tr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_area_ft", GroomedJet_AK8_PF_area_ft, &b_GroomedJet_AK8_PF_area_ft);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_area_pr", GroomedJet_AK8_PF_area_pr, &b_GroomedJet_AK8_PF_area_pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_jetconstituents", GroomedJet_AK8_PF_jetconstituents, &b_GroomedJet_AK8_PF_jetconstituents);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_jetcharge", GroomedJet_AK8_PF_jetcharge, &b_GroomedJet_AK8_PF_jetcharge);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_rcores", GroomedJet_AK8_PF_rcores, &b_GroomedJet_AK8_PF_rcores);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_ptcores", GroomedJet_AK8_PF_ptcores, &b_GroomedJet_AK8_PF_ptcores);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_planarflow", GroomedJet_AK8_PF_planarflow, &b_GroomedJet_AK8_PF_planarflow);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_qjetmass", GroomedJet_AK8_PF_qjetmass, &b_GroomedJet_AK8_PF_qjetmass);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_qjetmassdrop", GroomedJet_AK8_PF_qjetmassdrop, &b_GroomedJet_AK8_PF_qjetmassdrop);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_constituents0_eta", GroomedJet_AK8_PF_constituents0_eta, &b_GroomedJet_AK8_PF_constituents0_eta);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_constituents0_phi", GroomedJet_AK8_PF_constituents0_phi, &b_GroomedJet_AK8_PF_constituents0_phi);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_constituents0_e", GroomedJet_AK8_PF_constituents0_e, &b_GroomedJet_AK8_PF_constituents0_e);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_nconstituents0", &GroomedJet_AK8_PF_nconstituents0, &b_GroomedJet_AK8_PF_nconstituents0);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_constituents0pr_eta", GroomedJet_AK8_PF_constituents0pr_eta, &b_GroomedJet_AK8_PF_constituents0pr_eta);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_constituents0pr_phi", GroomedJet_AK8_PF_constituents0pr_phi, &b_GroomedJet_AK8_PF_constituents0pr_phi);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_constituents0pr_e", GroomedJet_AK8_PF_constituents0pr_e, &b_GroomedJet_AK8_PF_constituents0pr_e);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_nconstituents0pr", &GroomedJet_AK8_PF_nconstituents0pr, &b_GroomedJet_AK8_PF_nconstituents0pr);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_rhoSW", &GroomedJet_AK8_PF_rhoSW, &b_GroomedJet_AK8_PF_rhoSW);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_rhohand", &GroomedJet_AK8_PF_rhohand, &b_GroomedJet_AK8_PF_rhohand);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_rhohand2", &GroomedJet_AK8_PF_rhohand2, &b_GroomedJet_AK8_PF_rhohand2);
+   fChain->SetBranchAddress("GroomedJet_AK8_PF_rhogrid", &GroomedJet_AK8_PF_rhogrid, &b_GroomedJet_AK8_PF_rhogrid);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_pt_uncorr", GenGroomedJet_AK5_GEN_pt_uncorr, &b_GenGroomedJet_AK5_GEN_pt_uncorr);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_number_jet_central", &GenGroomedJet_AK5_GEN_number_jet_central, &b_GenGroomedJet_AK5_GEN_number_jet_central);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_uncorr", GenGroomedJet_AK5_GEN_mass_uncorr, &b_GenGroomedJet_AK5_GEN_mass_uncorr);
@@ -1287,6 +1694,88 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhohand", &GenGroomedJet_AK5_GEN_rhohand, &b_GenGroomedJet_AK5_GEN_rhohand);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhohand2", &GenGroomedJet_AK5_GEN_rhohand2, &b_GenGroomedJet_AK5_GEN_rhohand2);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_rhogrid", &GenGroomedJet_AK5_GEN_rhogrid, &b_GenGroomedJet_AK5_GEN_rhogrid);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_uncorr", GenGroomedJet_AK8_GEN_pt_uncorr, &b_GenGroomedJet_AK8_GEN_pt_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_number_jet_central", &GenGroomedJet_AK8_GEN_number_jet_central, &b_GenGroomedJet_AK8_GEN_number_jet_central);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_uncorr", GenGroomedJet_AK8_GEN_mass_uncorr, &b_GenGroomedJet_AK8_GEN_mass_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_tr_uncorr", GenGroomedJet_AK8_GEN_mass_tr_uncorr, &b_GenGroomedJet_AK8_GEN_mass_tr_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_ft_uncorr", GenGroomedJet_AK8_GEN_mass_ft_uncorr, &b_GenGroomedJet_AK8_GEN_mass_ft_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_pr_uncorr", GenGroomedJet_AK8_GEN_mass_pr_uncorr, &b_GenGroomedJet_AK8_GEN_mass_pr_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_tau2tau1", GenGroomedJet_AK8_GEN_tau2tau1, &b_GenGroomedJet_AK8_GEN_tau2tau1);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_tau1", GenGroomedJet_AK8_GEN_tau1, &b_GenGroomedJet_AK8_GEN_tau1);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_tau2", GenGroomedJet_AK8_GEN_tau2, &b_GenGroomedJet_AK8_GEN_tau2);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_tau3", GenGroomedJet_AK8_GEN_tau3, &b_GenGroomedJet_AK8_GEN_tau3);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_tau4", GenGroomedJet_AK8_GEN_tau4, &b_GenGroomedJet_AK8_GEN_tau4);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_massdrop_pr_uncorr", GenGroomedJet_AK8_GEN_massdrop_pr_uncorr, &b_GenGroomedJet_AK8_GEN_massdrop_pr_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt", GenGroomedJet_AK8_GEN_pt, &b_GenGroomedJet_AK8_GEN_pt);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_eta", GenGroomedJet_AK8_GEN_eta, &b_GenGroomedJet_AK8_GEN_eta);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_phi", GenGroomedJet_AK8_GEN_phi, &b_GenGroomedJet_AK8_GEN_phi);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_e", GenGroomedJet_AK8_GEN_e, &b_GenGroomedJet_AK8_GEN_e);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_L1_rhoSW", GenGroomedJet_AK8_GEN_pt_L1_rhoSW, &b_GenGroomedJet_AK8_GEN_pt_L1_rhoSW);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_L1_rhoHand", GenGroomedJet_AK8_GEN_pt_L1_rhoHand, &b_GenGroomedJet_AK8_GEN_pt_L1_rhoHand);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_L1_rhoHand2", GenGroomedJet_AK8_GEN_pt_L1_rhoHand2, &b_GenGroomedJet_AK8_GEN_pt_L1_rhoHand2);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_L1_rhoGrid", GenGroomedJet_AK8_GEN_pt_L1_rhoGrid, &b_GenGroomedJet_AK8_GEN_pt_L1_rhoGrid);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_tr_uncorr", GenGroomedJet_AK8_GEN_pt_tr_uncorr, &b_GenGroomedJet_AK8_GEN_pt_tr_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_tr", GenGroomedJet_AK8_GEN_pt_tr, &b_GenGroomedJet_AK8_GEN_pt_tr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_eta_tr", GenGroomedJet_AK8_GEN_eta_tr, &b_GenGroomedJet_AK8_GEN_eta_tr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_phi_tr", GenGroomedJet_AK8_GEN_phi_tr, &b_GenGroomedJet_AK8_GEN_phi_tr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_e_tr", GenGroomedJet_AK8_GEN_e_tr, &b_GenGroomedJet_AK8_GEN_e_tr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_ft_uncorr", GenGroomedJet_AK8_GEN_pt_ft_uncorr, &b_GenGroomedJet_AK8_GEN_pt_ft_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_ft", GenGroomedJet_AK8_GEN_pt_ft, &b_GenGroomedJet_AK8_GEN_pt_ft);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_eta_ft", GenGroomedJet_AK8_GEN_eta_ft, &b_GenGroomedJet_AK8_GEN_eta_ft);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_phi_ft", GenGroomedJet_AK8_GEN_phi_ft, &b_GenGroomedJet_AK8_GEN_phi_ft);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_e_ft", GenGroomedJet_AK8_GEN_e_ft, &b_GenGroomedJet_AK8_GEN_e_ft);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_pr_uncorr", GenGroomedJet_AK8_GEN_pt_pr_uncorr, &b_GenGroomedJet_AK8_GEN_pt_pr_uncorr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_pt_pr", GenGroomedJet_AK8_GEN_pt_pr, &b_GenGroomedJet_AK8_GEN_pt_pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_eta_pr", GenGroomedJet_AK8_GEN_eta_pr, &b_GenGroomedJet_AK8_GEN_eta_pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_phi_pr", GenGroomedJet_AK8_GEN_phi_pr, &b_GenGroomedJet_AK8_GEN_phi_pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_e_pr", GenGroomedJet_AK8_GEN_e_pr, &b_GenGroomedJet_AK8_GEN_e_pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet1_px", GenGroomedJet_AK8_GEN_prsubjet1_px, &b_GenGroomedJet_AK8_GEN_prsubjet1_px);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet1_py", GenGroomedJet_AK8_GEN_prsubjet1_py, &b_GenGroomedJet_AK8_GEN_prsubjet1_py);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet1_pz", GenGroomedJet_AK8_GEN_prsubjet1_pz, &b_GenGroomedJet_AK8_GEN_prsubjet1_pz);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet1_e", GenGroomedJet_AK8_GEN_prsubjet1_e, &b_GenGroomedJet_AK8_GEN_prsubjet1_e);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet2_px", GenGroomedJet_AK8_GEN_prsubjet2_px, &b_GenGroomedJet_AK8_GEN_prsubjet2_px);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet2_py", GenGroomedJet_AK8_GEN_prsubjet2_py, &b_GenGroomedJet_AK8_GEN_prsubjet2_py);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet2_pz", GenGroomedJet_AK8_GEN_prsubjet2_pz, &b_GenGroomedJet_AK8_GEN_prsubjet2_pz);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_prsubjet2_e", GenGroomedJet_AK8_GEN_prsubjet2_e, &b_GenGroomedJet_AK8_GEN_prsubjet2_e);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass", GenGroomedJet_AK8_GEN_mass, &b_GenGroomedJet_AK8_GEN_mass);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_rhoArea", GenGroomedJet_AK8_GEN_mass_rhoArea, &b_GenGroomedJet_AK8_GEN_mass_rhoArea);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_rhoGArea", GenGroomedJet_AK8_GEN_mass_rhoGArea, &b_GenGroomedJet_AK8_GEN_mass_rhoGArea);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_rho4Area", GenGroomedJet_AK8_GEN_mass_rho4Area, &b_GenGroomedJet_AK8_GEN_mass_rho4Area);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_rhoG4Area", GenGroomedJet_AK8_GEN_mass_rhoG4Area, &b_GenGroomedJet_AK8_GEN_mass_rhoG4Area);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_rhom4Area", GenGroomedJet_AK8_GEN_mass_rhom4Area, &b_GenGroomedJet_AK8_GEN_mass_rhom4Area);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_cleansingATLASjvf", GenGroomedJet_AK8_GEN_mass_cleansingATLASjvf, &b_GenGroomedJet_AK8_GEN_mass_cleansingATLASjvf);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_cleansingATLASlin", GenGroomedJet_AK8_GEN_mass_cleansingATLASlin, &b_GenGroomedJet_AK8_GEN_mass_cleansingATLASlin);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_cleansingATLASgau", GenGroomedJet_AK8_GEN_mass_cleansingATLASgau, &b_GenGroomedJet_AK8_GEN_mass_cleansingATLASgau);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_cleansingCMSjvf", GenGroomedJet_AK8_GEN_mass_cleansingCMSjvf, &b_GenGroomedJet_AK8_GEN_mass_cleansingCMSjvf);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_cleansingCMSlin", GenGroomedJet_AK8_GEN_mass_cleansingCMSlin, &b_GenGroomedJet_AK8_GEN_mass_cleansingCMSlin);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_cleansingCMSgau", GenGroomedJet_AK8_GEN_mass_cleansingCMSgau, &b_GenGroomedJet_AK8_GEN_mass_cleansingCMSgau);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_tr", GenGroomedJet_AK8_GEN_mass_tr, &b_GenGroomedJet_AK8_GEN_mass_tr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_ft", GenGroomedJet_AK8_GEN_mass_ft, &b_GenGroomedJet_AK8_GEN_mass_ft);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_mass_pr", GenGroomedJet_AK8_GEN_mass_pr, &b_GenGroomedJet_AK8_GEN_mass_pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_massdrop_pr", GenGroomedJet_AK8_GEN_massdrop_pr, &b_GenGroomedJet_AK8_GEN_massdrop_pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_area", GenGroomedJet_AK8_GEN_area, &b_GenGroomedJet_AK8_GEN_area);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_area_tr", GenGroomedJet_AK8_GEN_area_tr, &b_GenGroomedJet_AK8_GEN_area_tr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_area_ft", GenGroomedJet_AK8_GEN_area_ft, &b_GenGroomedJet_AK8_GEN_area_ft);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_area_pr", GenGroomedJet_AK8_GEN_area_pr, &b_GenGroomedJet_AK8_GEN_area_pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_jetconstituents", GenGroomedJet_AK8_GEN_jetconstituents, &b_GenGroomedJet_AK8_GEN_jetconstituents);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_jetcharge", GenGroomedJet_AK8_GEN_jetcharge, &b_GenGroomedJet_AK8_GEN_jetcharge);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_rcores", GenGroomedJet_AK8_GEN_rcores, &b_GenGroomedJet_AK8_GEN_rcores);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_ptcores", GenGroomedJet_AK8_GEN_ptcores, &b_GenGroomedJet_AK8_GEN_ptcores);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_planarflow", GenGroomedJet_AK8_GEN_planarflow, &b_GenGroomedJet_AK8_GEN_planarflow);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_qjetmass", GenGroomedJet_AK8_GEN_qjetmass, &b_GenGroomedJet_AK8_GEN_qjetmass);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_qjetmassdrop", GenGroomedJet_AK8_GEN_qjetmassdrop, &b_GenGroomedJet_AK8_GEN_qjetmassdrop);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_constituents0_eta", GenGroomedJet_AK8_GEN_constituents0_eta, &b_GenGroomedJet_AK8_GEN_constituents0_eta);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_constituents0_phi", GenGroomedJet_AK8_GEN_constituents0_phi, &b_GenGroomedJet_AK8_GEN_constituents0_phi);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_constituents0_e", GenGroomedJet_AK8_GEN_constituents0_e, &b_GenGroomedJet_AK8_GEN_constituents0_e);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_nconstituents0", &GenGroomedJet_AK8_GEN_nconstituents0, &b_GenGroomedJet_AK8_GEN_nconstituents0);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_constituents0pr_eta", GenGroomedJet_AK8_GEN_constituents0pr_eta, &b_GenGroomedJet_AK8_GEN_constituents0pr_eta);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_constituents0pr_phi", GenGroomedJet_AK8_GEN_constituents0pr_phi, &b_GenGroomedJet_AK8_GEN_constituents0pr_phi);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_constituents0pr_e", GenGroomedJet_AK8_GEN_constituents0pr_e, &b_GenGroomedJet_AK8_GEN_constituents0pr_e);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_nconstituents0pr", &GenGroomedJet_AK8_GEN_nconstituents0pr, &b_GenGroomedJet_AK8_GEN_nconstituents0pr);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_rhoSW", &GenGroomedJet_AK8_GEN_rhoSW, &b_GenGroomedJet_AK8_GEN_rhoSW);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_rhohand", &GenGroomedJet_AK8_GEN_rhohand, &b_GenGroomedJet_AK8_GEN_rhohand);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_rhohand2", &GenGroomedJet_AK8_GEN_rhohand2, &b_GenGroomedJet_AK8_GEN_rhohand2);
+   fChain->SetBranchAddress("GenGroomedJet_AK8_GEN_rhogrid", &GenGroomedJet_AK8_GEN_rhogrid, &b_GenGroomedJet_AK8_GEN_rhogrid);
    fChain->SetBranchAddress("Z_mass", &Z_mass, &b_Z_mass);
    fChain->SetBranchAddress("Z_mt", &Z_mt, &b_Z_mt);
    fChain->SetBranchAddress("Z_mtMVA", &Z_mtMVA, &b_Z_mtMVA);
