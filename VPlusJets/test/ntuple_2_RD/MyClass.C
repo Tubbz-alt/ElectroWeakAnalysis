@@ -116,7 +116,13 @@ void MyClass::Loop()
 	Double_t tmp_AK5_PF_mass_rho4Area=0.;
 	Double_t tmp_AK5_PF_mass_rhoG4Area=0.;
 	Double_t tmp_AK5_PF_mass_rhom4Area=0.;
-	Double_t tmp_AK5_PF_mass_cleansing=0.;
+	Double_t tmp_AK5_PF_mass_cleansingATLASjvf=0.;
+	Double_t tmp_AK5_PF_mass_cleansingATLASlin=0.;
+	Double_t tmp_AK5_PF_mass_cleansingATLASgau=0.;
+	Double_t tmp_AK5_PF_mass_cleansingCMSjvf=0.;
+	Double_t tmp_AK5_PF_mass_cleansingCMSlin=0.;
+	Double_t tmp_AK5_PF_mass_cleansingCMSgau=0.;
+
 
 	Double_t tmp_AK5_PFCHS_mass_uncorr=0.;
 	Double_t tmp_AK5_PFCHS_mass_rhoArea=0.;
@@ -124,7 +130,6 @@ void MyClass::Loop()
 	Double_t tmp_AK5_PFCHS_mass_rho4Area=0.;
 	Double_t tmp_AK5_PFCHS_mass_rhoG4Area=0.;
 	Double_t tmp_AK5_PFCHS_mass_rhom4Area=0.;
-	Double_t tmp_AK5_PFCHS_mass_cleansing=0.;
 
 	Double_t rhomin=0.; Double_t rhomax=50.;
 
@@ -212,7 +217,7 @@ void MyClass::Loop()
 
 
 	//mass
-	int nbin_mass=50;double jetmass_min=0;double jetmass_max=50.;
+	int nbin_mass=20;double jetmass_min=0;double jetmass_max=20.;
 	TH1D h1_GEN_mass("h1_GEN_mass","h1_GEN_mass;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	h1_GEN_mass.SetLineColor(kRed);
 	TH1D h1_PFCor_mass("h1_PFCor_mass","h1_PFCor_mass;jet mass;",nbin_mass,jetmass_min,jetmass_max);
@@ -223,7 +228,12 @@ void MyClass::Loop()
 	TH1D h1_AK5_PF_mass_rho4Area("h1_AK5_PF_mass_rho4Area","h1_AK5_PF_mass_rho4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PF_mass_rhoG4Area("h1_AK5_PF_mass_rhoG4Area","h1_AK5_PF_mass_rhoG4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PF_mass_rhom4Area("h1_AK5_PF_mass_rhom4Area","h1_AK5_PF_mass_rhom4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PF_mass_cleansing("h1_AK5_PF_mass_cleansing","h1_AK5_PF_mass_cleansing;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_cleansingATLASjvf("h1_AK5_PF_mass_cleansingATLASjvf","h1_AK5_PF_mass_cleansingATLASjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_cleansingATLASlin("h1_AK5_PF_mass_cleansingATLASlin","h1_AK5_PF_mass_cleansingATLASlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_cleansingATLASgau("h1_AK5_PF_mass_cleansingATLASgau","h1_AK5_PF_mass_cleansingATLASgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_cleansingCMSjvf("h1_AK5_PF_mass_cleansingCMSjvf","h1_AK5_PF_mass_cleansingCMSjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_cleansingCMSlin("h1_AK5_PF_mass_cleansingCMSlin","h1_AK5_PF_mass_cleansingCMSlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_cleansingCMSgau("h1_AK5_PF_mass_cleansingCMSgau","h1_AK5_PF_mass_cleansingCMSgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 
 	TH1D h1_AK5_PFCHS_mass_uncorr(   "h1_AK5_PFCHS_mass_uncorr",   "h1_AK5_PFCHS_mass_uncorr;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PFCHS_mass_rhoArea(  "h1_AK5_PFCHS_mass_rhoArea",  "h1_AK5_PFCHS_mass_rhoArea;jet mass;",nbin_mass,jetmass_min,jetmass_max);
@@ -231,7 +241,6 @@ void MyClass::Loop()
 	TH1D h1_AK5_PFCHS_mass_rho4Area( "h1_AK5_PFCHS_mass_rho4Area", "h1_AK5_PFCHS_mass_rho4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PFCHS_mass_rhoG4Area("h1_AK5_PFCHS_mass_rhoG4Area","h1_AK5_PFCHS_mass_rhoG4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PFCHS_mass_rhom4Area("h1_AK5_PFCHS_mass_rhom4Area","h1_AK5_PFCHS_mass_rhom4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PFCHS_mass_cleansing("h1_AK5_PFCHS_mass_cleansing","h1_AK5_PFCHS_mass_cleansing;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 
 
 	/*	TH1D h1_rhoSW_pf("h1_rhoSW_pf","h1_rhoSW_pf",30,0,30);
@@ -463,14 +472,18 @@ void MyClass::Loop()
 			tmp_AK5_PF_mass_rho4Area=GroomedJet_AK5_PF_mass_rho4Area[0];
 			tmp_AK5_PF_mass_rhoG4Area=GroomedJet_AK5_PF_mass_rhoG4Area[0];
 			tmp_AK5_PF_mass_rhom4Area=GroomedJet_AK5_PF_mass_rhom4Area[0];
-			tmp_AK5_PF_mass_cleansing=GroomedJet_AK5_PF_mass_cleansing[0];
+			tmp_AK5_PF_mass_cleansingATLASjvf=GroomedJet_AK5_PF_mass_cleansingATLASjvf[0];
+			tmp_AK5_PF_mass_cleansingATLASlin=GroomedJet_AK5_PF_mass_cleansingATLASlin[0];
+			tmp_AK5_PF_mass_cleansingATLASgau=GroomedJet_AK5_PF_mass_cleansingATLASgau[0];
+			tmp_AK5_PF_mass_cleansingCMSjvf=GroomedJet_AK5_PF_mass_cleansingCMSjvf[0];
+			tmp_AK5_PF_mass_cleansingCMSlin=GroomedJet_AK5_PF_mass_cleansingCMSlin[0];
+			tmp_AK5_PF_mass_cleansingCMSgau=GroomedJet_AK5_PF_mass_cleansingCMSgau[0];
 			tmp_AK5_PFCHS_mass_uncorr=GroomedJet_AK5_PFCHS_mass_uncorr[0];
 			tmp_AK5_PFCHS_mass_rhoArea=GroomedJet_AK5_PFCHS_mass_rhoArea[0];
 			tmp_AK5_PFCHS_mass_rhoGArea=GroomedJet_AK5_PFCHS_mass_rhoG4Area[0];
 			tmp_AK5_PFCHS_mass_rho4Area=GroomedJet_AK5_PFCHS_mass_rho4Area[0];
 			tmp_AK5_PFCHS_mass_rhoG4Area=GroomedJet_AK5_PFCHS_mass_rhoG4Area[0];
 			tmp_AK5_PFCHS_mass_rhom4Area=GroomedJet_AK5_PFCHS_mass_rhom4Area[0];
-			tmp_AK5_PFCHS_mass_cleansing=GroomedJet_AK5_PFCHS_mass_cleansing[0];
 
 			h1_GEN_mass.Fill(tmp_GEN_mass            ); 
 			h1_PFCor_mass.Fill(tmp_PFCor_mass          );
@@ -480,7 +493,12 @@ void MyClass::Loop()
 			h1_AK5_PF_mass_rho4Area.Fill(tmp_AK5_PF_mass_rho4Area);
 			h1_AK5_PF_mass_rhoG4Area.Fill(tmp_AK5_PF_mass_rhoG4Area);
 			h1_AK5_PF_mass_rhom4Area.Fill(tmp_AK5_PF_mass_rhom4Area);
-			h1_AK5_PF_mass_cleansing.Fill(tmp_AK5_PF_mass_cleansing);
+			h1_AK5_PF_mass_cleansingATLASjvf.Fill(tmp_AK5_PF_mass_cleansingATLASjvf);
+			h1_AK5_PF_mass_cleansingATLASlin.Fill(tmp_AK5_PF_mass_cleansingATLASlin);
+			h1_AK5_PF_mass_cleansingATLASgau.Fill(tmp_AK5_PF_mass_cleansingATLASgau);
+			h1_AK5_PF_mass_cleansingCMSjvf.Fill(tmp_AK5_PF_mass_cleansingCMSjvf);
+			h1_AK5_PF_mass_cleansingCMSlin.Fill(tmp_AK5_PF_mass_cleansingCMSlin);
+			h1_AK5_PF_mass_cleansingCMSgau.Fill(tmp_AK5_PF_mass_cleansingCMSgau);
 
 			h1_AK5_PFCHS_mass_uncorr.Fill(tmp_AK5_PFCHS_mass_uncorr);  
 			h1_AK5_PFCHS_mass_rhoArea.Fill(tmp_AK5_PFCHS_mass_rhoArea); 
@@ -488,7 +506,6 @@ void MyClass::Loop()
 			h1_AK5_PFCHS_mass_rho4Area.Fill(tmp_AK5_PFCHS_mass_rho4Area);
 			h1_AK5_PFCHS_mass_rhoG4Area.Fill(tmp_AK5_PFCHS_mass_rhoG4Area);
 			h1_AK5_PFCHS_mass_rhom4Area.Fill(tmp_AK5_PFCHS_mass_rhom4Area);
-			h1_AK5_PFCHS_mass_cleansing.Fill(tmp_AK5_PFCHS_mass_cleansing);
 
 		}
 	}
@@ -667,42 +684,55 @@ void MyClass::Loop()
 	Draw_and_Save(h1_AK5_PF_mass_rho4Area    );
 	Draw_and_Save(h1_AK5_PF_mass_rhoG4Area   );
 	Draw_and_Save(h1_AK5_PF_mass_rhom4Area   );
-	Draw_and_Save(h1_AK5_PF_mass_cleansing   );
+	Draw_and_Save(h1_AK5_PF_mass_cleansingATLASjvf   );
+	Draw_and_Save(h1_AK5_PF_mass_cleansingATLASlin   );
+	Draw_and_Save(h1_AK5_PF_mass_cleansingATLASgau   );
+	Draw_and_Save(h1_AK5_PF_mass_cleansingCMSjvf   );
+	Draw_and_Save(h1_AK5_PF_mass_cleansingCMSlin   );
+	Draw_and_Save(h1_AK5_PF_mass_cleansingCMSgau   );
 	Draw_and_Save(h1_AK5_PFCHS_mass_uncorr   );
 	Draw_and_Save(h1_AK5_PFCHS_mass_rhoArea  );
 	Draw_and_Save(h1_AK5_PFCHS_mass_rhoGArea );
 	Draw_and_Save(h1_AK5_PFCHS_mass_rho4Area );
 	Draw_and_Save(h1_AK5_PFCHS_mass_rhoG4Area);
 	Draw_and_Save(h1_AK5_PFCHS_mass_rhom4Area);
-	Draw_and_Save(h1_AK5_PFCHS_mass_cleansing);
 
 
 	TCanvas *c15 = new TCanvas("c15","f",200,10,600,600);
 	c15->cd();
 
+	h1_GEN_mass.SetLineColor(2);
 	h1_GEN_mass.Draw();
-	h1_PFCor_mass.Draw("same");
+	//h1_PFCor_mass.Draw("same");
+	h1_AK5_PF_mass_uncorr.SetLineColor(3);
 	h1_AK5_PF_mass_uncorr.Draw("same");
-	h1_AK5_PF_mass_rhoArea.Draw("same");
-	h1_AK5_PF_mass_rhoGArea.Draw("same");
+	//h1_AK5_PF_mass_rhoArea.Draw("same");
+	//h1_AK5_PF_mass_rhoGArea.Draw("same");
+	h1_AK5_PF_mass_rho4Area.SetLineColor(4);
 	h1_AK5_PF_mass_rho4Area.Draw("same");
-	h1_AK5_PF_mass_rhoG4Area.Draw("same");
+	//h1_AK5_PF_mass_rhoG4Area.Draw("same");
+	h1_AK5_PF_mass_rhom4Area.SetLineColor(5);
 	h1_AK5_PF_mass_rhom4Area.Draw("same");
-	h1_AK5_PF_mass_cleansing.Draw("same");
+	//h1_AK5_PF_mass_cleansingATLASjvf.Draw("same");
+	//h1_AK5_PF_mass_cleansingATLASlin.Draw("same");
+	//h1_AK5_PF_mass_cleansingATLASgau.Draw("same");
+	//h1_AK5_PF_mass_cleansingCMSjvf.Draw("same");
+	h1_AK5_PF_mass_cleansingCMSlin.SetLineColor(6);
+	h1_AK5_PF_mass_cleansingCMSlin.Draw("same");
+	//h1_AK5_PF_mass_cleansingCMSgau.Draw("same");
 	c15->Print("GEN_vs_PFCor_vs_PF_jetmass.png");
 
 
 	TCanvas *c16 = new TCanvas("c16","f",200,10,600,600);
 	c16->cd();
 	h1_GEN_mass.Draw();
-	h1_PFCor_mass.Draw("same");
+	//h1_PFCor_mass.Draw("same");
 	h1_AK5_PFCHS_mass_uncorr.Draw("same");
-	h1_AK5_PFCHS_mass_rhoArea.Draw("same");
-	h1_AK5_PFCHS_mass_rhoGArea.Draw("same");
+	//h1_AK5_PFCHS_mass_rhoArea.Draw("same");
+	//h1_AK5_PFCHS_mass_rhoGArea.Draw("same");
 	h1_AK5_PFCHS_mass_rho4Area.Draw("same");
-	h1_AK5_PFCHS_mass_rhoG4Area.Draw("same");
+	//h1_AK5_PFCHS_mass_rhoG4Area.Draw("same");
 	h1_AK5_PFCHS_mass_rhom4Area.Draw("same");
-	h1_AK5_PFCHS_mass_cleansing.Draw("same");
 	c16->Print("GEN_vs_PFCor_vs_PFCHS_jetmass.png");
 
 
