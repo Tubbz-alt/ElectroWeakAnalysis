@@ -4,6 +4,8 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include "TMath.h"
+#include "iostream"
+using namespace std;
 
 bool equal(double a1, double a2, double delta=1e-3){
 	if(TMath::Abs(a1-a2)<delta)return 1;
@@ -62,10 +64,10 @@ void MyClass::Loop()
 	Double_t tmp_GEN_pt=0.;
 	Double_t tmp_GEN_eta=0.;
 	Double_t tmp_GEN_phi=0.;
-	Double_t tmp_GEN_rhoSW=0,;
-	Double_t tmp_GEN_rhoHand=0,;
-	Double_t tmp_GEN_rhoHand2=0,;
-	Double_t tmp_GEN_rhoGrid=0,;
+	Double_t tmp_GEN_rhoSW=0.;
+	Double_t tmp_GEN_rhoHand=0.;
+	Double_t tmp_GEN_rhoHand2=0.;
+	Double_t tmp_GEN_rhoGrid=0.;
 	
 	Double_t tmp_PFCor_pt=0.;
 	Double_t tmp_PFCor_Pt_uncorr=0.;
@@ -80,10 +82,10 @@ void MyClass::Loop()
 	Double_t tmp_AK5_PF_pt_L1_rhoHand=0.;
 	Double_t tmp_AK5_PF_pt_L1_rhoHand2=0.;
 	Double_t tmp_AK5_PF_pt_L1_rhoGrid=0.;
-	Double_t tmp_AK5_PF_rhoSW=0,;
-	Double_t tmp_AK5_PF_rhoHand=0,;
-	Double_t tmp_AK5_PF_rhoHand2=0,;
-	Double_t tmp_AK5_PF_rhoGrid=0,;
+	Double_t tmp_AK5_PF_rhoSW=0.;
+	Double_t tmp_AK5_PF_rhoHand=0.;
+	Double_t tmp_AK5_PF_rhoHand2=0.;
+	Double_t tmp_AK5_PF_rhoGrid=0.;
 
 	Double_t tmp_AK5_PFCHS_pt=0.;
 	Double_t tmp_AK5_PFCHS_eta=0.;
@@ -93,18 +95,17 @@ void MyClass::Loop()
 	Double_t tmp_AK5_PFCHS_pt_L1_rhoHand=0.;
 	Double_t tmp_AK5_PFCHS_pt_L1_rhoHand2=0.;
 	Double_t tmp_AK5_PFCHS_pt_L1_rhoGrid=0.;
-	Double_t tmp_AK5_PFCHS_rhoSW=0,;
-	Double_t tmp_AK5_PFCHS_rhoHand=0,;
-	Double_t tmp_AK5_PFCHS_rhoHand2=0,;
-	Double_t tmp_AK5_PFCHS_rhoGrid=0,;
+	Double_t tmp_AK5_PFCHS_rhoSW=0.;
+	Double_t tmp_AK5_PFCHS_rhoHand=0.;
+	Double_t tmp_AK5_PFCHS_rhoHand2=0.;
+	Double_t tmp_AK5_PFCHS_rhoGrid=0.;
 
-	Double_t tmp_Z_eta=0.;
-	Double_t tmp_Z_phi=0.;
+	//Double_t tmp_Z_eta=0.; Double_t tmp_Z_phi=0.;
 
 	Double_t tmp_event_nPV=0.;
 
 	Double_t ratio=0.;
-	Double_t dr=0,; // Delta R
+	Double_t dr=0.; // Delta R
 	Double_t dphi=0.; // Delta Phi
 
 	//jet mass
@@ -254,9 +255,9 @@ void MyClass::Loop()
 		TH1D h1_rhoGrid_pfchs("h1_rhoGrid_pfchs","h1_rhoGrid_pfchs",30,0,30);
 		*/
 	// For GEN-RECO matching
-	Double_t gen_jet_eta=gen_jet_phi=0.;
-	Double_t pfchs_eta=pfchs_jet_phi=0.;
-	Double_t PFCor_jet_eta=PFCor_jet_phi=0.;
+	Double_t gen_jet_eta=0.; Double_t gen_jet_phi=0.;
+	Double_t pfchs_eta=0.; Double_t pfchs_phi=0.;
+	Double_t PFCor_jet_eta=0.; Double_t PFCor_jet_phi=0.;
 
 	Long64_t nbytes = 0, nb = 0;
 	for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -275,7 +276,7 @@ void MyClass::Loop()
 		if( TMath::Sqrt( (gen_jet_eta-pfchs_eta)*(gen_jet_eta-pfchs_eta) + (gen_jet_phi-pfchs_phi)*(gen_jet_phi-pfchs_phi) ) <0.3 )
 		{
 			int i_PFCorJet_matching_pfchs=0;//_matching with leading pfchs_uncerr
-			for(int i_PFCorJet_matching_pfchs=0;i_PFCorJet_matching_pfchs<numPFCorJets;i_PFCorJet_matching_pfchs++){
+			for(;i_PFCorJet_matching_pfchs<numPFCorJets;i_PFCorJet_matching_pfchs++){
 				PFCor_jet_eta=JetPFCor_Eta[i_PFCorJet_matching_pfchs]; PFCor_jet_phi=JetPFCor_Phi[i_PFCorJet_matching_pfchs];
 				if ( equal(pfchs_eta, PFCor_jet_eta) && equal(pfchs_phi, PFCor_jet_phi) )break;
 			}
@@ -307,25 +308,24 @@ void MyClass::Loop()
 			tmp_AK5_PFCHS_pt_L1_rhoHand2 = GroomedJet_AK5_PFCHS_pt_L1_rhoHand2[0];
 			tmp_AK5_PFCHS_pt_L1_rhoGrid = GroomedJet_AK5_PFCHS_pt_L1_rhoGrid[0];
 
-			tmp_Z_eta = Z_eta;
-			tmp_Z_phi = Z_phi;
+			//tmp_Z_eta = Z_eta; tmp_Z_phi = Z_phi;
 
-			tmp_event_nPV = event_nPV[0];
+			tmp_event_nPV = event_nPV;
 
-			tmp_GEN_rhoSW = GenGroomedJet_AK5_GEN_rhoSW[0];
-			tmp_GEN_rhoHand = GenGroomedJet_AK5_GEN_rhohand[0];
-			tmp_GEN_rhoHand2 = GenGroomedJet_AK5_GEN_rhohand2[0];
-			tmp_GEN_rhoGrid = GenGroomedJet_AK5_GEN_rhogrid[0];
+			tmp_GEN_rhoSW = GenGroomedJet_AK5_GEN_rhoSW;
+			tmp_GEN_rhoHand = GenGroomedJet_AK5_GEN_rhohand;
+			tmp_GEN_rhoHand2 = GenGroomedJet_AK5_GEN_rhohand2;
+			tmp_GEN_rhoGrid = GenGroomedJet_AK5_GEN_rhogrid;
 
-			tmp_AK5_PF_rhoSW = GroomedJet_AK5_PF_rhoSW[0];
-			tmp_AK5_PF_rhoHand = GroomedJet_AK5_PF_rhohand[0];
-			tmp_AK5_PF_rhoHand2 = GroomedJet_AK5_PF_rhohand2[0];
-			tmp_AK5_PF_rhoGrid = GroomedJet_AK5_PF_rhogrid[0];
+			tmp_AK5_PF_rhoSW = GroomedJet_AK5_PF_rhoSW;
+			tmp_AK5_PF_rhoHand = GroomedJet_AK5_PF_rhohand;
+			tmp_AK5_PF_rhoHand2 = GroomedJet_AK5_PF_rhohand2;
+			tmp_AK5_PF_rhoGrid = GroomedJet_AK5_PF_rhogrid;
 
-			tmp_AK5_PFCHS_rhoSW = GroomedJet_AK5_PFCHS_rhoSW[0];
-			tmp_AK5_PFCHS_rhoHand = GroomedJet_AK5_PFCHS_rhohand[0];
-			tmp_AK5_PFCHS_rhoHand2 = GroomedJet_AK5_PFCHS_rhohand2[0];
-			tmp_AK5_PFCHS_rhoGrid = GroomedJet_AK5_PFCHS_rhogrid[0];
+			tmp_AK5_PFCHS_rhoSW = GroomedJet_AK5_PFCHS_rhoSW;
+			tmp_AK5_PFCHS_rhoHand = GroomedJet_AK5_PFCHS_rhohand;
+			tmp_AK5_PFCHS_rhoHand2 = GroomedJet_AK5_PFCHS_rhohand2;
+			tmp_AK5_PFCHS_rhoGrid = GroomedJet_AK5_PFCHS_rhogrid;
 
 			//============= begin to fill hist ==============
 			//PFCor
@@ -511,86 +511,86 @@ void MyClass::Loop()
 	}
 	TCanvas *c1 = new TCanvas("c1","RECO_vs_GEN Pt",200,10,600,600);
 	c1->cd();
-	h1_GEN_pt->Draw();
-	h1_ak5_pf_pt_uncorr->Draw("same");
+	h1_GEN_pt.Draw();
+	h1_ak5_pf_pt_uncorr.Draw("same");
 	c1->Print("RECO vs_GEN_Pt.png");
 
 	TCanvas *c2 = new TCanvas("c2","RECO_vs_GEN_Eta",200,10,600,600);
 	c2->cd();
-	h1_GEN_eta->Draw();
-	h1_ak5_pf_eta->Draw("same");
+	h1_GEN_eta.Draw();
+	h1_ak5_pf_eta.Draw("same");
 	c2->Print("RECO_vs_GEN_Eta.png");
 
 	TCanvas *c13 = new TCanvas("c13","RECO_vs_GEN_Phi",200,10,600,600);
 	c13->cd();
-	h1_GEN_phi->Draw();
-	h1_ak5_pf_phi->Draw("same");
+	h1_GEN_phi.Draw();
+	h1_ak5_pf_phi.Draw("same");
 	c13->Print("RECO_vs_GEN_Phi.png");
 
 	TCanvas *c3 = new TCanvas("c3","RECO_vs_GEN_dR",200,10,600,600);
 	c3->cd();
-	h1_GEN_zjet_dr->Draw();
-	h1_ak5_pf_zjet_dr->Draw("same");
+	h1_GEN_zjet_dr.Draw();
+	h1_ak5_pf_zjet_dr.Draw("same");
 	c3->Print("RECO_vs_GEN_dR.png");
 
 	TCanvas *c4 = new TCanvas("c4","RECO_vs_GEN_dphi",200,10,600,600);
 	c4->cd();
-	h1_GEN_zjet_dphi->Draw();
-	h1_ak5_pf_zjet_dphi->Draw("same");
+	h1_GEN_zjet_dphi.Draw();
+	h1_ak5_pf_zjet_dphi.Draw("same");
 	c4->Print("RECO_vs_GEN_dphi.png");
 
 	TCanvas *c5 = new TCanvas("c5","RECO_vs_GEN_rhoSW",200,10,600,600);
 	c5->cd();
-	h1_GEN_rhoSW->Draw();
-	h1_ak5_pf_rhoSW->Draw("same");
+	h1_GEN_rhoSW.Draw();
+	h1_ak5_pf_rhoSW.Draw("same");
 	c5->Print("RECO_vs_GEN_rhoSW.png");
 
 	TCanvas *c6 = new TCanvas("c6","RECO_vs_GEN_rhoHand",200,10,600,600);
 	c6->cd();
-	h1_GEN_rhoHand->Draw();
-	h1_ak5_pf_rhoHand->Draw("same");
+	h1_GEN_rhoHand.Draw();
+	h1_ak5_pf_rhoHand.Draw("same");
 	c6->Print("RECO_vs_GEN_rhoHand.png");
 
-	TCanvas *c5 = new TCanvas("c7","RECO_vs_GEN_rhoHand2",200,10,600,600);
+	TCanvas *c7 = new TCanvas("c7","RECO_vs_GEN_rhoHand2",200,10,600,600);
 	c7->cd();
-	h1_GEN_rhoHand2->Draw();
-	h1_ak5_pf_rhoHand2->Draw("same");
+	h1_GEN_rhoHand2.Draw();
+	h1_ak5_pf_rhoHand2.Draw("same");
 	c7->Print("RECO_vs_GEN_rhoHand2.png");
 
 	TCanvas *c8 = new TCanvas("c8","RECO_vs_GEN_rhoGrid",200,10,600,600);
 	c8->cd();
-	h1_GEN_rhoGrid->Draw();
-	h1_ak5_pf_rhoGrid->Draw("same");
+	h1_GEN_rhoGrid.Draw();
+	h1_ak5_pf_rhoGrid.Draw("same");
 	c8->Print("RECO_vs_GEN_rhoGrid.png");
 
 	TCanvas *c9 = new TCanvas("c9","RECO_vs_GEN_rhoSW_vs_nPV",200,10,600,600);
 	c9->cd();
-	h2_GEN_rhoSW_vs_nPV->Draw();
-	h2_ak5_pf_rhoSW_vs_nPV->Draw("same");
+	h2_GEN_rhoSW_vs_nPV.Draw();
+	h2_ak5_pf_rhoSW_vs_nPV.Draw("same");
 	c9->Print("RECO_vs_GEN_rhoSW_vs_nPV.png");
 
 	TCanvas *c10 = new TCanvas("c10","RECO_vs_GEN_rhoHand_vs_nPV",200,10,600,600);
 	c10->cd();
-	h2_GEN_rhoHand_vs_nPV->Draw();
-	h2_ak5_pf_rhoHand_vs_nPV->Draw("same");
+	h2_GEN_rhoHand_vs_nPV.Draw();
+	h2_ak5_pf_rhoHand_vs_nPV.Draw("same");
 	c10->Print("RECO_vs_GEN_rhoHand_vs_nPV.png");
 
 	TCanvas *c11 = new TCanvas("c11","RECO_vs_GEN_rhoHand2_vs_nPV",200,10,600,600);
 	c11->cd();
-	h2_GEN_rhoHand2_vs_nPV->Draw();
-	h2_ak5_pf_rhoHand2_vs_nPV->Draw("same");
+	h2_GEN_rhoHand2_vs_nPV.Draw();
+	h2_ak5_pf_rhoHand2_vs_nPV.Draw("same");
 	c11->Print("RECO_vs_GEN_rhoHand2_vs_nPV.png");
 
 	TCanvas *c12 = new TCanvas("c12","RECO_vs_GEN_rhoGrid_vs_nPV",200,10,600,600);
 	c12->cd();
-	h2_GEN_rhoGrid_vs_nPV->Draw();
-	h2_ak5_pf_rhoGrid_vs_nPV->Draw("same");
+	h2_GEN_rhoGrid_vs_nPV.Draw();
+	h2_ak5_pf_rhoGrid_vs_nPV.Draw("same");
 	c12->Print("RECO_vs_GEN_rhoGrid_vs_nPV.png");
 
 	TCanvas *c14 = new TCanvas("c14","f",200,10,600,600);
 	c14->cd();
-	h1_PF_match->Draw();
-	h1_PFCHS_match->Draw("same");
+	h1_PF_match.Draw();
+	h1_PFCHS_match.Draw("same");
 	c14->Print("PF_vs_PFCHS_matching_efficiency.png");
 	//ratio
 
