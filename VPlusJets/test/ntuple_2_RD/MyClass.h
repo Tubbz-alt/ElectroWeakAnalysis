@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Sat Sep 21 22:42:27 2013 by ROOT version 5.32/00
+// Sun Sep 22 22:34:08 2013 by ROOT version 5.32/00
 // from TTree ZJet/V+jets Tree
 // found on file: zmumujetsanalysisntuple.root
 //////////////////////////////////////////////////////////
@@ -143,7 +143,12 @@ public :
    Float_t         GroomedJet_AK5_PF_mass_rho4Area[6];
    Float_t         GroomedJet_AK5_PF_mass_rhoG4Area[6];
    Float_t         GroomedJet_AK5_PF_mass_rhom4Area[6];
-   Float_t         GroomedJet_AK5_PF_mass_cleansing[6];
+   Float_t         GroomedJet_AK5_PF_mass_cleansingATLASjvf[6];
+   Float_t         GroomedJet_AK5_PF_mass_cleansingATLASlin[6];
+   Float_t         GroomedJet_AK5_PF_mass_cleansingATLASgau[6];
+   Float_t         GroomedJet_AK5_PF_mass_cleansingCMSjvf[6];
+   Float_t         GroomedJet_AK5_PF_mass_cleansingCMSlin[6];
+   Float_t         GroomedJet_AK5_PF_mass_cleansingCMSgau[6];
    Float_t         GroomedJet_AK5_PF_mass_tr[6];
    Float_t         GroomedJet_AK5_PF_mass_ft[6];
    Float_t         GroomedJet_AK5_PF_mass_pr[6];
@@ -220,7 +225,12 @@ public :
    Float_t         GroomedJet_AK5_PFCHS_mass_rho4Area[6];
    Float_t         GroomedJet_AK5_PFCHS_mass_rhoG4Area[6];
    Float_t         GroomedJet_AK5_PFCHS_mass_rhom4Area[6];
-   Float_t         GroomedJet_AK5_PFCHS_mass_cleansing[6];
+   Float_t         GroomedJet_AK5_PFCHS_mass_cleansingATLASjvf[6];
+   Float_t         GroomedJet_AK5_PFCHS_mass_cleansingATLASlin[6];
+   Float_t         GroomedJet_AK5_PFCHS_mass_cleansingATLASgau[6];
+   Float_t         GroomedJet_AK5_PFCHS_mass_cleansingCMSjvf[6];
+   Float_t         GroomedJet_AK5_PFCHS_mass_cleansingCMSlin[6];
+   Float_t         GroomedJet_AK5_PFCHS_mass_cleansingCMSgau[6];
    Float_t         GroomedJet_AK5_PFCHS_mass_tr[6];
    Float_t         GroomedJet_AK5_PFCHS_mass_ft[6];
    Float_t         GroomedJet_AK5_PFCHS_mass_pr[6];
@@ -297,7 +307,12 @@ public :
    Float_t         GenGroomedJet_AK5_GEN_mass_rho4Area[6];
    Float_t         GenGroomedJet_AK5_GEN_mass_rhoG4Area[6];
    Float_t         GenGroomedJet_AK5_GEN_mass_rhom4Area[6];
-   Float_t         GenGroomedJet_AK5_GEN_mass_cleansing[6];
+   Float_t         GenGroomedJet_AK5_GEN_mass_cleansingATLASjvf[6];
+   Float_t         GenGroomedJet_AK5_GEN_mass_cleansingATLASlin[6];
+   Float_t         GenGroomedJet_AK5_GEN_mass_cleansingATLASgau[6];
+   Float_t         GenGroomedJet_AK5_GEN_mass_cleansingCMSjvf[6];
+   Float_t         GenGroomedJet_AK5_GEN_mass_cleansingCMSlin[6];
+   Float_t         GenGroomedJet_AK5_GEN_mass_cleansingCMSgau[6];
    Float_t         GenGroomedJet_AK5_GEN_mass_tr[6];
    Float_t         GenGroomedJet_AK5_GEN_mass_ft[6];
    Float_t         GenGroomedJet_AK5_GEN_mass_pr[6];
@@ -567,7 +582,12 @@ public :
    TBranch        *b_GroomedJet_AK5_PF_mass_rho4Area;   //!
    TBranch        *b_GroomedJet_AK5_PF_mass_rhoG4Area;   //!
    TBranch        *b_GroomedJet_AK5_PF_mass_rhom4Area;   //!
-   TBranch        *b_GroomedJet_AK5_PF_mass_cleansing;   //!
+   TBranch        *b_GroomedJet_AK5_PF_mass_cleansingATLASjvf;   //!
+   TBranch        *b_GroomedJet_AK5_PF_mass_cleansingATLASlin;   //!
+   TBranch        *b_GroomedJet_AK5_PF_mass_cleansingATLASgau;   //!
+   TBranch        *b_GroomedJet_AK5_PF_mass_cleansingCMSjvf;   //!
+   TBranch        *b_GroomedJet_AK5_PF_mass_cleansingCMSlin;   //!
+   TBranch        *b_GroomedJet_AK5_PF_mass_cleansingCMSgau;   //!
    TBranch        *b_GroomedJet_AK5_PF_mass_tr;   //!
    TBranch        *b_GroomedJet_AK5_PF_mass_ft;   //!
    TBranch        *b_GroomedJet_AK5_PF_mass_pr;   //!
@@ -644,7 +664,12 @@ public :
    TBranch        *b_GroomedJet_AK5_PFCHS_mass_rho4Area;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_mass_rhoG4Area;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_mass_rhom4Area;   //!
-   TBranch        *b_GroomedJet_AK5_PFCHS_mass_cleansing;   //!
+   TBranch        *b_GroomedJet_AK5_PFCHS_mass_cleansingATLASjvf;   //!
+   TBranch        *b_GroomedJet_AK5_PFCHS_mass_cleansingATLASlin;   //!
+   TBranch        *b_GroomedJet_AK5_PFCHS_mass_cleansingATLASgau;   //!
+   TBranch        *b_GroomedJet_AK5_PFCHS_mass_cleansingCMSjvf;   //!
+   TBranch        *b_GroomedJet_AK5_PFCHS_mass_cleansingCMSlin;   //!
+   TBranch        *b_GroomedJet_AK5_PFCHS_mass_cleansingCMSgau;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_mass_tr;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_mass_ft;   //!
    TBranch        *b_GroomedJet_AK5_PFCHS_mass_pr;   //!
@@ -721,7 +746,12 @@ public :
    TBranch        *b_GenGroomedJet_AK5_GEN_mass_rho4Area;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_mass_rhoG4Area;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_mass_rhom4Area;   //!
-   TBranch        *b_GenGroomedJet_AK5_GEN_mass_cleansing;   //!
+   TBranch        *b_GenGroomedJet_AK5_GEN_mass_cleansingATLASjvf;   //!
+   TBranch        *b_GenGroomedJet_AK5_GEN_mass_cleansingATLASlin;   //!
+   TBranch        *b_GenGroomedJet_AK5_GEN_mass_cleansingATLASgau;   //!
+   TBranch        *b_GenGroomedJet_AK5_GEN_mass_cleansingCMSjvf;   //!
+   TBranch        *b_GenGroomedJet_AK5_GEN_mass_cleansingCMSlin;   //!
+   TBranch        *b_GenGroomedJet_AK5_GEN_mass_cleansingCMSgau;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_mass_tr;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_mass_ft;   //!
    TBranch        *b_GenGroomedJet_AK5_GEN_mass_pr;   //!
@@ -1060,7 +1090,12 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_rho4Area", GroomedJet_AK5_PF_mass_rho4Area, &b_GroomedJet_AK5_PF_mass_rho4Area);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_rhoG4Area", GroomedJet_AK5_PF_mass_rhoG4Area, &b_GroomedJet_AK5_PF_mass_rhoG4Area);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_rhom4Area", GroomedJet_AK5_PF_mass_rhom4Area, &b_GroomedJet_AK5_PF_mass_rhom4Area);
-   fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_cleansing", GroomedJet_AK5_PF_mass_cleansing, &b_GroomedJet_AK5_PF_mass_cleansing);
+   fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_cleansingATLASjvf", GroomedJet_AK5_PF_mass_cleansingATLASjvf, &b_GroomedJet_AK5_PF_mass_cleansingATLASjvf);
+   fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_cleansingATLASlin", GroomedJet_AK5_PF_mass_cleansingATLASlin, &b_GroomedJet_AK5_PF_mass_cleansingATLASlin);
+   fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_cleansingATLASgau", GroomedJet_AK5_PF_mass_cleansingATLASgau, &b_GroomedJet_AK5_PF_mass_cleansingATLASgau);
+   fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_cleansingCMSjvf", GroomedJet_AK5_PF_mass_cleansingCMSjvf, &b_GroomedJet_AK5_PF_mass_cleansingCMSjvf);
+   fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_cleansingCMSlin", GroomedJet_AK5_PF_mass_cleansingCMSlin, &b_GroomedJet_AK5_PF_mass_cleansingCMSlin);
+   fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_cleansingCMSgau", GroomedJet_AK5_PF_mass_cleansingCMSgau, &b_GroomedJet_AK5_PF_mass_cleansingCMSgau);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_tr", GroomedJet_AK5_PF_mass_tr, &b_GroomedJet_AK5_PF_mass_tr);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_ft", GroomedJet_AK5_PF_mass_ft, &b_GroomedJet_AK5_PF_mass_ft);
    fChain->SetBranchAddress("GroomedJet_AK5_PF_mass_pr", GroomedJet_AK5_PF_mass_pr, &b_GroomedJet_AK5_PF_mass_pr);
@@ -1137,7 +1172,12 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_rho4Area", GroomedJet_AK5_PFCHS_mass_rho4Area, &b_GroomedJet_AK5_PFCHS_mass_rho4Area);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_rhoG4Area", GroomedJet_AK5_PFCHS_mass_rhoG4Area, &b_GroomedJet_AK5_PFCHS_mass_rhoG4Area);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_rhom4Area", GroomedJet_AK5_PFCHS_mass_rhom4Area, &b_GroomedJet_AK5_PFCHS_mass_rhom4Area);
-   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_cleansing", GroomedJet_AK5_PFCHS_mass_cleansing, &b_GroomedJet_AK5_PFCHS_mass_cleansing);
+   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_cleansingATLASjvf", GroomedJet_AK5_PFCHS_mass_cleansingATLASjvf, &b_GroomedJet_AK5_PFCHS_mass_cleansingATLASjvf);
+   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_cleansingATLASlin", GroomedJet_AK5_PFCHS_mass_cleansingATLASlin, &b_GroomedJet_AK5_PFCHS_mass_cleansingATLASlin);
+   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_cleansingATLASgau", GroomedJet_AK5_PFCHS_mass_cleansingATLASgau, &b_GroomedJet_AK5_PFCHS_mass_cleansingATLASgau);
+   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_cleansingCMSjvf", GroomedJet_AK5_PFCHS_mass_cleansingCMSjvf, &b_GroomedJet_AK5_PFCHS_mass_cleansingCMSjvf);
+   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_cleansingCMSlin", GroomedJet_AK5_PFCHS_mass_cleansingCMSlin, &b_GroomedJet_AK5_PFCHS_mass_cleansingCMSlin);
+   fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_cleansingCMSgau", GroomedJet_AK5_PFCHS_mass_cleansingCMSgau, &b_GroomedJet_AK5_PFCHS_mass_cleansingCMSgau);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_tr", GroomedJet_AK5_PFCHS_mass_tr, &b_GroomedJet_AK5_PFCHS_mass_tr);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_ft", GroomedJet_AK5_PFCHS_mass_ft, &b_GroomedJet_AK5_PFCHS_mass_ft);
    fChain->SetBranchAddress("GroomedJet_AK5_PFCHS_mass_pr", GroomedJet_AK5_PFCHS_mass_pr, &b_GroomedJet_AK5_PFCHS_mass_pr);
@@ -1214,7 +1254,12 @@ void MyClass::Init(TTree *tree)
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_rho4Area", GenGroomedJet_AK5_GEN_mass_rho4Area, &b_GenGroomedJet_AK5_GEN_mass_rho4Area);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_rhoG4Area", GenGroomedJet_AK5_GEN_mass_rhoG4Area, &b_GenGroomedJet_AK5_GEN_mass_rhoG4Area);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_rhom4Area", GenGroomedJet_AK5_GEN_mass_rhom4Area, &b_GenGroomedJet_AK5_GEN_mass_rhom4Area);
-   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_cleansing", GenGroomedJet_AK5_GEN_mass_cleansing, &b_GenGroomedJet_AK5_GEN_mass_cleansing);
+   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_cleansingATLASjvf", GenGroomedJet_AK5_GEN_mass_cleansingATLASjvf, &b_GenGroomedJet_AK5_GEN_mass_cleansingATLASjvf);
+   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_cleansingATLASlin", GenGroomedJet_AK5_GEN_mass_cleansingATLASlin, &b_GenGroomedJet_AK5_GEN_mass_cleansingATLASlin);
+   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_cleansingATLASgau", GenGroomedJet_AK5_GEN_mass_cleansingATLASgau, &b_GenGroomedJet_AK5_GEN_mass_cleansingATLASgau);
+   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_cleansingCMSjvf", GenGroomedJet_AK5_GEN_mass_cleansingCMSjvf, &b_GenGroomedJet_AK5_GEN_mass_cleansingCMSjvf);
+   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_cleansingCMSlin", GenGroomedJet_AK5_GEN_mass_cleansingCMSlin, &b_GenGroomedJet_AK5_GEN_mass_cleansingCMSlin);
+   fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_cleansingCMSgau", GenGroomedJet_AK5_GEN_mass_cleansingCMSgau, &b_GenGroomedJet_AK5_GEN_mass_cleansingCMSgau);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_tr", GenGroomedJet_AK5_GEN_mass_tr, &b_GenGroomedJet_AK5_GEN_mass_tr);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_ft", GenGroomedJet_AK5_GEN_mass_ft, &b_GenGroomedJet_AK5_GEN_mass_ft);
    fChain->SetBranchAddress("GenGroomedJet_AK5_GEN_mass_pr", GenGroomedJet_AK5_GEN_mass_pr, &b_GenGroomedJet_AK5_GEN_mass_pr);
