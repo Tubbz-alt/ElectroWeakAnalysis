@@ -90,7 +90,7 @@ namespace ewk
 			~GroomedJetFiller(){ };
 
 			/// To be called once per event to fill the values for groomed jets
-			void fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles);        
+			void fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles, bool doJetCleansing=0, std::vector<fastjet::PseudoJet> FJparticles_hardcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_pileupcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_fullneutral=std::vector<fastjet::PseudoJet>() );        
 
 			// ----------member data ---------------------------
 			static const int NUM_JET_MAX = 6;
@@ -199,7 +199,12 @@ namespace ewk
 			float jetmass_rho4Area[NUM_JET_MAX];
 			float jetmass_rhoG4Area[NUM_JET_MAX];
 			float jetmass_rhom4Area[NUM_JET_MAX];
-			float jetmass_cleansing[NUM_JET_MAX];
+			float jetmass_cleansingATLASjvf[NUM_JET_MAX];
+			float jetmass_cleansingATLASlin[NUM_JET_MAX];
+			float jetmass_cleansingATLASgau[NUM_JET_MAX];
+			float jetmass_cleansingCMSjvf[NUM_JET_MAX];
+			float jetmass_cleansingCMSlin[NUM_JET_MAX];
+			float jetmass_cleansingCMSgau[NUM_JET_MAX];
 			float jetmass_tr[NUM_JET_MAX];
 			float jetmass_ft[NUM_JET_MAX];
 			float jetmass_pr[NUM_JET_MAX];
