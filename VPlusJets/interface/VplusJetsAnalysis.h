@@ -100,8 +100,8 @@ namespace ewk
 
     std::auto_ptr<ewk::GroomedJetFiller> AK5groomedJetFiller_PF;
     std::auto_ptr<ewk::GroomedJetFiller> AK5groomedJetFiller_PFCHS;
-    std::auto_ptr<ewk::GroomedJetFiller> AK8groomedJetFiller;
-    std::auto_ptr<ewk::GroomedJetFiller> AK12groomedJetFiller;
+    std::auto_ptr<ewk::GroomedJetFiller> AK8groomedJetFiller_PF;
+    std::auto_ptr<ewk::GroomedJetFiller> AK12groomedJetFiller_PF;
     std::auto_ptr<ewk::GroomedJetFiller> CA8groomedJetFiller;
     std::auto_ptr<ewk::GroomedJetFiller> CA12groomedJetFiller;
 
