@@ -57,7 +57,7 @@ Bool_t MyClass::Select()
 }
 
 void MyClass::Loop(){
-	//LoopAK5();
+	LoopAK5();
 	LoopAK8();
 }
 
