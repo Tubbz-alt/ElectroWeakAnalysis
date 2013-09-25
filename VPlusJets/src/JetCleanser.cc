@@ -364,6 +364,7 @@ std::vector< std::vector<fastjet::PseudoJet> > ClusterSets(const fastjet::JetDef
 	// cluster
 	fastjet::ClusterSequence *cs = new fastjet::ClusterSequence( full_set, jet_def );
 	std::vector<fastjet::PseudoJet> jets = sorted_by_pt( cs->inclusive_jets(ptmin) );
+	cs->delete_self_when_unused();
 
 	// construct sets
 	std::vector< std::vector<fastjet::PseudoJet> > follow_jets;
