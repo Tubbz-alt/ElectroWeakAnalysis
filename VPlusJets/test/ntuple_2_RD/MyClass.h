@@ -1230,6 +1230,7 @@ public :
    MyClass(TTree *tree=0);
    virtual ~MyClass();
    virtual Int_t    Cut(Long64_t entry);
+   virtual Bool_t   Select();
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
