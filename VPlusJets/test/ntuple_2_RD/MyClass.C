@@ -1,8 +1,10 @@
 #define MyClass_cxx
 #include "MyClass.h"
 #include <TH2.h>
+#include <TGraph.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TLatex.h>
 #include "TMath.h"
 #include "iostream"
 using namespace std;
@@ -22,14 +24,36 @@ void Draw_and_Save(TH1D h1){
 	c1->Print(Form("%s.png",h1.GetTitle()));
 	delete c1;
 }
-void Draw_and_Save(TH2D h2){
+void Draw_and_Save(TH2D h2, char* addtional_info=""){
 	h2.Write();
 	TCanvas *c1 = new TCanvas(Form("c1_%s",h2.GetTitle()),Form("c1_%s",h2.GetTitle()),200,10,600,600);
 	c1->cd();
 	h2.Draw("box");
+	if( addtional_info){
+		TLatex tl;
+		tl.SetTextSize(0.04 ); tl.SetTextAlign(13);
+		tl.DrawLatex(h2.GetXaxis()->GetXmin()*0.9+h2.GetXaxis()->GetXmax()*0.1,h2.GetYaxis()->GetXmin()*0.1+h2.GetYaxis()->GetXmax()*0.9,addtional_info);
+	};
 	//c1->Print(Form("%s.pdf",h2.GetTitle()));
 	c1->Print(Form("%s.png",h2.GetTitle()));
 	delete c1;
+}
+
+Bool_t MyClass::Select()
+{
+// This function may be called from Loop.
+// returns  1 if entry is accepted.
+// returns -1 otherwise.
+   if(!( Z_pt>100 && Z_mass>65 && Z_mass<105 ))return 0;
+   if(!( GenGroomedJet_AK5_GEN_pt[0]>100 ))return 0;
+
+   Double_t tmp_AK5_GEN_eta = GenGroomedJet_AK5_GEN_eta[0];
+   Double_t tmp_AK5_GEN_phi = GenGroomedJet_AK5_GEN_phi[0];
+   Double_t tmpDeltaPhi_Vj = TMath::Sqrt( (Z_phi-tmp_AK5_GEN_phi)*(Z_phi-tmp_AK5_GEN_phi) );
+   Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_AK5_GEN_eta)*(Z_eta-tmp_AK5_GEN_eta) + (Z_phi-tmp_AK5_GEN_phi)*(Z_phi-tmp_AK5_GEN_phi) );
+
+   if(!( tmpDeltaPhi_Vj>2.0 && tmpDeltaR_Vj>1.0 ))return 0;
+   return 1;
 }
 
 void MyClass::Loop(){
@@ -247,6 +271,7 @@ void MyClass::LoopAK5()
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
 		// if (Cut(ientry) < 0) continue;
+		if (!Select())continue;
 
 		gen_jet_eta=GenGroomedJet_AK5_GEN_eta[0];
 		gen_jet_phi=GenGroomedJet_AK5_GEN_phi[0];
@@ -786,7 +811,7 @@ void MyClass::LoopAK8()
 
 
 	Int_t nbin_rho=50; Double_t rhomin=0.; Double_t rhomax=50.;
-	Int_t nbin_mass=40;Double_t jetmass_min=0;Double_t jetmass_max=80.;
+	Int_t nbin_mass=60;Double_t jetmass_min=0;Double_t jetmass_max=300.;
 
 	TH1D h1_nPV("h1_nPV","h1_nPV",50,0,50);
 
@@ -863,6 +888,21 @@ void MyClass::LoopAK8()
 	TH2D h2_AK8_PF_mass_cleansingCMSlin("h2_AK8_PF_mass_cleansingCMSlin","h2_AK8_PF_mass_cleansingCMSlin; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
 	TH2D h2_AK8_PF_mass_cleansingCMSgau("h2_AK8_PF_mass_cleansingCMSgau","h2_AK8_PF_mass_cleansingCMSgau; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
 
+	//calculate correlationFactor;
+	Int_t num_points=0;
+	TGraph gr_AK8_GEN_mass;
+	TGraph gr_AK8_PF_mass_uncorr;
+	TGraph gr_AK8_PF_mass_rhoArea;
+	TGraph gr_AK8_PF_mass_rhoGArea;
+	TGraph gr_AK8_PF_mass_rho4Area;
+	TGraph gr_AK8_PF_mass_rhoG4Area;
+	TGraph gr_AK8_PF_mass_rhom4Area;
+	TGraph gr_AK8_PF_mass_cleansingATLASjvf;
+	TGraph gr_AK8_PF_mass_cleansingATLASlin;
+	TGraph gr_AK8_PF_mass_cleansingATLASgau;
+	TGraph gr_AK8_PF_mass_cleansingCMSjvf;
+	TGraph gr_AK8_PF_mass_cleansingCMSlin;
+	TGraph gr_AK8_PF_mass_cleansingCMSgau;
 
 
 	// For GEN-RECO matching
@@ -875,6 +915,7 @@ void MyClass::LoopAK8()
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
 		// if (Cut(ientry) < 0) continue;
+		if (!Select())continue;
 
 		gen_jet_eta=GenGroomedJet_AK8_GEN_eta[0];
 		gen_jet_phi=GenGroomedJet_AK8_GEN_phi[0];
@@ -1008,7 +1049,6 @@ void MyClass::LoopAK8()
 			h1_AK8_PF_mass_cleansingCMSlin.Fill(tmp_AK8_PF_mass_cleansingCMSlin);
 			h1_AK8_PF_mass_cleansingCMSgau.Fill(tmp_AK8_PF_mass_cleansingCMSgau);
 
-
 			h2_AK8_GEN_mass.Fill(tmp_AK8_GEN_mass, tmp_AK8_GEN_mass            ); 
 			h2_AK8_PF_mass_uncorr.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_uncorr  );
 			h2_AK8_PF_mass_rhoArea.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhoArea );
@@ -1023,6 +1063,22 @@ void MyClass::LoopAK8()
 			h2_AK8_PF_mass_cleansingCMSlin.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSlin);
 			h2_AK8_PF_mass_cleansingCMSgau.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSgau);
 
+
+			gr_AK8_GEN_mass.SetPoint(num_points, tmp_AK8_GEN_mass, tmp_AK8_GEN_mass            ); 
+			gr_AK8_PF_mass_uncorr.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_uncorr  );
+			gr_AK8_PF_mass_rhoArea.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhoArea );
+			gr_AK8_PF_mass_rhoGArea.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhoGArea);
+			gr_AK8_PF_mass_rho4Area.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rho4Area);
+			gr_AK8_PF_mass_rhoG4Area.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhoG4Area);
+			gr_AK8_PF_mass_rhom4Area.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhom4Area);
+			gr_AK8_PF_mass_cleansingATLASjvf.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASjvf);
+			gr_AK8_PF_mass_cleansingATLASlin.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASlin);
+			gr_AK8_PF_mass_cleansingATLASgau.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASgau);
+			gr_AK8_PF_mass_cleansingCMSjvf.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSjvf);
+			gr_AK8_PF_mass_cleansingCMSlin.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSlin);
+			gr_AK8_PF_mass_cleansingCMSgau.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSgau);
+			num_points++;
+
 		}
 		//PF matching efficiency
 		dr = TMath::Sqrt( (gen_jet_eta-tmp_AK8_PF_eta)*(gen_jet_eta-tmp_AK8_PF_eta) + (gen_jet_phi-tmp_AK8_PF_phi)*(gen_jet_phi-tmp_AK8_PF_phi) ) ;
@@ -1030,12 +1086,12 @@ void MyClass::LoopAK8()
 	}
 
 
-	Draw_and_Save(h1_AK8_PF);
+	/*Draw_and_Save(h1_AK8_PF);
 	Draw_and_Save(h1_AK8_PF_uncorr);
 	Draw_and_Save(h1_AK8_PF_l1_rhoSW);
 	Draw_and_Save(h1_AK8_PF_l1_rhoHand);
 	Draw_and_Save(h1_AK8_PF_l1_rhoHand2);
-	Draw_and_Save(h1_AK8_PF_l1_rhoGrid);
+	Draw_and_Save(h1_AK8_PF_l1_rhoGrid);*/
 
 	Draw_and_Save(h1_area_PF);
 
@@ -1045,27 +1101,27 @@ void MyClass::LoopAK8()
 	Draw_and_Save(h1_AK8_GEN_eta);
 	Draw_and_Save(h1_AK8_GEN_zjet_dr);
 	Draw_and_Save(h1_AK8_GEN_zjet_dphi);
-	Draw_and_Save(h1_AK8_GEN_rhoSW);
+	/*Draw_and_Save(h1_AK8_GEN_rhoSW);
 	Draw_and_Save(h1_AK8_GEN_rhoHand);
 	Draw_and_Save(h1_AK8_GEN_rhoHand2);
 	Draw_and_Save(h1_AK8_GEN_rhoGrid);
 	Draw_and_Save(h2_AK8_GEN_rhoSW_vs_nPV);
 	Draw_and_Save(h2_AK8_GEN_rhoHand_vs_nPV);
 	Draw_and_Save(h2_AK8_GEN_rhoHand2_vs_nPV);
-	Draw_and_Save(h2_AK8_GEN_rhoGrid_vs_nPV);
+	Draw_and_Save(h2_AK8_GEN_rhoGrid_vs_nPV);*/
 
 	Draw_and_Save(h1_AK8_PF_pt_uncorr);
 	Draw_and_Save(h1_AK8_PF_eta);
 	Draw_and_Save(h1_AK8_PF_zjet_dr);
 	Draw_and_Save(h1_AK8_PF_zjet_dphi);
-	Draw_and_Save(h1_AK8_PF_rhoSW);
+	/*Draw_and_Save(h1_AK8_PF_rhoSW);
 	Draw_and_Save(h1_AK8_PF_rhoHand);
 	Draw_and_Save(h1_AK8_PF_rhoHand2);
 	Draw_and_Save(h1_AK8_PF_rhoGrid);
 	Draw_and_Save(h2_AK8_PF_rhoSW_vs_nPV);
 	Draw_and_Save(h2_AK8_PF_rhoHand_vs_nPV);
 	Draw_and_Save(h2_AK8_PF_rhoHand2_vs_nPV);
-	Draw_and_Save(h2_AK8_PF_rhoGrid_vs_nPV);
+	Draw_and_Save(h2_AK8_PF_rhoGrid_vs_nPV);*/
 
 	Draw_and_Save(h1_PF_match);
 
@@ -1083,17 +1139,17 @@ void MyClass::LoopAK8()
 	Draw_and_Save(h1_AK8_PF_mass_cleansingCMSlin   );
 	Draw_and_Save(h1_AK8_PF_mass_cleansingCMSgau   );
 
-	Draw_and_Save(h2_AK8_GEN_mass                );
-	Draw_and_Save(h2_AK8_PF_mass_uncorr      );
-	Draw_and_Save(h2_AK8_PF_mass_rhoArea     );
-	Draw_and_Save(h2_AK8_PF_mass_rhoGArea    );
-	Draw_and_Save(h2_AK8_PF_mass_rho4Area    );
-	Draw_and_Save(h2_AK8_PF_mass_rhoG4Area   );
-	Draw_and_Save(h2_AK8_PF_mass_rhom4Area   );
-	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASjvf   );
-	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASlin   );
-	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASgau   );
-	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSjvf   );
-	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSlin   );
-	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSgau   );
+	Draw_and_Save(h2_AK8_GEN_mass, Form("%g correlated", gr_AK8_GEN_mass.GetCorrelationFactor())   );
+	Draw_and_Save(h2_AK8_PF_mass_uncorr				, Form("%g correlated", gr_AK8_PF_mass_uncorr.GetCorrelationFactor())				 );
+	Draw_and_Save(h2_AK8_PF_mass_rhoArea			, Form("%g correlated", gr_AK8_PF_mass_rhoArea.GetCorrelationFactor())				);
+	Draw_and_Save(h2_AK8_PF_mass_rhoGArea			, Form("%g correlated", gr_AK8_PF_mass_rhoGArea.GetCorrelationFactor())				);
+	Draw_and_Save(h2_AK8_PF_mass_rho4Area			, Form("%g correlated", gr_AK8_PF_mass_rho4Area.GetCorrelationFactor())				);
+	Draw_and_Save(h2_AK8_PF_mass_rhoG4Area			, Form("%g correlated", gr_AK8_PF_mass_rhoG4Area.GetCorrelationFactor())				);
+	Draw_and_Save(h2_AK8_PF_mass_rhom4Area			, Form("%g correlated", gr_AK8_PF_mass_rhom4Area.GetCorrelationFactor())				);
+	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASjvf	, Form("%g correlated", gr_AK8_PF_mass_cleansingATLASjvf.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASlin	, Form("%g correlated", gr_AK8_PF_mass_cleansingATLASlin.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASgau	, Form("%g correlated", gr_AK8_PF_mass_cleansingATLASgau.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSjvf	, Form("%g correlated", gr_AK8_PF_mass_cleansingCMSjvf.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSlin	, Form("%g correlated", gr_AK8_PF_mass_cleansingCMSlin.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSgau	, Form("%g correlated", gr_AK8_PF_mass_cleansingCMSgau.GetCorrelationFactor())		);
 }
