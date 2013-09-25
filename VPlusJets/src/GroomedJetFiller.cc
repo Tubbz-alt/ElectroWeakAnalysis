@@ -858,10 +858,10 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 
 		fastjet::JetDefinition subjet_def_A(fastjet::kt_algorithm, 0.3);
 		JetCleanser jvf_cleanser_A(subjet_def_A, JetCleanser::jvf_cleansing, JetCleanser::input_nc_together);
-		jvf_cleanser_A.SetTrimming(0.02);
+		//jvf_cleanser_A.SetTrimming(0.02);
+		jvf_cleanser_A.SetTrimming(0.01);
 
 		JetCleanser linear_cleanser_A(0.25, JetCleanser::linear_cleansing, JetCleanser::input_nc_together);
-		jvf_cleanser_A.SetTrimming(0.01);
 		linear_cleanser_A.SetLinearParameters(0.65);
 
 		JetCleanser gaussian_cleanser_A(0.3, JetCleanser::gaussian_cleansing, JetCleanser::input_nc_together);
@@ -915,10 +915,10 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 
 		fastjet::JetDefinition subjet_def_B(fastjet::kt_algorithm, 0.3);
 		JetCleanser jvf_cleanser_B(subjet_def_B, JetCleanser::jvf_cleansing, JetCleanser::input_nc_separate);
-		jvf_cleanser_B.SetTrimming(0.02);
+		//jvf_cleanser_B.SetTrimming(0.02);
+		jvf_cleanser_B.SetTrimming(0.01);
 
 		JetCleanser linear_cleanser_B(0.25, JetCleanser::linear_cleansing, JetCleanser::input_nc_separate);
-		jvf_cleanser_B.SetTrimming(0.01);
 		linear_cleanser_B.SetLinearParameters(0.65);
 
 		JetCleanser gaussian_cleanser_B(0.3, JetCleanser::gaussian_cleansing, JetCleanser::input_nc_separate);
