@@ -57,6 +57,8 @@
 
 #include "ElectroWeakAnalysis/VPlusJets/interface/GenericSubtractor.hh"
 #include "ElectroWeakAnalysis/VPlusJets/interface/ExampleShapes.hh"
+#include "ElectroWeakAnalysis/VPlusJets/interface/JetCleanser.hh"
+
 
 #include "iostream"
 using namespace std;
@@ -94,6 +96,7 @@ namespace ewk
 
 			// ----------member data ---------------------------
 			static const int NUM_JET_MAX = 6;
+			static const int NUM_JETCLEANSING_MODE_MAX = 50;
 
 		protected:
 			// 'mutable' because we will fill it from a 'const' method
@@ -111,6 +114,11 @@ namespace ewk
 			void computePlanarflow(std::vector<fastjet::PseudoJet> constits,double Rval,fastjet::PseudoJet jet,std::string mJetAlgo,float &planarflow);
 			float computeJetCharge( std::vector<fastjet::PseudoJet> constits, std::vector<float> pdgIds, float Ejet );        
 			float getPdgIdCharge( float fid );        
+
+			//Jet Cleansing
+			JetCleanser makeJVFCleanser(fastjet::JetDefinition subjet_def, std::string projectmode="CMS", double fcut=-1.0, int nsj=-1 );//projectmode: CMS or ATLAS
+			JetCleanser makeLinearCleanser(fastjet::JetDefinition subjet_def, double linear_para0,std::string projectmode="CMS", double fcut=-1, int nsj=-1 );//projectmode: CMS or ATLAS
+			JetCleanser makeGausCleanser(fastjet::JetDefinition subjet_def, double gaus_para0, double gaus_para1, double gaus_para2, double gaus_para3, std::string projectmode="CMS", double fcut=-1, int nsj=-1 );//projectmode: CMS or ATLAS
 
 			// ----------member data ---------------------------
 			TTree* tree_;
@@ -165,6 +173,11 @@ namespace ewk
 			float jetpt_L1_rhoHand2[NUM_JET_MAX];//rho from kt6PF Hand2
 			float jetpt_L1_rhoGrid[NUM_JET_MAX];//rho from kt6PF Grid
 
+			float jetpt_rho4A[NUM_JET_MAX];
+			float jetpt_rhom4A[NUM_JET_MAX];
+			float jetpt_JetCleansing[NUM_JET_MAX];
+			float jetpt_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
+
 			float jetpt_tr_uncorr[NUM_JET_MAX];
 			float jetpt_tr[NUM_JET_MAX];
 			float jeteta_tr[NUM_JET_MAX];
@@ -199,12 +212,13 @@ namespace ewk
 			float jetmass_rho4Area[NUM_JET_MAX];
 			float jetmass_rhoG4Area[NUM_JET_MAX];
 			float jetmass_rhom4Area[NUM_JET_MAX];
-			float jetmass_cleansingATLASjvf[NUM_JET_MAX];
-			float jetmass_cleansingATLASlin[NUM_JET_MAX];
-			float jetmass_cleansingATLASgau[NUM_JET_MAX];
-			float jetmass_cleansingCMSjvf[NUM_JET_MAX];
-			float jetmass_cleansingCMSlin[NUM_JET_MAX];
-			float jetmass_cleansingCMSgau[NUM_JET_MAX];
+			float jetmass_JetCleansingATLASjvf[NUM_JET_MAX];
+			float jetmass_JetCleansingATLASlin[NUM_JET_MAX];
+			float jetmass_JetCleansingATLASgau[NUM_JET_MAX];
+			float jetmass_JetCleansingCMSjvf[NUM_JET_MAX];
+			float jetmass_JetCleansingCMSlin[NUM_JET_MAX];
+			float jetmass_JetCleansingCMSgau[NUM_JET_MAX];
+			float jetmass_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float jetmass_tr[NUM_JET_MAX];
 			float jetmass_ft[NUM_JET_MAX];
 			float jetmass_pr[NUM_JET_MAX];
