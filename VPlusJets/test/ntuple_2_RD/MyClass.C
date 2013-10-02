@@ -24,6 +24,39 @@ void Draw_and_Save(TH1D h1){
 	c1->Print(Form("%s.png",h1.GetTitle()));
 	delete c1;
 }
+void Draw_and_Save(TH1D h1, TH1D h2){
+	TCanvas *c1 = new TCanvas(Form("c1_%s_and_%s",h1.GetTitle(),h2.GetTitle()),Form("c1_%s_%s",h1.GetTitle(),h2.GetTitle()),200,10,600,600);
+	c1->cd();
+	h1.GetYaxis()->SetRangeUser(0., TMath::Max(h1.GetMaximum(), h2.GetMaximum())*1.2);
+	h1.Draw();
+	h2.Draw("same");
+	//c1->Print(Form("%s.pdf",h1.GetTitle()));
+	c1->Print(Form("%s_and_%s.png",h1.GetTitle(),h2.GetTitle()));
+	delete c1;
+}
+void Draw_and_Save(TH1D h1, TH1D h2, TH1D h3){
+	TCanvas *c1 = new TCanvas(Form("c1_%s_and_%s_and_%s",h1.GetTitle(),h2.GetTitle(),h3.GetTitle()),Form("c1_%s_and_%s_and_%s",h1.GetTitle(),h2.GetTitle(),h3.GetTitle()),200,10,600,600);
+	c1->cd();
+	h1.GetYaxis()->SetRangeUser(0., TMath::Max(h1.GetMaximum(), h3.GetMaximum())*1.2);
+	h1.Draw();
+	h2.Draw("same");
+	h3.Draw("same");
+	//c1->Print(Form("%s.pdf",h1.GetTitle()));
+	c1->Print(Form("%s_and_%s_and_%s.png",h1.GetTitle(),h2.GetTitle(),h3.GetTitle()));
+	delete c1;
+}
+void Draw_and_Save(TH1D h1, TH1D h2, TH1D h3, TH1D h4){
+	TCanvas *c1 = new TCanvas(Form("c1_%s_and_%s_and_%s_and_%s",h1.GetTitle(),h2.GetTitle(),h3.GetTitle(),h4.GetTitle()), Form("c1_%s_and_%s_and_%s_and_%s",h1.GetTitle(),h2.GetTitle(),h3.GetTitle(),h4.GetTitle()),200,10,600,600);
+	c1->cd();
+	h1.GetYaxis()->SetRangeUser(0., TMath::Max(h1.GetMaximum(), h4.GetMaximum())*1.2);
+	h1.Draw();
+	h2.Draw("same");
+	h3.Draw("same");
+	h4.Draw("same");
+	//c1->Print(Form("%s.pdf",h1.GetTitle()));
+	c1->Print(Form("%s_and_%s_and_%s_and_%s.png",h1.GetTitle(),h2.GetTitle(),h3.GetTitle(),h4.GetTitle()));
+	delete c1;
+}
 void Draw_and_Save(TH2D h2, char* addtional_info=""){
 	h2.Write();
 	TCanvas *c1 = new TCanvas(Form("c1_%s",h2.GetTitle()),Form("c1_%s",h2.GetTitle()),200,10,600,600);
@@ -45,19 +78,18 @@ Bool_t MyClass::Select()
 // returns  1 if entry is accepted.
 // returns -1 otherwise.
    if(!( Z_pt>100 && Z_mass>65 && Z_mass<105 ))return 0;
-   if(!( GenGroomedJet_AK5_GEN_pt[0]>100 ))return 0;
+   if(!( GenGroomedJet_AK8_GEN_pt[0]>100 ))return 0;
 
    Double_t tmp_AK5_GEN_eta = GenGroomedJet_AK5_GEN_eta[0];
    Double_t tmp_AK5_GEN_phi = GenGroomedJet_AK5_GEN_phi[0];
-   Double_t tmpDeltaPhi_Vj = TMath::Sqrt( (Z_phi-tmp_AK5_GEN_phi)*(Z_phi-tmp_AK5_GEN_phi) );
    Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_AK5_GEN_eta)*(Z_eta-tmp_AK5_GEN_eta) + (Z_phi-tmp_AK5_GEN_phi)*(Z_phi-tmp_AK5_GEN_phi) );
 
-   if(!( tmpDeltaPhi_Vj>2.0 && tmpDeltaR_Vj>1.0 ))return 0;
+   if(!( tmpDeltaR_Vj>2.0 ))return 0;
    return 1;
 }
 
 void MyClass::Loop(){
-	LoopAK5();
+	//LoopAK5();
 	LoopAK8();
 }
 
@@ -123,12 +155,12 @@ void MyClass::LoopAK5()
 	Double_t tmp_AK5_PF_mass_rho4Area=0.;
 	Double_t tmp_AK5_PF_mass_rhoG4Area=0.;
 	Double_t tmp_AK5_PF_mass_rhom4Area=0.;
-	Double_t tmp_AK5_PF_mass_cleansingATLASjvf=0.;
-	Double_t tmp_AK5_PF_mass_cleansingATLASlin=0.;
-	Double_t tmp_AK5_PF_mass_cleansingATLASgau=0.;
-	Double_t tmp_AK5_PF_mass_cleansingCMSjvf=0.;
-	Double_t tmp_AK5_PF_mass_cleansingCMSlin=0.;
-	Double_t tmp_AK5_PF_mass_cleansingCMSgau=0.;
+	Double_t tmp_AK5_PF_mass_JetCleansingATLASjvf=0.;
+	Double_t tmp_AK5_PF_mass_JetCleansingATLASlin=0.;
+	Double_t tmp_AK5_PF_mass_JetCleansingATLASgau=0.;
+	Double_t tmp_AK5_PF_mass_JetCleansingCMSjvf=0.;
+	Double_t tmp_AK5_PF_mass_JetCleansingCMSlin=0.;
+	Double_t tmp_AK5_PF_mass_JetCleansingCMSgau=0.;
 
 
 	Double_t tmp_AK5_PFCHS_mass_uncorr=0.;
@@ -141,6 +173,8 @@ void MyClass::LoopAK5()
 	Double_t rhomin=0.; Double_t rhomax=50.;
 
 	TH1D h1_nPV("h1_nPV","h1_nPV",50,0,50);
+	TH1D h1_z_mass("h1_z_mass","h1_z_mass",60,60,120);
+	TH1D h1_muplus_Pt("h1_muplus_Pt","h1_muplus_Pt",40,0,400);
 
 	TH1D h1_AK5_GEN_pt("h1_AK5_GEN_pt","h1_AK5_GEN_pt",50,0,200); h1_AK5_GEN_pt.SetLineColor(kRed);
 	TH1D h1_AK5_GEN_eta("h1_AK5_GEN_eta","h1_AK5_GEN_eta",50,-2.5,2.5); h1_AK5_GEN_eta.SetLineColor(kRed);
@@ -194,30 +228,36 @@ void MyClass::LoopAK5()
 	TH1D h1_PF_match("h1_PF_match","h1_PF_match",50,0,1.); h1_PF_match.SetLineColor(kRed);
 	TH1D h1_PFCHS_match("h1_PFCHS_match","h1_PFCHS_match",50,0,1.);
 
+	// Jet Pt
+	Int_t nbin_pt=40;Double_t jetpt_min=50;Double_t jetpt_max=450.;
+	TH1D h1_PFCor_Pt_afterL1("h1_PFCor_Pt_afterL1","h1_PFCor_Pt_afterL1;Jet Pt",nbin_pt, jetpt_min, jetpt_max);
+	TH1D h1_AK5_PF_Pt_l1_rhoHand("h1_AK5_PF_Pt_l1_rhoHand","h1_AK5_PF_Pt_l1_rhoHand;Jet Pt",nbin_pt, jetpt_min, jetpt_max);
+	TH1D h1_AK5_PFCHS_Pt_l1_rhoHand("h1_AK5_PFCHS_Pt_l1_rhoHand","h1_AK5_PFCHS_Pt_l1_rhoHand;Jet Pt",nbin_pt, jetpt_min, jetpt_max);
 	// JetPt/GenPt
-	TH1D h1_PFCor("h1_PFCor","h1_PFCor",50,0,2.5);
-	TH1D h1_PFCor_uncorr("h1_PFCor_uncorr","h1_PFCor_uncorr",50,0,2.5);
-	TH1D h1_PFCor_afterL1("h1_PFCor_afterL1","h1_PFCor_afterL1",50,0,2.5);
-	TH1D h1_PFCor_afterL2("h1_PFCor_afterL2","h1_PFCor_afterL2",50,0,2.5);
+	Int_t nbin_ratio=20; Double_t ratio_min=0.3; Double_t ratio_max=1.7; 
+	TH1D h1_PFCor("h1_PFCor","h1_PFCor",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_PFCor_uncorr("h1_PFCor_uncorr","h1_PFCor_uncorr",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_PFCor_afterL1("h1_PFCor_afterL1","h1_PFCor_afterL1",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_PFCor_afterL2("h1_PFCor_afterL2","h1_PFCor_afterL2",nbin_ratio, ratio_min, ratio_max);
 
-	TH1D h1_AK5_PF("h1_AK5_PF","h1_AK5_PF",50,0,2.5);
-	TH1D h1_AK5_PF_uncorr("h1_AK5_PF_uncorr","h1_AK5_PF_uncorr",50,0,2.5);
-	TH1D h1_AK5_PF_l1_rhoSW("h1_AK5_PF_l1_rhoSW","h1_AK5_PF_l1_rhoSW",50,0,2.5);
-	TH1D h1_AK5_PF_l1_rhoHand("h1_AK5_PF_l1_rhoHand","h1_AK5_PF_l1_rhoHand",50,0,2.5);
-	TH1D h1_AK5_PF_l1_rhoHand2("h1_AK5_PF_l1_rhoHand2","h1_AK5_PF_l1_rhoHand2",50,0,2.5);
-	TH1D h1_AK5_PF_l1_rhoGrid("h1_AK5_PF_l1_rhoGrid","h1_AK5_PF_l1_rhoGrid",50,0,2.5);
+	TH1D h1_AK5_PF("h1_AK5_PF","h1_AK5_PF",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PF_uncorr("h1_AK5_PF_uncorr","h1_AK5_PF_uncorr",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PF_l1_rhoSW("h1_AK5_PF_l1_rhoSW","h1_AK5_PF_l1_rhoSW",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PF_l1_rhoHand("h1_AK5_PF_l1_rhoHand","h1_AK5_PF_l1_rhoHand",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PF_l1_rhoHand2("h1_AK5_PF_l1_rhoHand2","h1_AK5_PF_l1_rhoHand2",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PF_l1_rhoGrid("h1_AK5_PF_l1_rhoGrid","h1_AK5_PF_l1_rhoGrid",nbin_ratio, ratio_min, ratio_max);
 
-	TH1D h1_AK5_PFCHS("h1_AK5_PFCHS","h1_AK5_PFCHS",50,0,2.5);
-	TH1D h1_AK5_PFCHS_uncorr("h1_AK5_PFCHS_uncorr","h1_AK5_PFCHS_uncorr",50,0,2.5);
-	TH1D h1_AK5_PFCHS_l1_rhoSW("h1_AK5_PFCHS_l1_rhoSW","h1_AK5_PFCHS_l1_rhoSW",50,0,2.5);
-	TH1D h1_AK5_PFCHS_l1_rhoHand("h1_AK5_PFCHS_l1_rhoHand","h1_AK5_PFCHS_l1_rhoHand",50,0,2.5);
-	TH1D h1_AK5_PFCHS_l1_rhoHand2("h1_AK5_PFCHS_l1_rhoHand2","h1_AK5_PFCHS_l1_rhoHand2",50,0,2.5);
-	TH1D h1_AK5_PFCHS_l1_rhoGrid("h1_AK5_PFCHS_l1_rhoGrid","h1_AK5_PFCHS_l1_rhoGrid",50,0,2.5);
+	TH1D h1_AK5_PFCHS("h1_AK5_PFCHS","h1_AK5_PFCHS",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PFCHS_uncorr("h1_AK5_PFCHS_uncorr","h1_AK5_PFCHS_uncorr",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PFCHS_l1_rhoSW("h1_AK5_PFCHS_l1_rhoSW","h1_AK5_PFCHS_l1_rhoSW",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PFCHS_l1_rhoHand("h1_AK5_PFCHS_l1_rhoHand","h1_AK5_PFCHS_l1_rhoHand",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PFCHS_l1_rhoHand2("h1_AK5_PFCHS_l1_rhoHand2","h1_AK5_PFCHS_l1_rhoHand2",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK5_PFCHS_l1_rhoGrid("h1_AK5_PFCHS_l1_rhoGrid","h1_AK5_PFCHS_l1_rhoGrid",nbin_ratio, ratio_min, ratio_max);
 
 	//area
-	TH1D h1_area_PFCor("h1_area_PFCor","h1_area_PFCor",50,0.6,1.1);
-	TH1D h1_area_PF("h1_area_PF","h1_area_PF",50,0.6,1.1);
-	TH1D h1_area_PFCHS("h1_area_PFCHS","h1_area_PFCHS",50,0.6,1.1);
+	TH1D h1_PFCor_area("h1_PFCor_area","h1_PFCor_area",50,0.6,1.1);
+	TH1D h1_AK5_PF_area("h1_AK5_PF_area","h1_AK5_PF_area",50,0.6,1.1);
+	TH1D h1_AK5_PFCHS_area("h1_AK5_PFCHS_area","h1_AK5_PFCHS_area",50,0.6,1.1);
 
 	//rho
 	TH1D h1_rho_PFCor("h1_rho_PFCor","h1_rho_PFCor",30,0,30);
@@ -235,12 +275,12 @@ void MyClass::LoopAK5()
 	TH1D h1_AK5_PF_mass_rho4Area("h1_AK5_PF_mass_rho4Area","h1_AK5_PF_mass_rho4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PF_mass_rhoG4Area("h1_AK5_PF_mass_rhoG4Area","h1_AK5_PF_mass_rhoG4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PF_mass_rhom4Area("h1_AK5_PF_mass_rhom4Area","h1_AK5_PF_mass_rhom4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PF_mass_cleansingATLASjvf("h1_AK5_PF_mass_cleansingATLASjvf","h1_AK5_PF_mass_cleansingATLASjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PF_mass_cleansingATLASlin("h1_AK5_PF_mass_cleansingATLASlin","h1_AK5_PF_mass_cleansingATLASlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PF_mass_cleansingATLASgau("h1_AK5_PF_mass_cleansingATLASgau","h1_AK5_PF_mass_cleansingATLASgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PF_mass_cleansingCMSjvf("h1_AK5_PF_mass_cleansingCMSjvf","h1_AK5_PF_mass_cleansingCMSjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PF_mass_cleansingCMSlin("h1_AK5_PF_mass_cleansingCMSlin","h1_AK5_PF_mass_cleansingCMSlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK5_PF_mass_cleansingCMSgau("h1_AK5_PF_mass_cleansingCMSgau","h1_AK5_PF_mass_cleansingCMSgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_JetCleansingATLASjvf("h1_AK5_PF_mass_JetCleansingATLASjvf","h1_AK5_PF_mass_JetCleansingATLASjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_JetCleansingATLASlin("h1_AK5_PF_mass_JetCleansingATLASlin","h1_AK5_PF_mass_JetCleansingATLASlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_JetCleansingATLASgau("h1_AK5_PF_mass_JetCleansingATLASgau","h1_AK5_PF_mass_JetCleansingATLASgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_JetCleansingCMSjvf("h1_AK5_PF_mass_JetCleansingCMSjvf","h1_AK5_PF_mass_JetCleansingCMSjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_JetCleansingCMSlin("h1_AK5_PF_mass_JetCleansingCMSlin","h1_AK5_PF_mass_JetCleansingCMSlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK5_PF_mass_JetCleansingCMSgau("h1_AK5_PF_mass_JetCleansingCMSgau","h1_AK5_PF_mass_JetCleansingCMSgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 
 	TH1D h1_AK5_PFCHS_mass_uncorr(   "h1_AK5_PFCHS_mass_uncorr",   "h1_AK5_PFCHS_mass_uncorr;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK5_PFCHS_mass_rhoArea(  "h1_AK5_PFCHS_mass_rhoArea",  "h1_AK5_PFCHS_mass_rhoArea;jet mass;",nbin_mass,jetmass_min,jetmass_max);
@@ -344,6 +384,7 @@ void MyClass::LoopAK5()
 			//PFCor L1
 			ratio = tmp_PFCor_Pt_afterL1/tmp_AK5_GEN_pt;
 			h1_PFCor_afterL1.Fill(ratio);
+			h1_PFCor_Pt_afterL1.Fill(tmp_PFCor_Pt_afterL1);
 			//PFCor L2
 			ratio = tmp_PFCor_Pt_afterL2/tmp_AK5_GEN_pt;
 			h1_PFCor_afterL2.Fill(ratio);
@@ -360,6 +401,7 @@ void MyClass::LoopAK5()
 			//AK5 rhohand
 			ratio = tmp_AK5_PF_pt_L1_rhoHand/tmp_AK5_GEN_pt;
 			h1_AK5_PF_l1_rhoHand.Fill(ratio);
+			h1_AK5_PF_Pt_l1_rhoHand.Fill(tmp_AK5_PF_pt_L1_rhoHand);
 
 
 			h2_AK5_PFCHS_ratioHand_vs_nPV.Fill(tmp_event_nPV, ratio);
@@ -386,6 +428,7 @@ void MyClass::LoopAK5()
 
 			ratio = tmp_AK5_PFCHS_pt_L1_rhoHand/tmp_AK5_GEN_pt;
 			h1_AK5_PFCHS_l1_rhoHand.Fill(ratio);
+			h1_AK5_PFCHS_Pt_l1_rhoHand.Fill(tmp_AK5_PFCHS_pt_L1_rhoHand);
 
 			ratio = tmp_AK5_PFCHS_pt_L1_rhoHand2/tmp_AK5_GEN_pt;
 			h1_AK5_PFCHS_l1_rhoHand2.Fill(ratio);
@@ -422,6 +465,10 @@ void MyClass::LoopAK5()
 			h1_AK5_PFCHS_zjet_dphi.Fill(dphi);
 			//nPV
 			h1_nPV.Fill(tmp_event_nPV);
+			//z mass
+			h1_z_mass.Fill(Z_mass);
+			//muplus pt
+			h1_muplus_Pt.Fill(Z_muplus_pt);
 			//rho
 			h1_AK5_GEN_rhoSW.Fill(tmp_AK5_GEN_rhoSW);
 			h1_AK5_PF_rhoSW.Fill(tmp_AK5_PF_rhoSW);
@@ -439,9 +486,9 @@ void MyClass::LoopAK5()
 			h1_AK5_PF_rhoGrid.Fill(tmp_AK5_PF_rhoGrid);
 			h1_AK5_PFCHS_rhoGrid.Fill(tmp_AK5_PFCHS_rhoGrid);
 
-			h1_area_PFCor.Fill(JetPFCor_Area[i_PFCorJet_matching_PFCHS]);
-			h1_area_PF.Fill(GroomedJet_AK5_PF_area[0]);  
-			h1_area_PFCHS.Fill(GroomedJet_AK5_PFCHS_area[0]); 
+			h1_PFCor_area.Fill(JetPFCor_Area[i_PFCorJet_matching_PFCHS]);
+			h1_AK5_PF_area.Fill(GroomedJet_AK5_PF_area[0]);  
+			h1_AK5_PFCHS_area.Fill(GroomedJet_AK5_PFCHS_area[0]); 
 
 			/*//h1_rho_PFCor.Fill(); 
 			  h1_rhoSW_PF.Fill(GroomedJet_AK5_PF_rhoSW); 
@@ -479,12 +526,12 @@ void MyClass::LoopAK5()
 			tmp_AK5_PF_mass_rho4Area=GroomedJet_AK5_PF_mass_rho4Area[0];
 			tmp_AK5_PF_mass_rhoG4Area=GroomedJet_AK5_PF_mass_rhoG4Area[0];
 			tmp_AK5_PF_mass_rhom4Area=GroomedJet_AK5_PF_mass_rhom4Area[0];
-			tmp_AK5_PF_mass_cleansingATLASjvf=GroomedJet_AK5_PF_mass_cleansingATLASjvf[0];
-			tmp_AK5_PF_mass_cleansingATLASlin=GroomedJet_AK5_PF_mass_cleansingATLASlin[0];
-			tmp_AK5_PF_mass_cleansingATLASgau=GroomedJet_AK5_PF_mass_cleansingATLASgau[0];
-			tmp_AK5_PF_mass_cleansingCMSjvf=GroomedJet_AK5_PF_mass_cleansingCMSjvf[0];
-			tmp_AK5_PF_mass_cleansingCMSlin=GroomedJet_AK5_PF_mass_cleansingCMSlin[0];
-			tmp_AK5_PF_mass_cleansingCMSgau=GroomedJet_AK5_PF_mass_cleansingCMSgau[0];
+			tmp_AK5_PF_mass_JetCleansingATLASjvf=GroomedJet_AK5_PF_mass_JetCleansingATLASjvf[0];
+			tmp_AK5_PF_mass_JetCleansingATLASlin=GroomedJet_AK5_PF_mass_JetCleansingATLASlin[0];
+			tmp_AK5_PF_mass_JetCleansingATLASgau=GroomedJet_AK5_PF_mass_JetCleansingATLASgau[0];
+			tmp_AK5_PF_mass_JetCleansingCMSjvf=GroomedJet_AK5_PF_mass_JetCleansingCMSjvf[0];
+			tmp_AK5_PF_mass_JetCleansingCMSlin=GroomedJet_AK5_PF_mass_JetCleansingCMSlin[0];
+			tmp_AK5_PF_mass_JetCleansingCMSgau=GroomedJet_AK5_PF_mass_JetCleansingCMSgau[0];
 			tmp_AK5_PFCHS_mass_uncorr=GroomedJet_AK5_PFCHS_mass_uncorr[0];
 			tmp_AK5_PFCHS_mass_rhoArea=GroomedJet_AK5_PFCHS_mass_rhoArea[0];
 			tmp_AK5_PFCHS_mass_rhoGArea=GroomedJet_AK5_PFCHS_mass_rhoG4Area[0];
@@ -500,12 +547,12 @@ void MyClass::LoopAK5()
 			h1_AK5_PF_mass_rho4Area.Fill(tmp_AK5_PF_mass_rho4Area);
 			h1_AK5_PF_mass_rhoG4Area.Fill(tmp_AK5_PF_mass_rhoG4Area);
 			h1_AK5_PF_mass_rhom4Area.Fill(tmp_AK5_PF_mass_rhom4Area);
-			h1_AK5_PF_mass_cleansingATLASjvf.Fill(tmp_AK5_PF_mass_cleansingATLASjvf);
-			h1_AK5_PF_mass_cleansingATLASlin.Fill(tmp_AK5_PF_mass_cleansingATLASlin);
-			h1_AK5_PF_mass_cleansingATLASgau.Fill(tmp_AK5_PF_mass_cleansingATLASgau);
-			h1_AK5_PF_mass_cleansingCMSjvf.Fill(tmp_AK5_PF_mass_cleansingCMSjvf);
-			h1_AK5_PF_mass_cleansingCMSlin.Fill(tmp_AK5_PF_mass_cleansingCMSlin);
-			h1_AK5_PF_mass_cleansingCMSgau.Fill(tmp_AK5_PF_mass_cleansingCMSgau);
+			h1_AK5_PF_mass_JetCleansingATLASjvf.Fill(tmp_AK5_PF_mass_JetCleansingATLASjvf);
+			h1_AK5_PF_mass_JetCleansingATLASlin.Fill(tmp_AK5_PF_mass_JetCleansingATLASlin);
+			h1_AK5_PF_mass_JetCleansingATLASgau.Fill(tmp_AK5_PF_mass_JetCleansingATLASgau);
+			h1_AK5_PF_mass_JetCleansingCMSjvf.Fill(tmp_AK5_PF_mass_JetCleansingCMSjvf);
+			h1_AK5_PF_mass_JetCleansingCMSlin.Fill(tmp_AK5_PF_mass_JetCleansingCMSlin);
+			h1_AK5_PF_mass_JetCleansingCMSgau.Fill(tmp_AK5_PF_mass_JetCleansingCMSgau);
 
 			h1_AK5_PFCHS_mass_uncorr.Fill(tmp_AK5_PFCHS_mass_uncorr);  
 			h1_AK5_PFCHS_mass_rhoArea.Fill(tmp_AK5_PFCHS_mass_rhoArea); 
@@ -604,23 +651,42 @@ void MyClass::LoopAK5()
 	Draw_and_Save(h1_PFCor);
 	Draw_and_Save(h1_PFCor_uncorr);
 	Draw_and_Save(h1_PFCor_afterL1);
+	Draw_and_Save(h1_PFCor_Pt_afterL1);
 	Draw_and_Save(h1_PFCor_afterL2);
 	Draw_and_Save(h1_AK5_PF);
 	Draw_and_Save(h1_AK5_PF_uncorr);
 	Draw_and_Save(h1_AK5_PF_l1_rhoSW);
 	Draw_and_Save(h1_AK5_PF_l1_rhoHand);
+	Draw_and_Save(h1_AK5_PF_Pt_l1_rhoHand);
 	Draw_and_Save(h1_AK5_PF_l1_rhoHand2);
 	Draw_and_Save(h1_AK5_PF_l1_rhoGrid);
 	Draw_and_Save(h1_AK5_PFCHS);
 	Draw_and_Save(h1_AK5_PFCHS_uncorr);
 	Draw_and_Save(h1_AK5_PFCHS_l1_rhoSW);
 	Draw_and_Save(h1_AK5_PFCHS_l1_rhoHand);
+	Draw_and_Save(h1_AK5_PFCHS_Pt_l1_rhoHand);
 	Draw_and_Save(h1_AK5_PFCHS_l1_rhoHand2);
 	Draw_and_Save(h1_AK5_PFCHS_l1_rhoGrid);
 
-	Draw_and_Save(h1_area_PFCor);
-	Draw_and_Save(h1_area_PF);
-	Draw_and_Save(h1_area_PFCHS);
+	//compare PFCor, AK5PF, AK5PFCHS
+	h1_PFCor_Pt_afterL1.SetLineColor(kBlue);
+	h1_AK5_PF_Pt_l1_rhoHand.SetLineColor(kBlack); h1_AK5_PF_Pt_l1_rhoHand.SetLineStyle(2);
+	h1_AK5_PFCHS_Pt_l1_rhoHand.SetLineColor(kRed); h1_AK5_PFCHS_Pt_l1_rhoHand.SetLineStyle(2);
+	Draw_and_Save(h1_PFCor_Pt_afterL1, h1_AK5_PF_Pt_l1_rhoHand, h1_AK5_PFCHS_Pt_l1_rhoHand);
+	//compare PFCor, AK5PF, AK5PFCHS
+	h1_PFCor_afterL1.SetLineColor(kBlue);
+	h1_AK5_PF_l1_rhoHand.SetLineColor(kBlack); h1_AK5_PF_l1_rhoHand.SetLineStyle(2);
+	h1_AK5_PFCHS_l1_rhoHand.SetLineColor(kRed); h1_AK5_PFCHS_l1_rhoHand.SetLineStyle(2);
+	Draw_and_Save(h1_PFCor_afterL1, h1_AK5_PF_l1_rhoHand, h1_AK5_PFCHS_l1_rhoHand);
+
+	Draw_and_Save(h1_PFCor_area);
+	Draw_and_Save(h1_AK5_PF_area);
+	Draw_and_Save(h1_AK5_PFCHS_area);
+
+	h1_PFCor_area.SetLineColor(kBlue);
+	h1_AK5_PFCHS_area.SetLineColor(kBlack);
+	h1_AK5_PFCHS_area.SetLineStyle(2);
+	Draw_and_Save(h1_PFCor_area, h1_AK5_PFCHS_area);
 
 	//h1_rho_PFCor); 
 	/*h1_rhoSW_PF); 
@@ -634,6 +700,8 @@ void MyClass::LoopAK5()
 
 
 	Draw_and_Save(h1_nPV);
+	Draw_and_Save(h1_z_mass);
+	Draw_and_Save(h1_muplus_Pt);
 
 	Draw_and_Save(h1_AK5_GEN_pt);
 	Draw_and_Save(h1_AK5_GEN_eta);
@@ -660,6 +728,14 @@ void MyClass::LoopAK5()
 	Draw_and_Save(h2_AK5_PF_rhoHand_vs_nPV);
 	Draw_and_Save(h2_AK5_PF_rhoHand2_vs_nPV);
 	Draw_and_Save(h2_AK5_PF_rhoGrid_vs_nPV);
+
+
+	h1_AK5_PF_rhoSW.SetLineColor(kBlue);
+	h1_AK5_PF_rhoHand.SetLineColor(kBlack);
+	h1_AK5_PF_rhoHand.SetLineStyle(2);
+	Draw_and_Save(h1_AK5_PF_rhoSW, h1_AK5_PF_rhoHand);
+
+
 
 	Draw_and_Save(h1_AK5_PFCHS_pt_uncorr);
 	Draw_and_Save(h1_AK5_PFCHS_eta);
@@ -691,12 +767,12 @@ void MyClass::LoopAK5()
 	Draw_and_Save(h1_AK5_PF_mass_rho4Area    );
 	Draw_and_Save(h1_AK5_PF_mass_rhoG4Area   );
 	Draw_and_Save(h1_AK5_PF_mass_rhom4Area   );
-	Draw_and_Save(h1_AK5_PF_mass_cleansingATLASjvf   );
-	Draw_and_Save(h1_AK5_PF_mass_cleansingATLASlin   );
-	Draw_and_Save(h1_AK5_PF_mass_cleansingATLASgau   );
-	Draw_and_Save(h1_AK5_PF_mass_cleansingCMSjvf   );
-	Draw_and_Save(h1_AK5_PF_mass_cleansingCMSlin   );
-	Draw_and_Save(h1_AK5_PF_mass_cleansingCMSgau   );
+	Draw_and_Save(h1_AK5_PF_mass_JetCleansingATLASjvf   );
+	Draw_and_Save(h1_AK5_PF_mass_JetCleansingATLASlin   );
+	Draw_and_Save(h1_AK5_PF_mass_JetCleansingATLASgau   );
+	Draw_and_Save(h1_AK5_PF_mass_JetCleansingCMSjvf   );
+	Draw_and_Save(h1_AK5_PF_mass_JetCleansingCMSlin   );
+	Draw_and_Save(h1_AK5_PF_mass_JetCleansingCMSgau   );
 	Draw_and_Save(h1_AK5_PFCHS_mass_uncorr   );
 	Draw_and_Save(h1_AK5_PFCHS_mass_rhoArea  );
 	Draw_and_Save(h1_AK5_PFCHS_mass_rhoGArea );
@@ -720,13 +796,13 @@ void MyClass::LoopAK5()
 	//h1_AK5_PF_mass_rhoG4Area.Draw("same");
 	h1_AK5_PF_mass_rhom4Area.SetLineColor(5);
 	h1_AK5_PF_mass_rhom4Area.Draw("same");
-	//h1_AK5_PF_mass_cleansingATLASjvf.Draw("same");
-	//h1_AK5_PF_mass_cleansingATLASlin.Draw("same");
-	//h1_AK5_PF_mass_cleansingATLASgau.Draw("same");
-	//h1_AK5_PF_mass_cleansingCMSjvf.Draw("same");
-	h1_AK5_PF_mass_cleansingCMSlin.SetLineColor(6);
-	h1_AK5_PF_mass_cleansingCMSlin.Draw("same");
-	//h1_AK5_PF_mass_cleansingCMSgau.Draw("same");
+	//h1_AK5_PF_mass_JetCleansingATLASjvf.Draw("same");
+	//h1_AK5_PF_mass_JetCleansingATLASlin.Draw("same");
+	//h1_AK5_PF_mass_JetCleansingATLASgau.Draw("same");
+	//h1_AK5_PF_mass_JetCleansingCMSjvf.Draw("same");
+	h1_AK5_PF_mass_JetCleansingCMSlin.SetLineColor(6);
+	h1_AK5_PF_mass_JetCleansingCMSlin.Draw("same");
+	//h1_AK5_PF_mass_JetCleansingCMSgau.Draw("same");
 	c15->Print("GEN_vs_PFCor_vs_PF_jetmass.png");
 
 
@@ -783,6 +859,9 @@ void MyClass::LoopAK8()
 	Double_t tmp_AK8_PF_pt_L1_rhoHand=0.;
 	Double_t tmp_AK8_PF_pt_L1_rhoHand2=0.;
 	Double_t tmp_AK8_PF_pt_L1_rhoGrid=0.;
+	Double_t tmp_AK8_PF_pt_rho4A=0.;
+	Double_t tmp_AK8_PF_pt_rhom4A=0.;
+	Double_t tmp_AK8_PF_pt_JetCleansing=0.;
 	Double_t tmp_AK8_PF_rhoSW=0.;
 	Double_t tmp_AK8_PF_rhoHand=0.;
 	Double_t tmp_AK8_PF_rhoHand2=0.;
@@ -802,23 +881,27 @@ void MyClass::LoopAK8()
 	Double_t tmp_AK8_PF_mass_rho4Area=0.;
 	Double_t tmp_AK8_PF_mass_rhoG4Area=0.;
 	Double_t tmp_AK8_PF_mass_rhom4Area=0.;
-	Double_t tmp_AK8_PF_mass_cleansingATLASjvf=0.;
-	Double_t tmp_AK8_PF_mass_cleansingATLASlin=0.;
-	Double_t tmp_AK8_PF_mass_cleansingATLASgau=0.;
-	Double_t tmp_AK8_PF_mass_cleansingCMSjvf=0.;
-	Double_t tmp_AK8_PF_mass_cleansingCMSlin=0.;
-	Double_t tmp_AK8_PF_mass_cleansingCMSgau=0.;
+	Double_t tmp_AK8_PF_mass_JetCleansingATLASjvf=0.;
+	Double_t tmp_AK8_PF_mass_JetCleansingATLASlin=0.;
+	Double_t tmp_AK8_PF_mass_JetCleansingATLASgau=0.;
+	Double_t tmp_AK8_PF_mass_JetCleansingCMSjvf=0.;
+	Double_t tmp_AK8_PF_mass_JetCleansingCMSlin=0.;
+	Double_t tmp_AK8_PF_mass_JetCleansingCMSgau=0.;
 
 
 	Int_t nbin_rho=50; Double_t rhomin=0.; Double_t rhomax=50.;
 	Int_t nbin_mass=60;Double_t jetmass_min=0;Double_t jetmass_max=300.;
+	Int_t nbin_pt=40;Double_t jetpt_min=50;Double_t jetpt_max=450.;
 
-	TH1D h1_nPV("h1_nPV","h1_nPV",50,0,50);
+	TH1D h1_nPV("h1_nPV","h1_nPV;nPV",50,0,50);
+	TH1D h1_z_mass("h1_z_mass","h1_z_mass;Z mass",60,60,120);
+	TH1D h1_z_Pt("h1_z_Pt","h1_z_Pt;Z Pt",60,60,360);
+	TH1D h1_muplus_Pt("h1_muplus_Pt","h1_muplus_Pt;#mu^{+} Pt",40,0,400);
 
-	TH1D h1_AK8_GEN_pt("h1_AK8_GEN_pt","h1_AK8_GEN_pt",50,0,200); h1_AK8_GEN_pt.SetLineColor(kRed);
+	TH1D h1_AK8_GEN_pt("h1_AK8_GEN_pt","h1_AK8_GEN_pt;Jet Pt",nbin_pt, jetpt_min, jetpt_max); h1_AK8_GEN_pt.SetLineColor(kRed);
 	TH1D h1_AK8_GEN_eta("h1_AK8_GEN_eta","h1_AK8_GEN_eta",50,-2.5,2.5); h1_AK8_GEN_eta.SetLineColor(kRed);
 	TH1D h1_AK8_GEN_phi("h1_AK8_GEN_phi","h1_AK8_GEN_phi",50,-4,4); h1_AK8_GEN_phi.SetLineColor(kRed);
-	TH1D h1_AK8_GEN_zjet_dr("h1_AK8_GEN_zjet_dr","h1_AK8_GEN_zjet_dr",50,0,10); h1_AK8_GEN_zjet_dr.SetLineColor(kRed);
+	TH1D h1_AK8_GEN_zjet_dr("h1_AK8_GEN_zjet_dr","h1_AK8_GEN_zjet_dr;dR(Z,J)",50,0,10); h1_AK8_GEN_zjet_dr.SetLineColor(kRed);
 	TH1D h1_AK8_GEN_zjet_dphi("h1_AK8_GEN_zjet_dphi","h1_AK8_GEN_zjet_dphi",50,0,5); h1_AK8_GEN_zjet_dphi.SetLineColor(kRed);
 
 	TH1D h1_AK8_GEN_rhoSW("h1_AK8_GEN_rhoSW","h1_AK8_GEN_rhoSW",nbin_rho,rhomin,rhomax); h1_AK8_GEN_rhoSW.SetLineColor(kRed);
@@ -830,10 +913,15 @@ void MyClass::LoopAK8()
 	TH2D h2_AK8_GEN_rhoHand2_vs_nPV("h2_AK8_GEN_rhoHand2_vs_nPV","h2_AK8_GEN_rhoHand2_vs_nPV",nbin_rho,rhomin,rhomax,50,0,50); h2_AK8_GEN_rhoHand2_vs_nPV.SetMarkerColor(kRed);
 	TH2D h2_AK8_GEN_rhoGrid_vs_nPV("h2_AK8_GEN_rhoGrid_vs_nPV","h2_AK8_GEN_rhoGrid_vs_nPV",nbin_rho,rhomin,rhomax,50,0,50); h2_AK8_GEN_rhoGrid_vs_nPV.SetMarkerColor(kRed);
 
-	TH1D h1_AK8_PF_pt_uncorr("h1_AK8_PF_pt_uncorr","h1_AK8_PF_pt_uncorr",50,0,200);
+	TH1D h1_AK8_PF_pt_uncorr("h1_AK8_PF_pt_uncorr","h1_AK8_PF_pt_uncorr;Jet Pt",nbin_pt, jetpt_min, jetpt_max);
+	TH1D h1_AK8_PF_pt_l1rhoHand("h1_AK8_PF_pt_l1rhoHand","h1_AK8_PF_pt_l1rhoHand",nbin_pt, jetpt_min, jetpt_max);
+	TH1D h1_AK8_PF_pt_l1rhoGrid("h1_AK8_PF_pt_l1rhoGrid","h1_AK8_PF_pt_l1rhoGrid",nbin_pt, jetpt_min, jetpt_max);
+	TH1D h1_AK8_PF_pt_rho4A("h1_AK8_PF_pt_rho4A","h1_AK8_PF_pt_rho4A",nbin_pt, jetpt_min, jetpt_max);
+	TH1D h1_AK8_PF_pt_rhom4A("h1_AK8_PF_pt_rhom4A","h1_AK8_PF_pt_rhom4A",nbin_pt, jetpt_min, jetpt_max);
+	TH1D h1_AK8_PF_pt_JetCleansing("h1_AK8_PF_pt_JetCleansing","h1_AK8_PF_pt_JetCleansing",nbin_pt, jetpt_min, jetpt_max);
 	TH1D h1_AK8_PF_eta("h1_AK8_PF_eta","h1_AK8_PF_eta",50,-2.5,2.5);
 	TH1D h1_AK8_PF_phi("h1_AK8_PF_phi","h1_AK8_PF_phi",50,-4,4);
-	TH1D h1_AK8_PF_zjet_dr("h1_AK8_PF_zjet_dr","h1_AK8_PF_zjet_dr",50,0,10);
+	TH1D h1_AK8_PF_zjet_dr("h1_AK8_PF_zjet_dr","h1_AK8_PF_zjet_dr;dR(Z,J)",50,0,7);
 	TH1D h1_AK8_PF_zjet_dphi("h1_AK8_PF_zjet_dphi","h1_AK8_PF_zjet_dphi",50,0,5);
 
 	TH1D h1_AK8_PF_rhoSW("h1_AK8_PF_rhoSW","h1_AK8_PF_rhoSW",nbin_rho,rhomin,rhomax);
@@ -848,15 +936,20 @@ void MyClass::LoopAK8()
 	TH1D h1_PF_match("h1_PF_match","h1_PF_match",50,0,1.); h1_PF_match.SetLineColor(kRed);//matching with GEN
 
 	// JetPt/GenPt
-	TH1D h1_AK8_PF("h1_AK8_PF","h1_AK8_PF",50,0,2.5);
-	TH1D h1_AK8_PF_uncorr("h1_AK8_PF_uncorr","h1_AK8_PF_uncorr",50,0,2.5);
-	TH1D h1_AK8_PF_l1_rhoSW("h1_AK8_PF_l1_rhoSW","h1_AK8_PF_l1_rhoSW",50,0,2.5);
-	TH1D h1_AK8_PF_l1_rhoHand("h1_AK8_PF_l1_rhoHand","h1_AK8_PF_l1_rhoHand",50,0,2.5);
-	TH1D h1_AK8_PF_l1_rhoHand2("h1_AK8_PF_l1_rhoHand2","h1_AK8_PF_l1_rhoHand2",50,0,2.5);
-	TH1D h1_AK8_PF_l1_rhoGrid("h1_AK8_PF_l1_rhoGrid","h1_AK8_PF_l1_rhoGrid",50,0,2.5);
+	Int_t nbin_ratio=20; Double_t ratio_min=0.3; Double_t ratio_max=1.7; 
+	TH1D h1_AK8_PF_recogenptratio("h1_AK8_PF_recogenptratio","h1_AK8_PF_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK8_PF_uncorr_recogenptratio("h1_AK8_PF_uncorr_recogenptratio","h1_AK8_PF_uncorr_recogenptratio;Reco/Gen Pt ratio ",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK8_PF_l1rhosw_recogenptratio("h1_AK8_PF_l1rhosw_recogenptratio","h1_AK8_PF_l1rhosw_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK8_PF_l1rhoHand_recogenptratio("h1_AK8_PF_l1rhoHand_recogenptratio","h1_AK8_PF_l1rhoHand_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK8_PF_l1rhoHand2_recogenptratio("h1_AK8_PF_l1rhoHand2_recogenptratio","h1_AK8_PF_l1rhoHand2_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK8_PF_l1rhoGrid_recogenptratio("h1_AK8_PF_l1rhoGrid_recogenptratio","h1_AK8_PF_l1rhoGrid_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+
+	TH1D h1_AK8_PF_rho4A_recogenptratio("h1_AK8_PF_rho4A_recogenptratio","h1_AK8_PF_rho4A_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK8_PF_rhom4A_recogenptratio("h1_AK8_PF_rhom4A_recogenptratio","h1_AK8_PF_rhom4A_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+	TH1D h1_AK8_PF_JetCleansing_recogenptratio("h1_AK8_PF_JetCleansing_recogenptratio","h1_AK8_PF_JetCleansing_recogenptratio",nbin_ratio, ratio_min, ratio_max);
 
 	//area
-	TH1D h1_area_PF("h1_area_PF","h1_area_PF",50,0.6,1.1);
+	TH1D h1_AK8_PF_area("h1_AK8_PF_area","h1_AK8_PF_area",50,0.6,1.1);
 
 	//mass
 	TH1D h1_AK8_GEN_mass("h1_AK8_GEN_mass","h1_AK8_GEN_mass;jet mass;",nbin_mass,jetmass_min,jetmass_max); h1_AK8_GEN_mass.SetLineColor(kRed);
@@ -866,13 +959,12 @@ void MyClass::LoopAK8()
 	TH1D h1_AK8_PF_mass_rho4Area("h1_AK8_PF_mass_rho4Area","h1_AK8_PF_mass_rho4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK8_PF_mass_rhoG4Area("h1_AK8_PF_mass_rhoG4Area","h1_AK8_PF_mass_rhoG4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	TH1D h1_AK8_PF_mass_rhom4Area("h1_AK8_PF_mass_rhom4Area","h1_AK8_PF_mass_rhom4Area;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK8_PF_mass_cleansingATLASjvf("h1_AK8_PF_mass_cleansingATLASjvf","h1_AK8_PF_mass_cleansingATLASjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK8_PF_mass_cleansingATLASlin("h1_AK8_PF_mass_cleansingATLASlin","h1_AK8_PF_mass_cleansingATLASlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK8_PF_mass_cleansingATLASgau("h1_AK8_PF_mass_cleansingATLASgau","h1_AK8_PF_mass_cleansingATLASgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK8_PF_mass_cleansingCMSjvf("h1_AK8_PF_mass_cleansingCMSjvf","h1_AK8_PF_mass_cleansingCMSjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK8_PF_mass_cleansingCMSlin("h1_AK8_PF_mass_cleansingCMSlin","h1_AK8_PF_mass_cleansingCMSlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-	TH1D h1_AK8_PF_mass_cleansingCMSgau("h1_AK8_PF_mass_cleansingCMSgau","h1_AK8_PF_mass_cleansingCMSgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
-
+	TH1D h1_AK8_PF_mass_JetCleansingATLASjvf("h1_AK8_PF_mass_JetCleansingATLASjvf","h1_AK8_PF_mass_JetCleansingATLASjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK8_PF_mass_JetCleansingATLASlin("h1_AK8_PF_mass_JetCleansingATLASlin","h1_AK8_PF_mass_JetCleansingATLASlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK8_PF_mass_JetCleansingATLASgau("h1_AK8_PF_mass_JetCleansingATLASgau","h1_AK8_PF_mass_JetCleansingATLASgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK8_PF_mass_JetCleansingCMSjvf("h1_AK8_PF_mass_JetCleansingCMSjvf","h1_AK8_PF_mass_JetCleansingCMSjvf;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK8_PF_mass_JetCleansingCMSlin("h1_AK8_PF_mass_JetCleansingCMSlin","h1_AK8_PF_mass_JetCleansingCMSlin;jet mass;",nbin_mass,jetmass_min,jetmass_max);
+	TH1D h1_AK8_PF_mass_JetCleansingCMSgau("h1_AK8_PF_mass_JetCleansingCMSgau","h1_AK8_PF_mass_JetCleansingCMSgau;jet mass;",nbin_mass,jetmass_min,jetmass_max);
 	// reco mass VS gen mass
 	TH2D h2_AK8_GEN_mass("h2_AK8_GEN_mass","h2_AK8_GEN_mass; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max); 
 	TH2D h2_AK8_PF_mass_uncorr("h2_AK8_PF_mass_uncorr","h2_AK8_PF_mass_uncorr; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
@@ -881,12 +973,12 @@ void MyClass::LoopAK8()
 	TH2D h2_AK8_PF_mass_rho4Area("h2_AK8_PF_mass_rho4Area","h2_AK8_PF_mass_rho4Area; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
 	TH2D h2_AK8_PF_mass_rhoG4Area("h2_AK8_PF_mass_rhoG4Area","h2_AK8_PF_mass_rhoG4Area; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
 	TH2D h2_AK8_PF_mass_rhom4Area("h2_AK8_PF_mass_rhom4Area","h2_AK8_PF_mass_rhom4Area; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
-	TH2D h2_AK8_PF_mass_cleansingATLASjvf("h2_AK8_PF_mass_cleansingATLASjvf","h2_AK8_PF_mass_cleansingATLASjvf; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
-	TH2D h2_AK8_PF_mass_cleansingATLASlin("h2_AK8_PF_mass_cleansingATLASlin","h2_AK8_PF_mass_cleansingATLASlin; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
-	TH2D h2_AK8_PF_mass_cleansingATLASgau("h2_AK8_PF_mass_cleansingATLASgau","h2_AK8_PF_mass_cleansingATLASgau; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
-	TH2D h2_AK8_PF_mass_cleansingCMSjvf("h2_AK8_PF_mass_cleansingCMSjvf","h2_AK8_PF_mass_cleansingCMSjvf; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
-	TH2D h2_AK8_PF_mass_cleansingCMSlin("h2_AK8_PF_mass_cleansingCMSlin","h2_AK8_PF_mass_cleansingCMSlin; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
-	TH2D h2_AK8_PF_mass_cleansingCMSgau("h2_AK8_PF_mass_cleansingCMSgau","h2_AK8_PF_mass_cleansingCMSgau; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
+	TH2D h2_AK8_PF_mass_JetCleansingATLASjvf("h2_AK8_PF_mass_JetCleansingATLASjvf","h2_AK8_PF_mass_JetCleansingATLASjvf; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
+	TH2D h2_AK8_PF_mass_JetCleansingATLASlin("h2_AK8_PF_mass_JetCleansingATLASlin","h2_AK8_PF_mass_JetCleansingATLASlin; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
+	TH2D h2_AK8_PF_mass_JetCleansingATLASgau("h2_AK8_PF_mass_JetCleansingATLASgau","h2_AK8_PF_mass_JetCleansingATLASgau; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
+	TH2D h2_AK8_PF_mass_JetCleansingCMSjvf("h2_AK8_PF_mass_JetCleansingCMSjvf","h2_AK8_PF_mass_JetCleansingCMSjvf; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
+	TH2D h2_AK8_PF_mass_JetCleansingCMSlin("h2_AK8_PF_mass_JetCleansingCMSlin","h2_AK8_PF_mass_JetCleansingCMSlin; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
+	TH2D h2_AK8_PF_mass_JetCleansingCMSgau("h2_AK8_PF_mass_JetCleansingCMSgau","h2_AK8_PF_mass_JetCleansingCMSgau; gen jet mass; reco jet mass",nbin_mass,jetmass_min,jetmass_max, nbin_mass,jetmass_min,jetmass_max);
 
 	//calculate correlationFactor;
 	Int_t num_points=0;
@@ -897,12 +989,33 @@ void MyClass::LoopAK8()
 	TGraph gr_AK8_PF_mass_rho4Area;
 	TGraph gr_AK8_PF_mass_rhoG4Area;
 	TGraph gr_AK8_PF_mass_rhom4Area;
-	TGraph gr_AK8_PF_mass_cleansingATLASjvf;
-	TGraph gr_AK8_PF_mass_cleansingATLASlin;
-	TGraph gr_AK8_PF_mass_cleansingATLASgau;
-	TGraph gr_AK8_PF_mass_cleansingCMSjvf;
-	TGraph gr_AK8_PF_mass_cleansingCMSlin;
-	TGraph gr_AK8_PF_mass_cleansingCMSgau;
+	TGraph gr_AK8_PF_mass_JetCleansingATLASjvf;
+	TGraph gr_AK8_PF_mass_JetCleansingATLASlin;
+	TGraph gr_AK8_PF_mass_JetCleansingATLASgau;
+	TGraph gr_AK8_PF_mass_JetCleansingCMSjvf;
+	TGraph gr_AK8_PF_mass_JetCleansingCMSlin;
+	TGraph gr_AK8_PF_mass_JetCleansingCMSgau;
+
+
+	std::vector<TH1D> vect_h1_AK8_PF_mass_JetCleansing_DiffMode;
+	std::vector<TH1D> vect_h1_AK8_PF_pt_JetCleansing_DiffMode;
+	Int_t number_JetCleansing_DiffMode=0;
+	for(Int_t i=0;i<50;i++){
+		TH1D h1_AK8_PF_mass_JetCleansing_DiffMode(Form("h1_AK8_PF_mass_JetCleansing_DiffMode%i",i),Form("h1_AK8_PF_mass_JetCleansing_DiffMode%i;jet mass;",i),nbin_mass,jetmass_min,jetmass_max);
+		TH1D h1_AK8_PF_pt_JetCleansing_DiffMode(Form("h1_AK8_PF_pt_JetCleansing_DiffMode%i",i),Form("h1_AK8_PF_pt_JetCleansing_DiffMode%i;jet pT",i),nbin_pt, jetpt_min, jetpt_max);
+		vect_h1_AK8_PF_mass_JetCleansing_DiffMode.push_back(h1_AK8_PF_mass_JetCleansing_DiffMode);
+		vect_h1_AK8_PF_pt_JetCleansing_DiffMode.push_back(h1_AK8_PF_pt_JetCleansing_DiffMode);
+	}
+
+
+	std::vector<TH2D> vect_h2_AK8_PF_mass_JetCleansing_DiffMode;
+	std::vector<TGraph> vect_gr_AK8_PF_mass_JetCleansing_DiffMode;
+	for(Int_t i=0;i<50;i++){
+		TH2D h2_AK8_PF_mass_JetCleansing_DiffMode(Form("h2_AK8_PF_mass_JetCleansing_DiffMode%i",i),Form("h2_AK8_PF_mass_JetCleansing_DiffMode%i; gen jet mass; reco jet mass",i),nbin_mass,jetmass_min,jetmass_max,nbin_mass,jetmass_min,jetmass_max);
+		vect_h2_AK8_PF_mass_JetCleansing_DiffMode.push_back(h2_AK8_PF_mass_JetCleansing_DiffMode);
+		TGraph gr_AK8_PF_mass_JetCleansing_DiffMode;
+		vect_gr_AK8_PF_mass_JetCleansing_DiffMode.push_back(gr_AK8_PF_mass_JetCleansing_DiffMode);
+	}
 
 
 	// For GEN-RECO matching
@@ -940,6 +1053,10 @@ void MyClass::LoopAK8()
 			tmp_AK8_PF_pt_L1_rhoHand2 = GroomedJet_AK8_PF_pt_L1_rhoHand2[0];
 			tmp_AK8_PF_pt_L1_rhoGrid = GroomedJet_AK8_PF_pt_L1_rhoGrid[0];
 
+			tmp_AK8_PF_pt_rho4A = GroomedJet_AK8_PF_pt_rho4A[0];
+			tmp_AK8_PF_pt_rhom4A = GroomedJet_AK8_PF_pt_rhom4A[0];
+			tmp_AK8_PF_pt_JetCleansing = GroomedJet_AK8_PF_pt_JetCleansing[0];
+
 			tmp_event_nPV = event_nPV;
 
 			tmp_AK8_GEN_rhoSW = GenGroomedJet_AK8_GEN_rhoSW;
@@ -955,26 +1072,40 @@ void MyClass::LoopAK8()
 			//============= fill hist ==============
 			//AK8 PF
 			ratio = tmp_AK8_PF_pt/tmp_AK8_GEN_pt;
-			h1_AK8_PF.Fill(ratio);
+			h1_AK8_PF_recogenptratio.Fill(ratio);
 			//AK8 uncorr
 			ratio = tmp_AK8_PF_pt_uncorr/tmp_AK8_GEN_pt;
-			h1_AK8_PF_uncorr.Fill(ratio);
+			h1_AK8_PF_uncorr_recogenptratio.Fill(ratio);
 			//AK8 rhoSW
 			ratio = tmp_AK8_PF_pt_L1_rhoSW/tmp_AK8_GEN_pt;
-			h1_AK8_PF_l1_rhoSW.Fill(ratio);
+			h1_AK8_PF_l1rhosw_recogenptratio.Fill(ratio);
 			//AK8 rhohand
 			ratio = tmp_AK8_PF_pt_L1_rhoHand/tmp_AK8_GEN_pt;
-			h1_AK8_PF_l1_rhoHand.Fill(ratio);
+			h1_AK8_PF_l1rhoHand_recogenptratio.Fill(ratio);
 			//AK8 rhohand2
 			ratio = tmp_AK8_PF_pt_L1_rhoHand2/tmp_AK8_GEN_pt;
-			h1_AK8_PF_l1_rhoHand2.Fill(ratio);
+			h1_AK8_PF_l1rhoHand2_recogenptratio.Fill(ratio);
 			//AK8 rhogrid
 			ratio = tmp_AK8_PF_pt_L1_rhoGrid/tmp_AK8_GEN_pt;
-			h1_AK8_PF_l1_rhoGrid.Fill(ratio);
+			h1_AK8_PF_l1rhoGrid_recogenptratio.Fill(ratio);
+
+			ratio = tmp_AK8_PF_pt_rho4A/tmp_AK8_GEN_pt;
+			h1_AK8_PF_rho4A_recogenptratio.Fill(ratio);
+
+			ratio = tmp_AK8_PF_pt_rhom4A/tmp_AK8_GEN_pt;
+			h1_AK8_PF_rhom4A_recogenptratio.Fill(ratio);
+
+			ratio = tmp_AK8_PF_pt_JetCleansing/tmp_AK8_GEN_pt;
+			h1_AK8_PF_JetCleansing_recogenptratio.Fill(ratio);
 
 			//pt
 			h1_AK8_GEN_pt.Fill(tmp_AK8_GEN_pt);
 			h1_AK8_PF_pt_uncorr.Fill(tmp_AK8_PF_pt_uncorr);// pt of PF is with wrong JEC now
+			h1_AK8_PF_pt_l1rhoHand.Fill(tmp_AK8_PF_pt_L1_rhoHand);// pt of PF is with wrong JEC now
+			h1_AK8_PF_pt_l1rhoGrid.Fill(tmp_AK8_PF_pt_L1_rhoGrid);// pt of PF is with wrong JEC now
+			h1_AK8_PF_pt_rho4A.Fill(tmp_AK8_PF_pt_rho4A);// 
+			h1_AK8_PF_pt_rhom4A.Fill(tmp_AK8_PF_pt_rhom4A);// 
+			h1_AK8_PF_pt_JetCleansing.Fill(tmp_AK8_PF_pt_JetCleansing);// 
 			//eta
 			h1_AK8_GEN_eta.Fill(tmp_AK8_GEN_eta);
 			h1_AK8_PF_eta.Fill(tmp_AK8_PF_eta);
@@ -993,6 +1124,12 @@ void MyClass::LoopAK8()
 			h1_AK8_PF_zjet_dphi.Fill(dphi);
 			//nPV
 			h1_nPV.Fill(tmp_event_nPV);
+			//z mass
+			h1_z_mass.Fill(Z_mass);
+			h1_z_Pt.Fill(Z_pt);
+			//muplus pt
+			h1_muplus_Pt.Fill(Z_muplus_pt);
+
 			//rho
 			h1_AK8_GEN_rhoSW.Fill(tmp_AK8_GEN_rhoSW);
 			h1_AK8_PF_rhoSW.Fill(tmp_AK8_PF_rhoSW);
@@ -1006,7 +1143,7 @@ void MyClass::LoopAK8()
 			h1_AK8_GEN_rhoGrid.Fill(tmp_AK8_GEN_rhoGrid);
 			h1_AK8_PF_rhoGrid.Fill(tmp_AK8_PF_rhoGrid);
 
-			h1_area_PF.Fill(GroomedJet_AK8_PF_area[0]);  
+			h1_AK8_PF_area.Fill(GroomedJet_AK8_PF_area[0]);  
 
 			//rho vs nPV
 			h2_AK8_GEN_rhoSW_vs_nPV.Fill(tmp_AK8_GEN_rhoSW,tmp_event_nPV);
@@ -1028,12 +1165,12 @@ void MyClass::LoopAK8()
 			tmp_AK8_PF_mass_rho4Area=GroomedJet_AK8_PF_mass_rho4Area[0];
 			tmp_AK8_PF_mass_rhoG4Area=GroomedJet_AK8_PF_mass_rhoG4Area[0];
 			tmp_AK8_PF_mass_rhom4Area=GroomedJet_AK8_PF_mass_rhom4Area[0];
-			tmp_AK8_PF_mass_cleansingATLASjvf=GroomedJet_AK8_PF_mass_cleansingATLASjvf[0];
-			tmp_AK8_PF_mass_cleansingATLASlin=GroomedJet_AK8_PF_mass_cleansingATLASlin[0];
-			tmp_AK8_PF_mass_cleansingATLASgau=GroomedJet_AK8_PF_mass_cleansingATLASgau[0];
-			tmp_AK8_PF_mass_cleansingCMSjvf=GroomedJet_AK8_PF_mass_cleansingCMSjvf[0];
-			tmp_AK8_PF_mass_cleansingCMSlin=GroomedJet_AK8_PF_mass_cleansingCMSlin[0];
-			tmp_AK8_PF_mass_cleansingCMSgau=GroomedJet_AK8_PF_mass_cleansingCMSgau[0];
+			tmp_AK8_PF_mass_JetCleansingATLASjvf=GroomedJet_AK8_PF_mass_JetCleansingATLASjvf[0];
+			tmp_AK8_PF_mass_JetCleansingATLASlin=GroomedJet_AK8_PF_mass_JetCleansingATLASlin[0];
+			tmp_AK8_PF_mass_JetCleansingATLASgau=GroomedJet_AK8_PF_mass_JetCleansingATLASgau[0];
+			tmp_AK8_PF_mass_JetCleansingCMSjvf=GroomedJet_AK8_PF_mass_JetCleansingCMSjvf[0];
+			tmp_AK8_PF_mass_JetCleansingCMSlin=GroomedJet_AK8_PF_mass_JetCleansingCMSlin[0];
+			tmp_AK8_PF_mass_JetCleansingCMSgau=GroomedJet_AK8_PF_mass_JetCleansingCMSgau[0];
 
 			h1_AK8_GEN_mass.Fill(tmp_AK8_GEN_mass            ); 
 			h1_AK8_PF_mass_uncorr.Fill(tmp_AK8_PF_mass_uncorr  );
@@ -1042,12 +1179,12 @@ void MyClass::LoopAK8()
 			h1_AK8_PF_mass_rho4Area.Fill(tmp_AK8_PF_mass_rho4Area);
 			h1_AK8_PF_mass_rhoG4Area.Fill(tmp_AK8_PF_mass_rhoG4Area);
 			h1_AK8_PF_mass_rhom4Area.Fill(tmp_AK8_PF_mass_rhom4Area);
-			h1_AK8_PF_mass_cleansingATLASjvf.Fill(tmp_AK8_PF_mass_cleansingATLASjvf);
-			h1_AK8_PF_mass_cleansingATLASlin.Fill(tmp_AK8_PF_mass_cleansingATLASlin);
-			h1_AK8_PF_mass_cleansingATLASgau.Fill(tmp_AK8_PF_mass_cleansingATLASgau);
-			h1_AK8_PF_mass_cleansingCMSjvf.Fill(tmp_AK8_PF_mass_cleansingCMSjvf);
-			h1_AK8_PF_mass_cleansingCMSlin.Fill(tmp_AK8_PF_mass_cleansingCMSlin);
-			h1_AK8_PF_mass_cleansingCMSgau.Fill(tmp_AK8_PF_mass_cleansingCMSgau);
+			h1_AK8_PF_mass_JetCleansingATLASjvf.Fill(tmp_AK8_PF_mass_JetCleansingATLASjvf);
+			h1_AK8_PF_mass_JetCleansingATLASlin.Fill(tmp_AK8_PF_mass_JetCleansingATLASlin);
+			h1_AK8_PF_mass_JetCleansingATLASgau.Fill(tmp_AK8_PF_mass_JetCleansingATLASgau);
+			h1_AK8_PF_mass_JetCleansingCMSjvf.Fill(tmp_AK8_PF_mass_JetCleansingCMSjvf);
+			h1_AK8_PF_mass_JetCleansingCMSlin.Fill(tmp_AK8_PF_mass_JetCleansingCMSlin);
+			h1_AK8_PF_mass_JetCleansingCMSgau.Fill(tmp_AK8_PF_mass_JetCleansingCMSgau);
 
 			h2_AK8_GEN_mass.Fill(tmp_AK8_GEN_mass, tmp_AK8_GEN_mass            ); 
 			h2_AK8_PF_mass_uncorr.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_uncorr  );
@@ -1056,12 +1193,12 @@ void MyClass::LoopAK8()
 			h2_AK8_PF_mass_rho4Area.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rho4Area);
 			h2_AK8_PF_mass_rhoG4Area.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhoG4Area);
 			h2_AK8_PF_mass_rhom4Area.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhom4Area);
-			h2_AK8_PF_mass_cleansingATLASjvf.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASjvf);
-			h2_AK8_PF_mass_cleansingATLASlin.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASlin);
-			h2_AK8_PF_mass_cleansingATLASgau.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASgau);
-			h2_AK8_PF_mass_cleansingCMSjvf.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSjvf);
-			h2_AK8_PF_mass_cleansingCMSlin.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSlin);
-			h2_AK8_PF_mass_cleansingCMSgau.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSgau);
+			h2_AK8_PF_mass_JetCleansingATLASjvf.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingATLASjvf);
+			h2_AK8_PF_mass_JetCleansingATLASlin.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingATLASlin);
+			h2_AK8_PF_mass_JetCleansingATLASgau.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingATLASgau);
+			h2_AK8_PF_mass_JetCleansingCMSjvf.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingCMSjvf);
+			h2_AK8_PF_mass_JetCleansingCMSlin.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingCMSlin);
+			h2_AK8_PF_mass_JetCleansingCMSgau.Fill(tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingCMSgau);
 
 
 			gr_AK8_GEN_mass.SetPoint(num_points, tmp_AK8_GEN_mass, tmp_AK8_GEN_mass            ); 
@@ -1071,12 +1208,25 @@ void MyClass::LoopAK8()
 			gr_AK8_PF_mass_rho4Area.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rho4Area);
 			gr_AK8_PF_mass_rhoG4Area.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhoG4Area);
 			gr_AK8_PF_mass_rhom4Area.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_rhom4Area);
-			gr_AK8_PF_mass_cleansingATLASjvf.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASjvf);
-			gr_AK8_PF_mass_cleansingATLASlin.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASlin);
-			gr_AK8_PF_mass_cleansingATLASgau.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingATLASgau);
-			gr_AK8_PF_mass_cleansingCMSjvf.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSjvf);
-			gr_AK8_PF_mass_cleansingCMSlin.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSlin);
-			gr_AK8_PF_mass_cleansingCMSgau.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_cleansingCMSgau);
+			gr_AK8_PF_mass_JetCleansingATLASjvf.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingATLASjvf);
+			gr_AK8_PF_mass_JetCleansingATLASlin.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingATLASlin);
+			gr_AK8_PF_mass_JetCleansingATLASgau.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingATLASgau);
+			gr_AK8_PF_mass_JetCleansingCMSjvf.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingCMSjvf);
+			gr_AK8_PF_mass_JetCleansingCMSlin.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingCMSlin);
+			gr_AK8_PF_mass_JetCleansingCMSgau.SetPoint(num_points,tmp_AK8_GEN_mass, tmp_AK8_PF_mass_JetCleansingCMSgau);
+
+			Int_t tmp_number_JetCleansing_DiffMode=number_JetCleansing_DiffMode;
+			if(tmp_number_JetCleansing_DiffMode==0)tmp_number_JetCleansing_DiffMode=50;
+			for(Int_t k=0;k<tmp_number_JetCleansing_DiffMode;k++){
+				if (GroomedJet_AK8_PF_mass_JetCleansing_DiffMode[k]>=0 && GroomedJet_AK8_PF_pt_JetCleansing_DiffMode[k]>=0){
+					vect_h1_AK8_PF_mass_JetCleansing_DiffMode[k].Fill(GroomedJet_AK8_PF_mass_JetCleansing_DiffMode[k]);
+					vect_h1_AK8_PF_pt_JetCleansing_DiffMode[k].Fill(GroomedJet_AK8_PF_pt_JetCleansing_DiffMode[k]);
+					vect_h2_AK8_PF_mass_JetCleansing_DiffMode[k].Fill(tmp_AK8_GEN_mass, GroomedJet_AK8_PF_mass_JetCleansing_DiffMode[k]);
+					vect_gr_AK8_PF_mass_JetCleansing_DiffMode[k].SetPoint(num_points,tmp_AK8_GEN_mass, GroomedJet_AK8_PF_mass_JetCleansing_DiffMode[k]);
+
+					if(tmp_number_JetCleansing_DiffMode==50)number_JetCleansing_DiffMode++;
+				}else{ break;}
+			}
 			num_points++;
 
 		}
@@ -1086,42 +1236,71 @@ void MyClass::LoopAK8()
 	}
 
 
-	/*Draw_and_Save(h1_AK8_PF);
-	Draw_and_Save(h1_AK8_PF_uncorr);
-	Draw_and_Save(h1_AK8_PF_l1_rhoSW);
-	Draw_and_Save(h1_AK8_PF_l1_rhoHand);
-	Draw_and_Save(h1_AK8_PF_l1_rhoHand2);
-	Draw_and_Save(h1_AK8_PF_l1_rhoGrid);*/
+	Draw_and_Save(h1_AK8_PF_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_uncorr_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_l1rhosw_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_l1rhoHand_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_l1rhoHand2_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_l1rhoGrid_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_rho4A_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_rhom4A_recogenptratio);
+	Draw_and_Save(h1_AK8_PF_JetCleansing_recogenptratio);
 
-	Draw_and_Save(h1_area_PF);
+	h1_AK8_PF_uncorr_recogenptratio.SetLineColor(1); h1_AK8_PF_uncorr_recogenptratio.SetLineStyle(2); h1_AK8_PF_uncorr_recogenptratio.SetLineWidth(2);
+	h1_AK8_PF_l1rhoHand_recogenptratio.SetLineColor(2);h1_AK8_PF_l1rhoHand_recogenptratio.SetLineStyle(2);h1_AK8_PF_l1rhoHand_recogenptratio.SetLineWidth(2);
+	h1_AK8_PF_rho4A_recogenptratio.SetLineColor(3);h1_AK8_PF_rho4A_recogenptratio.SetLineStyle(1);h1_AK8_PF_rho4A_recogenptratio.SetLineWidth(1);
+	h1_AK8_PF_rhom4A_recogenptratio.SetLineColor(4);h1_AK8_PF_rhom4A_recogenptratio.SetLineStyle(2);h1_AK8_PF_rhom4A_recogenptratio.SetLineWidth(2);
+	h1_AK8_PF_JetCleansing_recogenptratio.SetLineColor(6);h1_AK8_PF_JetCleansing_recogenptratio.SetLineStyle(1);h1_AK8_PF_JetCleansing_recogenptratio.SetLineWidth(1);
+	Draw_and_Save(h1_AK8_PF_uncorr_recogenptratio, h1_AK8_PF_l1rhoHand_recogenptratio, h1_AK8_PF_rho4A_recogenptratio );
+	Draw_and_Save(h1_AK8_PF_uncorr_recogenptratio, h1_AK8_PF_rhom4A_recogenptratio, h1_AK8_PF_JetCleansing_recogenptratio );
+
+	h1_AK8_GEN_pt.SetLineColor(1); 
+	h1_AK8_PF_pt_uncorr.SetLineColor(1); h1_AK8_PF_pt_uncorr.SetLineStyle(2); h1_AK8_PF_pt_uncorr.SetLineWidth(2);
+	h1_AK8_PF_pt_l1rhoHand.SetLineColor(2);h1_AK8_PF_pt_l1rhoHand.SetLineStyle(2);h1_AK8_PF_pt_l1rhoHand.SetLineWidth(2);
+	h1_AK8_PF_pt_rho4A.SetLineColor(3);h1_AK8_PF_pt_rho4A.SetLineStyle(1);
+	h1_AK8_PF_pt_rhom4A.SetLineColor(4);h1_AK8_PF_pt_rhom4A.SetLineStyle(2);h1_AK8_PF_pt_rhom4A.SetLineWidth(2);
+	h1_AK8_PF_pt_JetCleansing.SetLineColor(6);h1_AK8_PF_pt_JetCleansing.SetLineStyle(1);
+	Draw_and_Save(h1_AK8_GEN_pt, h1_AK8_PF_pt_uncorr, h1_AK8_PF_pt_l1rhoHand, h1_AK8_PF_pt_rho4A );
+	Draw_and_Save(h1_AK8_GEN_pt, h1_AK8_PF_pt_uncorr, h1_AK8_PF_pt_rhom4A, h1_AK8_PF_pt_JetCleansing );
+
+	Draw_and_Save(h1_AK8_PF_area);
 
 	Draw_and_Save(h1_nPV);
+	Draw_and_Save(h1_z_mass);
+	Draw_and_Save(h1_z_Pt);
+	Draw_and_Save(h1_muplus_Pt);
+
 
 	Draw_and_Save(h1_AK8_GEN_pt);
 	Draw_and_Save(h1_AK8_GEN_eta);
 	Draw_and_Save(h1_AK8_GEN_zjet_dr);
 	Draw_and_Save(h1_AK8_GEN_zjet_dphi);
 	/*Draw_and_Save(h1_AK8_GEN_rhoSW);
-	Draw_and_Save(h1_AK8_GEN_rhoHand);
-	Draw_and_Save(h1_AK8_GEN_rhoHand2);
-	Draw_and_Save(h1_AK8_GEN_rhoGrid);
-	Draw_and_Save(h2_AK8_GEN_rhoSW_vs_nPV);
-	Draw_and_Save(h2_AK8_GEN_rhoHand_vs_nPV);
-	Draw_and_Save(h2_AK8_GEN_rhoHand2_vs_nPV);
-	Draw_and_Save(h2_AK8_GEN_rhoGrid_vs_nPV);*/
+	  Draw_and_Save(h1_AK8_GEN_rhoHand);
+	  Draw_and_Save(h1_AK8_GEN_rhoHand2);
+	  Draw_and_Save(h1_AK8_GEN_rhoGrid);
+	  Draw_and_Save(h2_AK8_GEN_rhoSW_vs_nPV);
+	  Draw_and_Save(h2_AK8_GEN_rhoHand_vs_nPV);
+	  Draw_and_Save(h2_AK8_GEN_rhoHand2_vs_nPV);
+	  Draw_and_Save(h2_AK8_GEN_rhoGrid_vs_nPV);*/
 
 	Draw_and_Save(h1_AK8_PF_pt_uncorr);
+	Draw_and_Save(h1_AK8_PF_pt_l1rhoHand);
+	Draw_and_Save(h1_AK8_PF_pt_l1rhoGrid);
+	Draw_and_Save(h1_AK8_PF_pt_rho4A);
+	Draw_and_Save(h1_AK8_PF_pt_rhom4A);
+	Draw_and_Save(h1_AK8_PF_pt_JetCleansing);
 	Draw_and_Save(h1_AK8_PF_eta);
 	Draw_and_Save(h1_AK8_PF_zjet_dr);
 	Draw_and_Save(h1_AK8_PF_zjet_dphi);
-	/*Draw_and_Save(h1_AK8_PF_rhoSW);
+	Draw_and_Save(h1_AK8_PF_rhoSW);
 	Draw_and_Save(h1_AK8_PF_rhoHand);
 	Draw_and_Save(h1_AK8_PF_rhoHand2);
 	Draw_and_Save(h1_AK8_PF_rhoGrid);
 	Draw_and_Save(h2_AK8_PF_rhoSW_vs_nPV);
 	Draw_and_Save(h2_AK8_PF_rhoHand_vs_nPV);
 	Draw_and_Save(h2_AK8_PF_rhoHand2_vs_nPV);
-	Draw_and_Save(h2_AK8_PF_rhoGrid_vs_nPV);*/
+	Draw_and_Save(h2_AK8_PF_rhoGrid_vs_nPV);
 
 	Draw_and_Save(h1_PF_match);
 
@@ -1132,12 +1311,20 @@ void MyClass::LoopAK8()
 	Draw_and_Save(h1_AK8_PF_mass_rho4Area    );
 	Draw_and_Save(h1_AK8_PF_mass_rhoG4Area   );
 	Draw_and_Save(h1_AK8_PF_mass_rhom4Area   );
-	Draw_and_Save(h1_AK8_PF_mass_cleansingATLASjvf   );
-	Draw_and_Save(h1_AK8_PF_mass_cleansingATLASlin   );
-	Draw_and_Save(h1_AK8_PF_mass_cleansingATLASgau   );
-	Draw_and_Save(h1_AK8_PF_mass_cleansingCMSjvf   );
-	Draw_and_Save(h1_AK8_PF_mass_cleansingCMSlin   );
-	Draw_and_Save(h1_AK8_PF_mass_cleansingCMSgau   );
+	Draw_and_Save(h1_AK8_PF_mass_JetCleansingATLASjvf   );
+	Draw_and_Save(h1_AK8_PF_mass_JetCleansingATLASlin   );
+	Draw_and_Save(h1_AK8_PF_mass_JetCleansingATLASgau   );
+	Draw_and_Save(h1_AK8_PF_mass_JetCleansingCMSjvf   );
+	Draw_and_Save(h1_AK8_PF_mass_JetCleansingCMSlin   );
+	Draw_and_Save(h1_AK8_PF_mass_JetCleansingCMSgau   );
+
+	cout<<"number_JetCleansing_DiffMode="<<number_JetCleansing_DiffMode<<endl;
+	if (number_JetCleansing_DiffMode>50) number_JetCleansing_DiffMode=50;
+	for(Int_t k=0;k<number_JetCleansing_DiffMode;k++){
+		Draw_and_Save(vect_h1_AK8_PF_mass_JetCleansing_DiffMode[k]);
+		Draw_and_Save(vect_h1_AK8_PF_pt_JetCleansing_DiffMode[k]);
+		Draw_and_Save(vect_h2_AK8_PF_mass_JetCleansing_DiffMode[k]	, Form("%g correlated", vect_gr_AK8_PF_mass_JetCleansing_DiffMode[k].GetCorrelationFactor()));
+	}
 
 	Draw_and_Save(h2_AK8_GEN_mass, Form("%g correlated", gr_AK8_GEN_mass.GetCorrelationFactor())   );
 	Draw_and_Save(h2_AK8_PF_mass_uncorr				, Form("%g correlated", gr_AK8_PF_mass_uncorr.GetCorrelationFactor())				 );
@@ -1146,10 +1333,10 @@ void MyClass::LoopAK8()
 	Draw_and_Save(h2_AK8_PF_mass_rho4Area			, Form("%g correlated", gr_AK8_PF_mass_rho4Area.GetCorrelationFactor())				);
 	Draw_and_Save(h2_AK8_PF_mass_rhoG4Area			, Form("%g correlated", gr_AK8_PF_mass_rhoG4Area.GetCorrelationFactor())				);
 	Draw_and_Save(h2_AK8_PF_mass_rhom4Area			, Form("%g correlated", gr_AK8_PF_mass_rhom4Area.GetCorrelationFactor())				);
-	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASjvf	, Form("%g correlated", gr_AK8_PF_mass_cleansingATLASjvf.GetCorrelationFactor())		);
-	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASlin	, Form("%g correlated", gr_AK8_PF_mass_cleansingATLASlin.GetCorrelationFactor())		);
-	Draw_and_Save(h2_AK8_PF_mass_cleansingATLASgau	, Form("%g correlated", gr_AK8_PF_mass_cleansingATLASgau.GetCorrelationFactor())		);
-	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSjvf	, Form("%g correlated", gr_AK8_PF_mass_cleansingCMSjvf.GetCorrelationFactor())		);
-	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSlin	, Form("%g correlated", gr_AK8_PF_mass_cleansingCMSlin.GetCorrelationFactor())		);
-	Draw_and_Save(h2_AK8_PF_mass_cleansingCMSgau	, Form("%g correlated", gr_AK8_PF_mass_cleansingCMSgau.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_JetCleansingATLASjvf	, Form("%g correlated", gr_AK8_PF_mass_JetCleansingATLASjvf.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_JetCleansingATLASlin	, Form("%g correlated", gr_AK8_PF_mass_JetCleansingATLASlin.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_JetCleansingATLASgau	, Form("%g correlated", gr_AK8_PF_mass_JetCleansingATLASgau.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_JetCleansingCMSjvf	, Form("%g correlated", gr_AK8_PF_mass_JetCleansingCMSjvf.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_JetCleansingCMSlin	, Form("%g correlated", gr_AK8_PF_mass_JetCleansingCMSlin.GetCorrelationFactor())		);
+	Draw_and_Save(h2_AK8_PF_mass_JetCleansingCMSgau	, Form("%g correlated", gr_AK8_PF_mass_JetCleansingCMSgau.GetCorrelationFactor())		);
 }
