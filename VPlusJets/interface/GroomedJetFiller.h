@@ -42,8 +42,26 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 
+#include <fastjet/ClusterSequence.hh>
+//#include <fastjet/ActiveAreaSpec.hh>
+#include <fastjet/GhostedAreaSpec.hh>
+#include <fastjet/ClusterSequenceArea.hh>
+#include "fastjet/tools/Filter.hh"
+#include "fastjet/tools/Pruner.hh"
+#include "fastjet/tools/MassDropTagger.hh"
+#include "fastjet/GhostedAreaSpec.hh"
+#include "fastjet/tools/JetMedianBackgroundEstimator.hh"
+#include "fastjet/tools/GridMedianBackgroundEstimator.hh"
+#include "fastjet/tools/Subtractor.hh"
+#include "fastjet/Selector.hh"
+
+#include "TVector3.h"
+#include "TMath.h"
+
+
 #include <fastjet/JetDefinition.hh>
 #include <fastjet/PseudoJet.hh>
+#include "fastjet/tools/Subtractor.hh"
 
 #include <stdlib.h>
 #include <math.h>
@@ -86,13 +104,21 @@ namespace ewk
 						const edm::ParameterSet& iConfig, bool isGen = 0);
 
 			/// default constructor
-			GroomedJetFiller() {};
+			//GroomedJetFiller() {};
 			/// Destructor, does nothing 
-			//~GroomedJetFiller(){  if(jec_) delete jec_;  if(jecUnc_) delete jecUnc_; };
-			~GroomedJetFiller(){ };
+			~GroomedJetFiller(){  
+				if(jec_) delete jec_; 
+				if(jecUnc_) delete jecUnc_; 
+				if(mJetDef) delete mJetDef;
+				if(mAreaDefinition) delete mAreaDefinition;
+				//if(mBgeGrid) delete mBgeGrid;
+				//if(mBgeMedi) delete mBgeMedi;
+			};
+			//~GroomedJetFiller(){ };
 
 			/// To be called once per event to fill the values for groomed jets
 			void fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles, bool doJetCleansing=0, std::vector<fastjet::PseudoJet> FJparticles_hardcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_pileupcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_fullneutral=std::vector<fastjet::PseudoJet>() );        
+			void Init();//init all the branch value
 
 			// ----------member data ---------------------------
 			static const int NUM_JET_MAX = 6;
@@ -114,11 +140,20 @@ namespace ewk
 			void computePlanarflow(std::vector<fastjet::PseudoJet> constits,double Rval,fastjet::PseudoJet jet,std::string mJetAlgo,float &planarflow);
 			float computeJetCharge( std::vector<fastjet::PseudoJet> constits, std::vector<float> pdgIds, float Ejet );        
 			float getPdgIdCharge( float fid );        
+			Double_t getnPV( const edm::Event& iEvent );        
+			Double_t getrho( const edm::Event& iEvent );        
+			Double_t getrho_Hand(std::vector<fastjet::PseudoJet>  FJparticles);        
+			Double_t getrho_Hand2(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
+			Double_t getrho_Grid(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
+			fastjet::PseudoJet do_rhoA_correction(fastjet::PseudoJet jet_origin, double rho, double area);
+			void do_GenericShape_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new);
+			void get_nsubjettiness(fastjet::PseudoJet jet_origin, float &tau1, float &tau2, float &tau3, float &tau4, float & tau2tau1);
 
 			//Jet Cleansing
 			JetCleanser makeJVFCleanser(fastjet::JetDefinition subjet_def, std::string projectmode="CMS", double fcut=-1.0, int nsj=-1 );//projectmode: CMS or ATLAS
 			JetCleanser makeLinearCleanser(fastjet::JetDefinition subjet_def, double linear_para0,std::string projectmode="CMS", double fcut=-1, int nsj=-1 );//projectmode: CMS or ATLAS
 			JetCleanser makeGausCleanser(fastjet::JetDefinition subjet_def, double gaus_para0, double gaus_para1, double gaus_para2, double gaus_para3, std::string projectmode="CMS", double fcut=-1, int nsj=-1 );//projectmode: CMS or ATLAS
+			void DoJetCleansing(fastjet::JetDefinition jetDef, std::vector<fastjet::PseudoJet> FJparticles, std::vector<fastjet::PseudoJet> FJparticles_hardcharge, std::vector<fastjet::PseudoJet> FJparticles_pileupcharge, std::vector<fastjet::PseudoJet> FJparticles_fullneutral  );
 
 			// ----------member data ---------------------------
 			TTree* tree_;
@@ -129,15 +164,24 @@ namespace ewk
 			JetCorrectionUncertainty* jecUnc_;
 
 			std::string jetAlgorithmLabel_;
+			std::string jetAlgorithmAdditonalLabel_;
 			std::string JetsFor_rho;
 			std::string JEC_GlobalTag_forGroomedJet;
 			edm::InputTag mPrimaryVertex;
 			//std::string mGroomedJet;
 
 			// specific parameters
-			double mJetRadius;
-			std::string mJetAlgo;        
 			std::string lableGen;        
+
+			//Jet Def
+			double                  mJetRadius;
+			std::string             mJetAlgo;        
+			fastjet::JetDefinition *mJetDef;
+			//Jet Area
+			fastjet::AreaDefinition *mAreaDefinition;
+			//Jet background estimate
+			fastjet::JetMedianBackgroundEstimator*  mBgeMedi;
+			fastjet::GridMedianBackgroundEstimator* mBgeGrid;
 
 			double mJetChargeKappa;
 			bool   mDoQJets; 
@@ -145,6 +189,10 @@ namespace ewk
 			int    mQJetsN;
 			double mNsubjettinessKappa;
 			bool   mSaveConstituents;
+
+
+
+
 
 		private:
 
@@ -252,6 +300,7 @@ namespace ewk
 			std::vector<int> positives;
 			std::vector<int> negatives;        
 			std::vector<float>  charge_handle_Gen;
+			std::vector<float>  PF_id_handle;
 
 
 			double rhoVal_;//rho kt6PF SW
