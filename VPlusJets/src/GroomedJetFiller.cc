@@ -38,23 +38,6 @@
 #include "DataFormats/Common/interface/RefToPtr.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
-
-#include <fastjet/ClusterSequence.hh>
-//#include <fastjet/ActiveAreaSpec.hh>
-#include <fastjet/GhostedAreaSpec.hh>
-#include <fastjet/ClusterSequenceArea.hh>
-#include "fastjet/tools/Filter.hh"
-#include "fastjet/tools/Pruner.hh"
-#include "fastjet/tools/MassDropTagger.hh"
-#include "fastjet/GhostedAreaSpec.hh"
-#include "fastjet/tools/JetMedianBackgroundEstimator.hh"
-#include "fastjet/tools/GridMedianBackgroundEstimator.hh"
-#include "fastjet/tools/Subtractor.hh"
-#include "fastjet/Selector.hh"
-
-#include "TVector3.h"
-#include "TMath.h"
-
 ewk::GroomedJetFiller::GroomedJetFiller(const char *name, 
 			TTree* tree, 
 			const std::string jetAlgorithmLabel,
@@ -69,6 +52,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 
 	// get algo and radius
 	jetAlgorithmLabel_  = jetAlgorithmLabel;
+	jetAlgorithmAdditonalLabel_  = additionalLabel;
 	unsigned int labelSize = jetAlgorithmLabel.size();
 	mJetAlgo = "";
 	mJetAlgo.push_back( jetAlgorithmLabel.at(0) ); mJetAlgo.push_back( jetAlgorithmLabel.at(1) );
@@ -78,7 +62,19 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	} else{
 		std::cout << "problem in defining jet type!" << std::endl;
 	}
-	//std::cout << "jet algo: " << mJetAlgo << ", jet radius: " << mJetRadius << std::endl;
+	mJetDef= new fastjet::JetDefinition(fastjet::cambridge_algorithm, mJetRadius);
+	if (mJetAlgo == "AK") mJetDef->set_jet_algorithm( fastjet::antikt_algorithm );
+	else if (mJetAlgo == "CA") mJetDef->set_jet_algorithm( fastjet::cambridge_algorithm );
+	else if (mJetAlgo == "KT") mJetDef->set_jet_algorithm( fastjet::kt_algorithm );
+	else throw cms::Exception("GroomedJetFiller") << " unknown jet algorithm " << std::endl;
+
+	//Jet Area
+	double ghostEtaMax = 4.4;
+	int activeAreaRepeats = 1;
+	double ghostArea = 0.01;
+	fastjet::GhostedAreaSpec fjActiveArea(ghostEtaMax,activeAreaRepeats,ghostArea);
+	fjActiveArea.set_fj2_placement(true);
+	mAreaDefinition =new fastjet::AreaDefinition( fastjet::active_area_explicit_ghosts, fjActiveArea );
 
 	// Declare all the branches of the tree
 	SetBranch( jetpt_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_uncorr");
@@ -173,6 +169,12 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_qjetmassdrop").c_str(), qjetmassdrop, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_qjetmassdrop"+"[50]/F").c_str() );
 	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_qjetmassdrop").c_str() );
 
+	//Jet mass, pt after JetCleansing
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_JetCleansing_DiffMode").c_str(), jetmass_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_JetCleansing_DiffMode").c_str() );
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JetCleansing_DiffMode").c_str(), jetpt_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JetCleansing_DiffMode").c_str() );
+
 	if( iConfig.existsAs<bool>("GroomedJet_saveConstituents") ) 
 	  mSaveConstituents=iConfig.getParameter< bool >("GroomedJet_saveConstituents");
 	else mSaveConstituents = true;
@@ -234,18 +236,36 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	std::vector< std::string > jecStr;
 
 	if(applyJECToGroomedJets_) {
-		if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
-			jecStr.push_back( fDir +  "_L1FastJet_AK5PFchs.txt" );
-			jecStr.push_back( fDir + "_L2Relative_AK5PFchs.txt" );
-			jecStr.push_back( fDir + "_L3Absolute_AK5PFchs.txt" );
-			if (!runningOverMC_)
-			  jecStr.push_back( fDir + "_L2L3Residual_AK5PFchs.txt" );
-		}else{
-			jecStr.push_back( fDir + "_L1FastJet_AK7PFchs.txt" );
-			jecStr.push_back( fDir + "_L2Relative_AK7PFchs.txt" );
-			jecStr.push_back( fDir + "_L3Absolute_AK7PFchs.txt" );
-			if (!runningOverMC_)
-			  jecStr.push_back( fDir + "_L2L3Residual_AK7PFchs.txt" );
+		if (jetAlgorithmAdditonalLabel_=="_PF"){
+			if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
+				jecStr.push_back( fDir +  "_L1FastJet_AK5PF.txt" );
+				jecStr.push_back( fDir + "_L2Relative_AK5PF.txt" );
+				jecStr.push_back( fDir + "_L3Absolute_AK5PF.txt" );
+				if (!runningOverMC_)
+				  jecStr.push_back( fDir + "_L2L3Residual_AK5PF.txt" );
+			}else{
+				jecStr.push_back( fDir + "_L1FastJet_AK7PF.txt" );
+				jecStr.push_back( fDir + "_L2Relative_AK7PF.txt" );
+				jecStr.push_back( fDir + "_L3Absolute_AK7PF.txt" );
+				if (!runningOverMC_)
+				  jecStr.push_back( fDir + "_L2L3Residual_AK7PF.txt" );
+			}
+		}
+		if (jetAlgorithmAdditonalLabel_=="_PFCHS"){
+
+			if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
+				jecStr.push_back( fDir +  "_L1FastJet_AK5PFchs.txt" );
+				jecStr.push_back( fDir + "_L2Relative_AK5PFchs.txt" );
+				jecStr.push_back( fDir + "_L3Absolute_AK5PFchs.txt" );
+				if (!runningOverMC_)
+				  jecStr.push_back( fDir + "_L2L3Residual_AK5PFchs.txt" );
+			}else{
+				jecStr.push_back( fDir + "_L1FastJet_AK7PFchs.txt" );
+				jecStr.push_back( fDir + "_L2Relative_AK7PFchs.txt" );
+				jecStr.push_back( fDir + "_L3Absolute_AK7PFchs.txt" );
+				if (!runningOverMC_)
+				  jecStr.push_back( fDir + "_L2L3Residual_AK7PFchs.txt" );
+			}
 		}
 
 		for (unsigned int i = 0; i < jecStr.size(); ++i){
@@ -254,11 +274,23 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 		}
 
 		jec_ = new FactorizedJetCorrector(jecPars);
-		if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
-			jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK5PFchs.txt" );
-		}else{
-			jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK7PFchs.txt" );
+
+		if (jetAlgorithmAdditonalLabel_=="_PF"){
+			if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
+				jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK5PF.txt" );
+			}else{
+				jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK7PF.txt" );
+			}
 		}
+		if (jetAlgorithmAdditonalLabel_=="_PFCHS"){
+			if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
+				jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK5PFchs.txt" );
+			}else{
+				jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK7PFchs.txt" );
+			}
+		}
+
+
 	}
 
 	// specific configurations
@@ -277,6 +309,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	if( iConfig.existsAs<bool>("GroomedJet_doQJets") ) 
 	  mDoQJets=iConfig.getParameter< bool >("GroomedJet_doQJets");
 	else mDoQJets = true;
+
 
 	// define charges of pdgIds
 	neutrals.push_back( 22 ); neutrals.push_back( 130 ); neutrals.push_back( 310 ); neutrals.push_back( 311 ); neutrals.push_back( 111 ); 
@@ -330,19 +363,8 @@ void ewk::GroomedJetFiller::SetBranch( int* x, std::string name)
 }
 
 //////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
 
-
-
-
-
-// ------------ method called to produce the data  ------------
-//void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles) 
-void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles, bool doJetCleansing, std::vector<fastjet::PseudoJet> FJparticles_hardcharge, std::vector<fastjet::PseudoJet> FJparticles_pileupcharge, std::vector<fastjet::PseudoJet> FJparticles_fullneutral ) 
-{
-
-	////----------
-	// init
+void ewk::GroomedJetFiller::Init(){
 	for (int j =0; j< NUM_JET_MAX; ++j) {
 		jetmass_uncorr[j] = -1.;
 		jetmass_tr_uncorr[j] = -1.;
@@ -427,32 +449,39 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		}
 	}
 
+	for(Int_t k=0;k<NUM_JETCLEANSING_MODE_MAX ;k++){
+		jetmass_JetCleansing_DiffMode[k]= -1;
+		jetpt_JetCleansing_DiffMode[k]  = -1;
+	};
+	nPV_ = 0.; // number of Primery vertex
+	rhoVal_ = -99.; //rho of KT6PF from SW reco
+	rhoVal_hand = -99.;
+	rhoVal_hand2 = -99.;
+	rhoVal_grid = -99.;
 
-
-	// ------ get nPV: primary/secondary vertices------ 
-	nPV_ = 0.;
-	double nPVval = 0;
-	edm::Handle <edm::View<reco::Vertex> > recVtxs;
-	iEvent.getByLabel( mPrimaryVertex, recVtxs);
-	for(unsigned int ind=0;ind<recVtxs->size();ind++){
-		if (!((*recVtxs)[ind].isFake()) && ((*recVtxs)[ind].ndof()>=4) 
-					&& (fabs((*recVtxs)[ind].z())<=24.0) &&  
-					((*recVtxs)[ind].position().Rho()<=2.0) ) {
-			nPVval += 1;
-		}
-	}
-	nPV_ = nPVval;
-
-	// ----------------------------
-	// ------ start processing ------    
-	//std::cout << "FJparticles.size() = " << FJparticles.size() << std::endl; 
-	if (FJparticles.size() < 1) return;
-
-
-	std::vector<float>  PF_id_handle;
+	// PID and charge
 	PF_id_handle.clear();
 	charge_handle_Gen.clear();
 
+
+}
+
+//////////////////////////////////////////////////////////////////
+
+// ------------ method called to produce the data  ------------
+void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles,
+			bool doJetCleansing, std::vector<fastjet::PseudoJet> FJparticles_hardcharge, 
+			std::vector<fastjet::PseudoJet> FJparticles_pileupcharge, 
+			std::vector<fastjet::PseudoJet> FJparticles_fullneutral ) 
+{
+	// ------ start processing ------    
+	if (FJparticles.size() < 1){ return;}
+	//else{ std::cout << "FJparticles.size() = " << FJparticles.size() << std::endl; }
+
+	Init();
+	nPV_ = getnPV(iEvent); // ------ get nPV: primary/secondary vertices------ 
+
+	//for jet constituents PID and charge
 	for(size_t i = 0; i < FJparticles.size(); ++ i) {
 		fastjet::PseudoJet  P = FJparticles[i];
 		PF_id_handle.push_back(P.user_info<PseudoJetUserInfo>().pdg_id());
@@ -460,75 +489,22 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	}
 
 	// do re-clustering
-	fastjet::JetDefinition jetDef(fastjet::cambridge_algorithm, mJetRadius);
-	if (mJetAlgo == "AK") jetDef.set_jet_algorithm( fastjet::antikt_algorithm );
-	else if (mJetAlgo == "CA") jetDef.set_jet_algorithm( fastjet::cambridge_algorithm );
-	else throw cms::Exception("GroomedJetFiller") << " unknown jet algorithm " << std::endl;
-
-	int activeAreaRepeats = 1;
-	double ghostArea = 0.01;
-	double ghostEtaMax = 4.4;
-	// fastjet::ActiveAreaSpec fjActiveArea(ghostEtaMax,activeAreaRepeats,ghostArea);
-	fastjet::GhostedAreaSpec fjActiveArea(ghostEtaMax,activeAreaRepeats,ghostArea);
-	fjActiveArea.set_fj2_placement(true);
-	fastjet::AreaDefinition fjAreaDefinition( fastjet::active_area_explicit_ghosts, fjActiveArea );
+	fastjet::ClusterSequenceArea thisClustering_area(FJparticles, *mJetDef, *mAreaDefinition);
+	fastjet::ClusterSequence     thisClustering_basic(FJparticles, *mJetDef);
 
 	fastjet::Selector selected_eta = fastjet::SelectorAbsEtaMax(2.4);
-
-	fastjet::ClusterSequenceArea thisClustering(FJparticles, jetDef, fjAreaDefinition);
-	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt( selected_eta(thisClustering.inclusive_jets(15.0)) );
-	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets = sorted_by_pt(thisClustering.inclusive_jets(20.0));
-	
-	fastjet::ClusterSequence thisClustering_basic(FJparticles, jetDef);
+	std::vector<fastjet::PseudoJet> out_jets       = sorted_by_pt( selected_eta(thisClustering_area.inclusive_jets(15.0)) );
 	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_eta(thisClustering_basic.inclusive_jets(15.0)) );
-	//if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) out_jets_basic = sorted_by_pt(thisClustering_basic.inclusive_jets(20.0));    
 
-	// ------ get rho --------    
-	rhoVal_ = -99.;
-	edm::Handle<double> rho;
-	const edm::InputTag eventrho(JetsFor_rho, "rho");//kt6PFJetsPFlow
-	iEvent.getByLabel(eventrho,rho);
-	rhoVal_ = *rho;
-	std::cout<<"(kt6PF rho in SW) = "<<rhoVal_<<std::endl;
+	rhoVal_ = getrho(iEvent); // ------ get rho from SW reco --------    
+	rhoVal_hand = getrho_Hand(FJparticles );
 
-	// ------ get rho by hand--------    
-	std::auto_ptr<double> rho_on_the_fly(new double(0.0));
-	std::auto_ptr<double> sigma_on_the_fly(new double(0.0));
-	double mean_area = 0;
+	fastjet::Subtractor* subtractor_medi=NULL;
+	rhoVal_hand2 = getrho_Hand2(FJparticles, &subtractor_medi ); // ------ get rho by hand2--------    
 
-	//ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition ) );
-	ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, 
-					fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) ) );
-	fastjet::ClusterSequenceAreaBase const* clusterSequenceWithArea = dynamic_cast<fastjet::ClusterSequenceAreaBase const *> ( &*fjClusterSeq_ );
-
-	double rhoEtaMax=4.4;
-	RangeDefPtr fjRangeDef_ = RangeDefPtr( new fastjet::RangeDefinition(rhoEtaMax) );
-
-	clusterSequenceWithArea->get_median_rho_and_sigma(*fjRangeDef_,false,*rho_on_the_fly,*sigma_on_the_fly,mean_area);
-	if((*rho_on_the_fly < 0)|| (std::isnan(*rho_on_the_fly))) { //edm::LogError("BadRho") << "rho_on_the_fly value is " << *rho_on_the_fly << " area:" << mean_area << " and n_empty_jets: " << clusterSequenceWithArea->n_empty_jets(*fjRangeDef_) << " with range " << fjRangeDef_->description() <<". Setting rho_on_the_fly to rezo.";
-		*rho_on_the_fly = 0;
-	}
-	//cout<<"first track area hand : "<<clusterSequenceWithArea->area(FJparticles[0]);
-
-	std::cout << "(kt6PF rho by hand) = " << *rho_on_the_fly << ", mean area = " << mean_area << ", and sigma: " << *sigma_on_the_fly <<endl;
-	rhoVal_hand = *rho_on_the_fly;
-
-
-	//fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fjAreaDefinition );
-	fastjet::JetMedianBackgroundEstimator bge_medi(fastjet::SelectorAbsRapMax(rhoEtaMax), 
-				fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) );
-	bge_medi.set_particles(FJparticles);
-	//cout<<"first track area hand2: "<<FJparticles[0].area();
-	std::cout<<"medi rho = "<<bge_medi.rho()<<" , "<<bge_medi.sigma()<<endl;
-	rhoVal_hand2 = bge_medi.rho();
-	fastjet::Subtractor subtractor_medi(&bge_medi);
-
-	fastjet::GridMedianBackgroundEstimator bge_grid(rhoEtaMax, 0.55);
-	bge_grid.set_particles(FJparticles);
-	std::cout<<"grid rho = "<<bge_grid.rho()<<" , "<<bge_grid.sigma()<<endl;
-	rhoVal_grid = bge_grid.rho();
-	fastjet::Subtractor subtractor_grid(&bge_grid);
-
+	fastjet::Subtractor* subtractor_grid=NULL;
+	rhoVal_grid = getrho_Grid(FJparticles, &subtractor_grid); // ------ get rho by grid--------    
+	//std::cout<<"(kt6PF rho in SW) = "<<rhoVal_<<std::endl; std::cout << "(kt6PF rho by hand) = " << rhoVal_hand<<endl; std::cout<<"medi rho = "<<rhoVal_hand2<<endl; std::cout<<"grid rho = "<<rhoVal_grid<<endl;
 
 	// define groomers
 	fastjet::Filter trimmer( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.03)));
@@ -540,28 +516,9 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	transformers.push_back(&filter);
 	transformers.push_back(&pruner);
 
-	// define n-subjettiness
-	//    NsubParameters paraNsub = NsubParameters(mNsubjettinessKappa, mJetRadius);   
-	//    Nsubjettiness routine(nsub_kt_axes, paraNsub);
-	//    Nsubjettiness routine(nsub_1pass_from_kt_axes, paraNsub);
-
-	// Defining Nsubjettiness parameters
-	double beta = mNsubjettinessKappa; // power for angular dependence, e.g. beta = 1 --> linear k-means, beta = 2 --> quadratic/classic k-means
-	double R0 = mJetRadius; // Characteristic jet radius for normalization	      
-	double Rcut = mJetRadius; // maximum R particles can be from axis to be included in jet	      
-
-	//    fastjet::Nsubjettiness nSub1KT(1, Njettiness::kt_axes, beta, R0, Rcut);
-
-	// -----------------------------------------------
-	// -----------------------------------------------
-	// s t a r t   l o o p   o n   j e t s
-	// -----------------------------------------------
-	// -----------------------------------------------
-	//std::cout<<mJetAlgo<<"\t"<<mJetRadius<<" out_jets size="<<out_jets.size()<<std::endl;
-
+	// ----------------start loop on jets-----------------------
 	number_jet_central = out_jets.size();
-	for (int j = 0; j < number_jet_central && j<NUM_JET_MAX; j++) {
-
+	for(int j = 0; j < number_jet_central && j<NUM_JET_MAX; j++) {
 		if (mSaveConstituents && j==0){
 			if (out_jets_basic.at(j).constituents().size() >= 100) nconstituents0 = 100;
 			else nconstituents0 = (int) out_jets_basic.at(j).constituents().size();
@@ -573,92 +530,48 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 			}
 		}
 
-		if( !(j< NUM_JET_MAX) ) break;            
+		jetarea[j] = out_jets.at(j).area();
+		//std::cout<<"jetarea="<<out_jets.at(j).area()<<std::endl; 
+		jetconstituents[j] = out_jets_basic.at(j).constituents().size();
+
 		jetmass_uncorr[j] = out_jets.at(j).m();
 		jetpt_uncorr[j] = out_jets.at(j).pt();
+
+		// SW JEC corretion
 		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j),0);
 		jetmass[j] = jet_corr.M();
 		jetpt[j] = jet_corr.Pt();
 		jeteta[j] = jet_corr.Eta();
 		jetphi[j] = jet_corr.Phi();
 		jete[j]   = jet_corr.Energy();
-		jetarea[j] = out_jets.at(j).area();
-		std::cout<<"jetarea="<<out_jets.at(j).area()<<std::endl; 
-		jetconstituents[j] = out_jets_basic.at(j).constituents().size();
-		if(mJetAlgo=="AK"&& mJetRadius ==0.5){
-			print_p4(out_jets.at(j),"  jet before    corr");
-			print_p4(jet_corr,      "--jet after All corr");
-		}
+		//print_p4(out_jets.at(j),"  jet before    corr"); print_p4(jet_corr,      "--jet after JEC corr");
 
+		//do rhoA correction
+		fastjet::PseudoJet jet_rhoSW   = do_rhoA_correction(out_jets.at(j), rhoVal_, out_jets.at(j).area() );
+		fastjet::PseudoJet jet_rhoHand = do_rhoA_correction(out_jets.at(j), rhoVal_hand, out_jets.at(j).area() );
+		fastjet::PseudoJet jet_rhoHand2= do_rhoA_correction(out_jets.at(j), rhoVal_hand2, out_jets.at(j).area() );
+		fastjet::PseudoJet jet_rhoGrid = do_rhoA_correction(out_jets.at(j), rhoVal_grid, out_jets.at(j).area() );
 
-		//fast::subtractor is used for rho*area_4vector
-		fastjet::PseudoJet jet_corr_medi = subtractor_medi(out_jets.at(j));
-		//print_p4(jet_corr_medi,      "--jet after L1medi corr");
-		fastjet::PseudoJet jet_corr_grid = subtractor_grid(out_jets.at(j));
-		//print_p4(jet_corr_grid,      "--jet after L1grid corr");
+		jetpt_L1_rhoSW[j]   =jet_rhoSW.pt(); 
+		jetpt_L1_rhoHand[j] =jet_rhoHand.pt(); 
+		jetpt_L1_rhoHand2[j]=jet_rhoHand2.pt(); 
+		jetpt_L1_rhoGrid[j] =jet_rhoGrid.pt(); 
+		jetmass_rhoArea[j]= jet_rhoHand.m();
+		jetmass_rhoGArea[j]= jet_rhoGrid.m();
+		//std::cout<<"L1 p1={ "<<jetpt_L1_rhoSW[j]<<","<<jetpt_L1_rhoHand[j]<<","<<jetpt_L1_rhoHand2[j]<<","<<jetpt_L1_rhoGrid[j]<<"}"<<std::endl;
+		//cout<<"jetmass_rhoA="<<jetmass_rhoArea[j]<<","<<jetmass_rhoGArea[j]<<endl; 
 
-		jetpt_L1_rhoSW[j] = out_jets.at(j).pt() - rhoVal_*out_jets.at(j).area();
-		jetpt_L1_rhoHand[j] = out_jets.at(j).pt() - *rho_on_the_fly*out_jets.at(j).area();
-		jetpt_L1_rhoHand2[j]= out_jets.at(j).pt() - bge_medi.rho()*out_jets.at(j).area();
-		jetpt_L1_rhoGrid[j] = out_jets.at(j).pt() - bge_grid.rho()*out_jets.at(j).area();
-		//std::cout<<"L1 p1={ "<<jetpt_L1_rhoSW[j]<<","<<jetpt_L1_rhoHand[j]<<","<<jetpt_L1_rhoHand2[j]<<","<<jetpt_L1_rhoGrid[j]<<std::endl;
-		
-		//========== jet shape correction
+		//rho*area_4vector correction
+		fastjet::PseudoJet jet_corr_medi = (*subtractor_medi)(out_jets.at(j));
+		fastjet::PseudoJet jet_corr_grid = (*subtractor_grid)(out_jets.at(j));
+		//print_p4(jet_corr_medi,      "--jet after medi rho4A corr"); print_p4(jet_corr_grid,      "--jet after grid rho4A corr");
 
-		//1) jec factorization 
-		double factor_jec_rhoHand=jetpt_L1_rhoHand[j]/out_jets.at(j).pt();
-		fastjet::PseudoJet jet_scale_rhoHand = getScaledJet(out_jets.at(j),factor_jec_rhoHand);
-		jetmass_rhoArea[j]= jet_scale_rhoHand.m();
-
-		double factor_jec_rhoGrid=jetpt_L1_rhoGrid[j]/out_jets.at(j).pt();
-		fastjet::PseudoJet jet_scale_rhoGrid = getScaledJet(out_jets.at(j),factor_jec_rhoGrid);
-		jetmass_rhoGArea[j]= jet_scale_rhoGrid.m();
-
-		//2) rho*4_area
+		jetpt_rho4A[j]= jet_corr_medi.pt();
 		jetmass_rho4Area[j]= jet_corr_medi.m();
 		jetmass_rhoG4Area[j]= jet_corr_grid.m();
 
-		jetpt_rho4A[j]= jet_corr_medi.pt();
-
-		//3) rhom*4_area, arXiv 1211.2811
-		//Angularity shape(1.0); // angularity with alpha=1.0
-		Mass jetshape_mass; 
-		Pt   jetshape_pt;
-		
-		GenericSubtractor gen_sub(&bge_medi);
-		GenericSubtractorInfo info;
-
-		std::cout << gen_sub.description() << std::endl; std::cout << setprecision(4);
-		// uncomment this if you also want rho_m to be estimated (using the
-		// same background estimator)
-		gen_sub.use_common_bge_for_rho_and_rhom(true);
-
-		// compute the subtracted shape, and retrieve additional information
-		double subtracted_jetshape_mass = gen_sub(jetshape_mass, out_jets.at(j), info);
-		cout<< "uncorr mass = " << jetshape_mass(out_jets.at(j)) << endl;
-		cout<< "jetshape_mass corr  = " << subtracted_jetshape_mass << endl;
-		cout << "  rho  = " << info.rho() << endl;
-		cout << "  rhom = " << info.rhom() << endl;
-		cout << "  1st derivative: " << info.first_derivative() << endl;
-		cout << "  2nd derivative: " << info.second_derivative() << endl;
-		cout << "  unsubtracted: " << info.unsubtracted() << endl;
-		cout << "  1st order: " << info.first_order_subtracted() << endl;
-		cout << "# step used: " << info.ghost_scale_used() << endl;
-		jetmass_rhom4Area[j]=subtracted_jetshape_mass;
-
-		double subtracted_jetshape_pt = gen_sub(jetshape_pt, out_jets.at(j), info);
-		cout<< "uncorr pt = " << jetshape_pt(out_jets.at(j)) << endl;
-		cout<< "jetshape_pt corr  = " << subtracted_jetshape_pt << endl;
-		cout << "  rho  = " << info.rho() << endl;
-		cout << "  rhom = " << info.rhom() << endl;
-		cout << "  1st derivative: " << info.first_derivative() << endl;
-		cout << "  2nd derivative: " << info.second_derivative() << endl;
-		cout << "  unsubtracted: " << info.unsubtracted() << endl;
-		cout << "  1st order: " << info.first_order_subtracted() << endl;
-		cout << "# step used: " << info.ghost_scale_used() << endl;
-		jetpt_rhom4A[j]=subtracted_jetshape_pt;
-
-
+		//Generic Shape correction, arXiv 1211.2811
+		do_GenericShape_correction(out_jets.at(j), mBgeMedi, jetpt_rhom4A[j], jetmass_rhom4Area[j]);
 
 		// pruning, trimming, filtering  -------------
 		int transctr = 0;
@@ -671,7 +584,6 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 
 			fastjet::PseudoJet transformedJet_basic = out_jets_basic.at(j);
 			transformedJet_basic = (**itransf)(transformedJet_basic);
-
 
 			if (transctr == 0){ // trimmed
 				jetmass_tr_uncorr[j] = transformedJet.m();
@@ -746,30 +658,12 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 			else{ std::cout << "error in number of transformers" << std::endl;}                    
 			transctr++;
 		}        
+		//nsubjettiness
+		get_nsubjettiness(out_jets.at(j), tau1[j], tau2[j], tau3[j], tau4[j], tau2tau1[j]);
 
-		//std::cout<< "Beging the n-subjettiness computation" << endl; 
-		// n-subjettiness  -------------
-		//        tau1[j] = routine.getTau(1, out_jets.at(j).constituents()); 
-		//        tau2[j] = routine.getTau(2, out_jets.at(j).constituents());
-		//        tau3[j] = routine.getTau(3, out_jets.at(j).constituents());
-		//        tau4[j] = routine.getTau(4, out_jets.at(j).constituents());
-		//        tau2tau1[j] = tau2[j]/tau1[j];
-		//        fastjet::Nsubjettiness nSub1KT(1, Njettiness::kt_axes, beta, R0, Rcut);
-		fastjet::Nsubjettiness nSub1KT(1, Njettiness::onepass_kt_axes, beta, R0, Rcut);
-		tau1[j] = nSub1KT(out_jets.at(j));
-		fastjet::Nsubjettiness nSub2KT(2, Njettiness::onepass_kt_axes, beta, R0, Rcut);
-		tau2[j] = nSub2KT(out_jets.at(j));
-		fastjet::Nsubjettiness nSub3KT(3, Njettiness::onepass_kt_axes, beta, R0, Rcut);
-		tau3[j] = nSub3KT(out_jets.at(j));
-		fastjet::Nsubjettiness nSub4KT(4, Njettiness::onepass_kt_axes, beta, R0, Rcut);
-		tau4[j] = nSub4KT(out_jets.at(j));
-		tau2tau1[j] = tau2[j]/tau1[j];
-
-
-		//std::cout<< "End the n-subjettiness computation" << endl;
 		// cores computation  -------------
 		//std::cout<< "Beging the core computation" << endl;
-		std::vector<fastjet::PseudoJet> constits = thisClustering.constituents(out_jets.at(j));
+		std::vector<fastjet::PseudoJet> constits = thisClustering_area.constituents(out_jets.at(j));
 		for (int kk = 0; kk < 11; ++kk){
 			double coreCtr = (double) kk;    
 			if (coreCtr < mJetRadius*10.){
@@ -782,7 +676,6 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		//std::cout<< "Ending the core computation" << endl;
 
 		//std::cout<< "Beging the planarflow computation" << endl;
-
 		//planarflow computation
 		for (int kk = 0; kk < 11; ++kk){
 			double coreCtr = (double) (kk + 1);
@@ -792,7 +685,6 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 				planarflow[kk][j] = tmppflow;
 			}
 		}
-
 		//std::cout<< "Ending the planarflow computation" << endl;
 
 		// qjets computation  -------------
@@ -833,7 +725,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		std::vector< float > pdgIds;
 		for (unsigned ii = 0; ii < out_jets_basic.at(j).constituents().size(); ii++){
 			for (unsigned jj = 0; jj < FJparticles.size(); jj++){
-				//                std::cout << ii << ", " << jj << ": " << FJparticles.at(jj).pt() << ", " << out_jets_basic.at(j).constituents().at(ii).pt() << std::endl;
+				//std::cout << ii << ", " << jj << ": " << FJparticles.at(jj).pt() << ", " << out_jets_basic.at(j).constituents().at(ii).pt() << std::endl;
 				if (FJparticles.at(jj).pt() == out_jets_basic.at(j).constituents().at(ii).pt()){
 					pdgIds.push_back(PF_id_handle.at(jj));
 					/*if(!isGenJ) {
@@ -850,174 +742,15 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 			}
 		}
 		jetcharge[j] = computeJetCharge(out_jets_basic.at(j).constituents(),pdgIds,out_jets_basic.at(j).e());
-
 	}
 
-	//4) jet JetCleansing
-	if(doJetCleansing){
-		// find jets
-		vector< vector<fastjet::PseudoJet> > sets;
-		sets.push_back( FJparticles );           // calorimeter cells
-		sets.push_back( FJparticles_hardcharge );   // tracks from primary interaction
-		sets.push_back( FJparticles_pileupcharge );       // tracks from pileup
-		sets.push_back( FJparticles_fullneutral );   // neutral particles
-
-		// collect jets
-		vector< vector<fastjet::PseudoJet> > jet_sets = ClusterSets(jetDef, FJparticles, sets, 15.0);
-		vector<fastjet::PseudoJet> jets_plain     = jet_sets[0];
-		vector<fastjet::PseudoJet> jets_tracks_LV = jet_sets[1];
-		vector<fastjet::PseudoJet> jets_tracks_PU = jet_sets[2];
-		vector<fastjet::PseudoJet> jets_neutrals  = jet_sets[3];
-
-		// Jet cleansing
-		vector<JetCleanser> jetcleanvser_vect;
-		fastjet::JetDefinition subjet_def(fastjet::kt_algorithm, 0.3);
-		// jvf
-		JetCleanser jetcleanser0=makeJVFCleanser(subjet_def, "CMS");
-		jetcleanvser_vect.push_back(jetcleanser0);
-		// linear
-		for(double linear_par=0.4; linear_par<=0.6; linear_par=linear_par+0.01){
-			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def, linear_par, "CMS");
-			jetcleanvser_vect.push_back(jetcleanser1);
-		}
-		// gaus
-		JetCleanser jetcleanser2=makeGausCleanser(subjet_def, 0.67, 0.62, 0.20, 0.25, "CMS");
-		jetcleanvser_vect.push_back(jetcleanser2);
-
-		if( int(jetcleanvser_vect.size()) >= NUM_JETCLEANSING_MODE_MAX ){ std::cout<<"Error! Jet Cleansing Mode is too many!"<<endl; BREAK(); }
-		for(Int_t j=0;j<int(jetcleanvser_vect.size());j++){
-			fastjet::PseudoJet tmp_cleansed_jet = jetcleanvser_vect[j]( jets_neutrals[0].constituents(), jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );//CMS
-				//( jets_plain[0], jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );/ATLAS
-			jetmass_JetCleansing_DiffMode[j]= tmp_cleansed_jet.m();
-			jetpt_JetCleansing_DiffMode[j]  = tmp_cleansed_jet.pt();
-			cout<<jetcleanvser_vect[j].description()<<endl<<"jet mass="<< tmp_cleansed_jet.m()<<" jet pt="<< tmp_cleansed_jet.pt()<<endl;
-			cout<<"================"<<endl;
-		};
+	delete subtractor_medi;
+	delete subtractor_grid;
 
 
-		//----------------------------------------------------------
-		// ATLAS-like: cleansers
-		cout << "ATLAS-like JetCleansing:" << endl << endl;
-
-		JetCleanser jvf_cleanser_A(subjet_def, JetCleanser::jvf_cleansing, JetCleanser::input_nc_together);
-		jvf_cleanser_A.SetTrimming(0.01);
-
-		JetCleanser linear_cleanser_A(subjet_def, JetCleanser::linear_cleansing, JetCleanser::input_nc_together);
-		linear_cleanser_A.SetLinearParameters(0.65);
-
-		JetCleanser gaussian_cleanser_A(subjet_def, JetCleanser::gaussian_cleansing, JetCleanser::input_nc_together);
-		gaussian_cleanser_A.SetGaussianParameters(0.67,0.62,0.20,0.25);
-
-		// print info about cleansers
-		cout << jvf_cleanser_A.description() << endl;
-		cout << linear_cleanser_A.description() << endl;
-		cout << gaussian_cleanser_A.description() << endl;
-
-		// ATLAS-like: cleanse jets
-		int n_jets = min((int) jets_plain.size(),3);
-		for (int i=0; i<n_jets; i++){
-			fastjet::PseudoJet plain_jet = jets_plain[i];
-			fastjet::PseudoJet jvf_cleansed_jet = jvf_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
-			fastjet::PseudoJet lin_cleansed_jet = linear_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
-			fastjet::PseudoJet gau_cleansed_jet = gaussian_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
-
-			/*			cout << "                with pileup: pt = " << plain_jet.pt()
-						<< " eta = " << plain_jet.eta()
-						<< " phi = " << plain_jet.phi()
-						<< "   m = " << plain_jet.m()
-						<< endl;
-
-						cout << " with pileup + jvf cleansed: pt = " << jvf_cleansed_jet.pt()
-						<< " eta = " << jvf_cleansed_jet.eta()
-						<< " phi = " << jvf_cleansed_jet.phi()
-						<< "   m = " << jvf_cleansed_jet.m()
-						<< endl;
-
-						cout << " with pileup + lin cleansed: pt = " << lin_cleansed_jet.pt()
-						<< " eta = " << lin_cleansed_jet.eta()
-						<< " phi = " << lin_cleansed_jet.phi()
-						<< "   m = " << lin_cleansed_jet.m()
-						<< endl;
-
-						cout << " with pileup + gau cleansed: pt = " << gau_cleansed_jet.pt()
-						<< " eta = " << gau_cleansed_jet.eta()
-						<< " phi = " << gau_cleansed_jet.phi()
-						<< "   m = " << gau_cleansed_jet.m()
-						<< endl
-						<< endl;
-						*/			jetmass_JetCleansingATLASjvf[i]=jvf_cleansed_jet.m();
-			jetmass_JetCleansingATLASlin[i]=lin_cleansed_jet.m();
-			jetmass_JetCleansingATLASgau[i]=gau_cleansed_jet.m();
-		}
-
-		//----------------------------------------------------------
-		// CMS-like: cleansers
-		cout << "CMS-like JetCleansing:" << endl << endl;
-
-		JetCleanser jvf_cleanser_B(subjet_def, JetCleanser::jvf_cleansing, JetCleanser::input_nc_separate);
-
-		JetCleanser linear_cleanser_B(subjet_def, JetCleanser::linear_cleansing, JetCleanser::input_nc_separate);
-		linear_cleanser_B.SetLinearParameters(0.65);
-
-		JetCleanser gaussian_cleanser_B(subjet_def, JetCleanser::gaussian_cleansing, JetCleanser::input_nc_separate);
-		gaussian_cleanser_B.SetGaussianParameters(0.67,0.62,0.20,0.25);
-
-		// print info about cleansers
-		cout << jvf_cleanser_B.description() << endl;
-		cout << linear_cleanser_B.description() << endl;
-		cout << gaussian_cleanser_B.description() << endl;
-
-		// CMS-like: cleanse jets
-		n_jets = min((int) jets_plain.size(),3);
-		for (int i=0; i<n_jets; i++){
-			fastjet::PseudoJet plain_jet = jets_plain[i];
-			fastjet::PseudoJet jvf_cleansed_jet = jvf_cleanser_B( jets_neutrals[i].constituents(), jets_tracks_LV[i].constituents(), 
-						jets_tracks_PU[i].constituents() );
-			fastjet::PseudoJet lin_cleansed_jet = linear_cleanser_B( jets_neutrals[i].constituents(), jets_tracks_LV[i].constituents(), 
-						jets_tracks_PU[i].constituents() );
-			fastjet::PseudoJet gau_cleansed_jet = gaussian_cleanser_B( jets_neutrals[i].constituents(), jets_tracks_LV[i].constituents(), 
-						jets_tracks_PU[i].constituents() );
-
-			cout << "                with pileup: pt = " << plain_jet.pt()
-				<< " eta = " << plain_jet.eta()
-				<< " phi = " << plain_jet.phi()
-				<< "   m = " << plain_jet.m()
-				<< endl;
-
-			cout << " with pileup + jvf cleansed: pt = " << jvf_cleansed_jet.pt()
-				<< " eta = " << jvf_cleansed_jet.eta()
-				<< " phi = " << jvf_cleansed_jet.phi()
-				<< "   m = " << jvf_cleansed_jet.m()
-				<< endl;
-
-			cout << " with pileup + lin cleansed: pt = " << lin_cleansed_jet.pt()
-				<< " eta = " << lin_cleansed_jet.eta()
-				<< " phi = " << lin_cleansed_jet.phi()
-				<< "   m = " << lin_cleansed_jet.m()
-				<< endl;
-
-			cout << " with pileup + gau cleansed: pt = " << gau_cleansed_jet.pt()
-				<< " eta = " << gau_cleansed_jet.eta()
-				<< " phi = " << gau_cleansed_jet.phi()
-				<< "   m = " << gau_cleansed_jet.m()
-				<< endl
-				<< endl;
-
-			jetmass_JetCleansingCMSjvf[i]=jvf_cleansed_jet.m();
-			jetmass_JetCleansingCMSlin[i]=lin_cleansed_jet.m();
-			jetmass_JetCleansingCMSgau[i]=gau_cleansed_jet.m();
-
-			jetpt_JetCleansing[i]=gau_cleansed_jet.pt();
-		}
-
-	}
-
-
-
-
+	// jet JetCleansing
+	if(doJetCleansing) { DoJetCleansing( *mJetDef, FJparticles, FJparticles_hardcharge, FJparticles_pileupcharge, FJparticles_fullneutral); }
 }  
-
-
 
 double ewk::GroomedJetFiller::getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea){
 	// Jet energy corrections, something like this...
@@ -1153,6 +886,141 @@ float ewk::GroomedJetFiller::getPdgIdCharge( float fid ){
 	return qq;
 }
 
+Double_t ewk::GroomedJetFiller::getnPV( const edm::Event& iEvent ){
+	// ------ get nPV: primary/secondary vertices------ 
+	double nPVval = 0;
+	edm::Handle <edm::View<reco::Vertex> > recVtxs;
+	iEvent.getByLabel( mPrimaryVertex, recVtxs);
+	for(unsigned int ind=0;ind<recVtxs->size();ind++){
+		if (!((*recVtxs)[ind].isFake()) && ((*recVtxs)[ind].ndof()>=4) 
+					&& (fabs((*recVtxs)[ind].z())<=24.0) &&  
+					((*recVtxs)[ind].position().Rho()<=2.0) ) {
+			nPVval += 1;
+		}
+	}
+	return nPVval;
+}
+
+
+Double_t ewk::GroomedJetFiller::getrho( const edm::Event& iEvent ){ // ------ get rho --------    
+	edm::Handle<double> rho;
+	const edm::InputTag eventrho(JetsFor_rho, "rho");//kt6PFJetsPFlow
+	iEvent.getByLabel(eventrho,rho);
+	return *rho;
+}
+
+Double_t ewk::GroomedJetFiller::getrho_Hand(std::vector<fastjet::PseudoJet>  FJparticles ){ // ------ get rho --------    
+
+	std::auto_ptr<double> rho_on_the_fly(new double(0.0));
+	std::auto_ptr<double> sigma_on_the_fly(new double(0.0));
+	double mean_area = 0;
+
+	//ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, fastjet::JetDefinition(fastjet::kt_algorithm,0.6), *mAreaDefinition ) );
+	ClusterSequencePtr fjClusterSeq_ = ClusterSequencePtr( new fastjet::ClusterSequenceArea( FJparticles, 
+					fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) ) );
+	fastjet::ClusterSequenceAreaBase const* clusterSequenceWithArea = 
+		dynamic_cast<fastjet::ClusterSequenceAreaBase const *> ( &*fjClusterSeq_ );
+
+	double rhoEtaMax=4.4;
+	RangeDefPtr fjRangeDef_ = RangeDefPtr( new fastjet::RangeDefinition(rhoEtaMax) );
+
+	clusterSequenceWithArea->get_median_rho_and_sigma(*fjRangeDef_,false,*rho_on_the_fly,*sigma_on_the_fly,mean_area);
+	if((*rho_on_the_fly < 0)|| (std::isnan(*rho_on_the_fly))) { //edm::LogError("BadRho") << "rho_on_the_fly value is " << *rho_on_the_fly << " area:" << mean_area << " and n_empty_jets: " << clusterSequenceWithArea->n_empty_jets(*fjRangeDef_) << " with range " << fjRangeDef_->description() <<". Setting rho_on_the_fly to rezo.";
+		*rho_on_the_fly = 0;
+	}
+
+	return *rho_on_the_fly;
+}
+
+Double_t ewk::GroomedJetFiller::getrho_Hand2(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor )
+{
+	double rhoEtaMax=4.4;
+	//fastjet::JetMedianBackgroundEstimator mBgeMedi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), *mAreaDefinition );
+	mBgeMedi = new fastjet::JetMedianBackgroundEstimator(fastjet::SelectorAbsRapMax(rhoEtaMax), 
+				fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) );
+	mBgeMedi->set_particles(FJparticles);
+	if(*subtractor) delete *subtractor;
+	*subtractor= new fastjet::Subtractor(mBgeMedi);
+	return mBgeMedi->rho();
+}
+Double_t ewk::GroomedJetFiller::getrho_Grid(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor )
+{
+	double rhoEtaMax=4.4;
+	mBgeGrid= new fastjet::GridMedianBackgroundEstimator(rhoEtaMax, 0.55);
+	mBgeGrid->set_particles(FJparticles);
+	if(*subtractor) delete *subtractor;
+	*subtractor= new fastjet::Subtractor(mBgeGrid);
+	return mBgeGrid->rho();
+}
+
+fastjet::PseudoJet ewk::GroomedJetFiller::do_rhoA_correction(fastjet::PseudoJet jet_origin, double rho, double area){
+	double pt_new= jet_origin.pt() - rho*area;
+	double factor_jec = pt_new / jet_origin.pt();
+	fastjet::PseudoJet jet_new = getScaledJet(jet_origin, factor_jec);
+	return jet_new;
+}
+
+
+
+
+void ewk::GroomedJetFiller::do_GenericShape_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new)
+{
+	Mass jetshape_mass; 
+	Pt   jetshape_pt;
+
+	//GenericSubtractor gen_sub(mBgeMedi);
+	GenericSubtractor gen_sub(bge_rho);
+	GenericSubtractorInfo info;
+
+	std::cout << gen_sub.description() << std::endl; std::cout << setprecision(4);
+	// uncomment this if you also want rho_m to be estimated (using the
+	// same background estimator)
+	gen_sub.use_common_bge_for_rho_and_rhom(true);
+
+	// compute the subtracted shape, and retrieve additional information
+
+	jetpt_new = gen_sub(jetshape_pt, jet_origin, info);
+	cout<< "uncorr pt = " << jetshape_pt(jet_origin) << endl;
+	cout<< "jetshape_pt corr  = " << jetpt_new << endl;
+	cout << "  rho  = " << info.rho() << endl;
+	cout << "  rhom = " << info.rhom() << endl;
+	cout << "  1st derivative: " << info.first_derivative() << endl;
+	cout << "  2nd derivative: " << info.second_derivative() << endl;
+	cout << "  unsubtracted: " << info.unsubtracted() << endl;
+	cout << "  1st order: " << info.first_order_subtracted() << endl;
+	cout << "# step used: " << info.ghost_scale_used() << endl;
+
+	jetmass_new = gen_sub(jetshape_mass, jet_origin, info);
+	cout<< "uncorr mass = " << jetshape_mass(jet_origin) << endl;
+	cout<< "jetshape_mass corr  = " << jetmass_new << endl;
+	cout << "  rho  = " << info.rho() << endl;
+	cout << "  rhom = " << info.rhom() << endl;
+	cout << "  1st derivative: " << info.first_derivative() << endl;
+	cout << "  2nd derivative: " << info.second_derivative() << endl;
+	cout << "  unsubtracted: " << info.unsubtracted() << endl;
+	cout << "  1st order: " << info.first_order_subtracted() << endl;
+	cout << "# step used: " << info.ghost_scale_used() << endl;
+
+}
+
+void  ewk::GroomedJetFiller::get_nsubjettiness(fastjet::PseudoJet jet_origin, float &tau1, float &tau2, float &tau3, float &tau4, float & tau2tau1){
+	// Defining Nsubjettiness parameters
+	double beta = mNsubjettinessKappa; // power for angular dependence, e.g. beta = 1 --> linear k-means, beta = 2 --> quadratic/classic k-means
+	double R0 = mJetRadius; // Characteristic jet radius for normalization	      
+	double Rcut = mJetRadius; // maximum R particles can be from axis to be included in jet	      
+
+	fastjet::Nsubjettiness nSub1KT(1, Njettiness::onepass_kt_axes, beta, R0, Rcut);
+	fastjet::Nsubjettiness nSub2KT(2, Njettiness::onepass_kt_axes, beta, R0, Rcut);
+	fastjet::Nsubjettiness nSub3KT(3, Njettiness::onepass_kt_axes, beta, R0, Rcut);
+	fastjet::Nsubjettiness nSub4KT(4, Njettiness::onepass_kt_axes, beta, R0, Rcut);
+
+	tau1 = nSub1KT(jet_origin);
+	tau2 = nSub2KT(jet_origin);
+	tau3 = nSub3KT(jet_origin);
+	tau4 = nSub4KT(jet_origin);
+	tau2tau1 = tau2/tau1;
+}
+
 
 //Jet Cleansing
 JetCleanser ewk::GroomedJetFiller::makeJVFCleanser(fastjet::JetDefinition subjet_def, std::string projectmode, double fcut, int nsj )//projectmode: CMS or ATLAS
@@ -1194,6 +1062,106 @@ JetCleanser ewk::GroomedJetFiller::makeGausCleanser(fastjet::JetDefinition subje
 	return tmpCleanser;
 }
 
+void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::vector<fastjet::PseudoJet> FJparticles, 
+			std::vector<fastjet::PseudoJet> FJparticles_hardcharge,
+			std::vector<fastjet::PseudoJet> FJparticles_pileupcharge,
+			std::vector<fastjet::PseudoJet> FJparticles_fullneutral  )
+{
+	// find jets
+	vector< vector<fastjet::PseudoJet> > sets;
+	sets.push_back( FJparticles );           // calorimeter cells
+	sets.push_back( FJparticles_hardcharge );   // tracks from primary interaction
+	sets.push_back( FJparticles_pileupcharge );       // tracks from pileup
+	sets.push_back( FJparticles_fullneutral );   // neutral particles
+
+	// collect jets
+	vector< vector<fastjet::PseudoJet> > jet_sets = ClusterSets(jetDef, FJparticles, sets, 15.0);
+	vector<fastjet::PseudoJet> jets_plain     = jet_sets[0];
+	vector<fastjet::PseudoJet> jets_tracks_LV = jet_sets[1];
+	vector<fastjet::PseudoJet> jets_tracks_PU = jet_sets[2];
+	vector<fastjet::PseudoJet> jets_neutrals  = jet_sets[3];
+
+	// Jet cleansing
+	vector<JetCleanser> jetcleanser_vect;
+	fastjet::JetDefinition subjet_def(fastjet::kt_algorithm, 0.3);
+	// jvf
+	JetCleanser jetcleanser0=makeJVFCleanser(subjet_def, "CMS");
+	jetcleanser_vect.push_back(jetcleanser0);
+	// linear
+	for(Int_t linear_par=0; linear_par<=20; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def,0.4+0.01*linear_par, "CMS");
+		jetcleanser_vect.push_back(jetcleanser1);
+	}
+	// gaus
+	JetCleanser jetcleanser2=makeGausCleanser(subjet_def, 0.67, 0.62, 0.20, 0.25, "CMS");
+	jetcleanser_vect.push_back(jetcleanser2);
+
+	if( int(jetcleanser_vect.size()) >= NUM_JETCLEANSING_MODE_MAX ){ std::cout<<"Error! Jet Cleansing Mode is too many!"<<endl; BREAK(); }
+	for(Int_t j=0;j<int(jetcleanser_vect.size());j++){
+		fastjet::PseudoJet tmp_cleansed_jet = jetcleanser_vect[j]( jets_neutrals[0].constituents(), jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );//CMS
+		//( jets_plain[0], jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );/ATLAS
+		jetmass_JetCleansing_DiffMode[j]= tmp_cleansed_jet.m();
+		jetpt_JetCleansing_DiffMode[j]  = tmp_cleansed_jet.pt();
+		//cout<<jetcleanser_vect[j].description()<<endl<<"jet mass="<< tmp_cleansed_jet.m()<<" jet pt="<< tmp_cleansed_jet.pt()<<endl; cout<<"================"<<endl;
+	};
 
 
+	//----------------------------------------------------------
+	// ATLAS-like: cleansers
+	cout << "ATLAS-like JetCleansing:" << endl << endl;
+
+	JetCleanser jvf_cleanser_A(subjet_def, JetCleanser::jvf_cleansing, JetCleanser::input_nc_together);
+	jvf_cleanser_A.SetTrimming(0.01);
+
+	JetCleanser linear_cleanser_A(subjet_def, JetCleanser::linear_cleansing, JetCleanser::input_nc_together);
+	linear_cleanser_A.SetLinearParameters(0.65);
+
+	JetCleanser gaussian_cleanser_A(subjet_def, JetCleanser::gaussian_cleansing, JetCleanser::input_nc_together);
+	gaussian_cleanser_A.SetGaussianParameters(0.67,0.62,0.20,0.25);
+
+	// print info about cleansers
+	cout << jvf_cleanser_A.description() << endl;
+	cout << linear_cleanser_A.description() << endl;
+	cout << gaussian_cleanser_A.description() << endl;
+
+	// ATLAS-like: cleanse jets
+	int n_jets = min((int) jets_plain.size(),3);
+	for (int i=0; i<n_jets; i++){
+		fastjet::PseudoJet plain_jet = jets_plain[i];
+		fastjet::PseudoJet jvf_cleansed_jet = jvf_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
+		fastjet::PseudoJet lin_cleansed_jet = linear_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
+		fastjet::PseudoJet gau_cleansed_jet = gaussian_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
+
+		/*			cout << "                with pileup: pt = " << plain_jet.pt()
+					<< " eta = " << plain_jet.eta()
+					<< " phi = " << plain_jet.phi()
+					<< "   m = " << plain_jet.m()
+					<< endl;
+
+					cout << " with pileup + jvf cleansed: pt = " << jvf_cleansed_jet.pt()
+					<< " eta = " << jvf_cleansed_jet.eta()
+					<< " phi = " << jvf_cleansed_jet.phi()
+					<< "   m = " << jvf_cleansed_jet.m()
+					<< endl;
+
+					cout << " with pileup + lin cleansed: pt = " << lin_cleansed_jet.pt()
+					<< " eta = " << lin_cleansed_jet.eta()
+					<< " phi = " << lin_cleansed_jet.phi()
+					<< "   m = " << lin_cleansed_jet.m()
+					<< endl;
+
+					cout << " with pileup + gau cleansed: pt = " << gau_cleansed_jet.pt()
+					<< " eta = " << gau_cleansed_jet.eta()
+					<< " phi = " << gau_cleansed_jet.phi()
+					<< "   m = " << gau_cleansed_jet.m()
+					<< endl
+					<< endl;
+					*/	
+		jetmass_JetCleansingATLASjvf[i]=jvf_cleansed_jet.m();
+		jetmass_JetCleansingATLASlin[i]=lin_cleansed_jet.m();
+		jetmass_JetCleansingATLASgau[i]=gau_cleansed_jet.m();
+
+	}
+
+}
 
