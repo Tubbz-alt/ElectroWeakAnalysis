@@ -250,9 +250,8 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 				if (!runningOverMC_)
 				  jecStr.push_back( fDir + "_L2L3Residual_AK7PF.txt" );
 			}
-		}
-		if (jetAlgorithmAdditonalLabel_=="_PFCHS"){
-
+		}else //if (jetAlgorithmAdditonalLabel_=="_PFCHS")
+		{
 			if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
 				jecStr.push_back( fDir +  "_L1FastJet_AK5PFchs.txt" );
 				jecStr.push_back( fDir + "_L2Relative_AK5PFchs.txt" );
@@ -281,8 +280,8 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 			}else{
 				jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK7PF.txt" );
 			}
-		}
-		if (jetAlgorithmAdditonalLabel_=="_PFCHS"){
+		}else //if (jetAlgorithmAdditonalLabel_=="_PFCHS")
+		{
 			if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
 				jecUnc_ = new JetCorrectionUncertainty( fDir + "_Uncertainty_AK5PFchs.txt" );
 			}else{
@@ -569,9 +568,11 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		jetpt_rho4A[j]= jet_corr_medi.pt();
 		jetmass_rho4Area[j]= jet_corr_medi.m();
 		jetmass_rhoG4Area[j]= jet_corr_grid.m();
+		//cout<<"rho*A4: "<<jetpt_rho4A[j]<<" , "<<jetmass_rho4Area[j]<<endl;
 
 		//Generic Shape correction, arXiv 1211.2811
 		do_GenericShape_correction(out_jets.at(j), mBgeMedi, jetpt_rhom4A[j], jetmass_rhom4Area[j]);
+		//cout<<"rhomA4: "<<jetpt_rhom4A[j]<<" , "<<jetmass_rhom4Area[j]<<endl;
 
 		// pruning, trimming, filtering  -------------
 		int transctr = 0;
