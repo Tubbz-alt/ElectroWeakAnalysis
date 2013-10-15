@@ -84,6 +84,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	SetBranch( jetmass_ft_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_ft_uncorr");
 	SetBranch( jetmass_pr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_pr_uncorr");
 	SetBranch( tau2tau1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1");
+	SetBranch( tau2tau1_shapesubtract, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1_shapesubtract");
 	SetBranch( tau1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau1");
 	SetBranch( tau2, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2");
 	SetBranch( tau3, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau3");
@@ -370,6 +371,7 @@ void ewk::GroomedJetFiller::Init(){
 		jetmass_ft_uncorr[j] = -1.;
 		jetmass_pr_uncorr[j] = -1.;
 		tau2tau1[j] = -1.;
+		tau2tau1_shapesubtract[j] = -1.;
 		tau1[j] = -1.;
 		tau2[j] = -1.;
 		tau3[j] = -1.;
@@ -571,7 +573,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		//cout<<"rho*A4: "<<jetpt_rho4A[j]<<" , "<<jetmass_rho4Area[j]<<endl;
 
 		//Generic Shape correction, arXiv 1211.2811
-		do_GenericShape_correction(out_jets.at(j), mBgeMedi, jetpt_rhom4A[j], jetmass_rhom4Area[j]);
+		do_GenericShapeSubtract_correction(out_jets.at(j), mBgeMedi, jetpt_rhom4A[j], jetmass_rhom4Area[j], tau2tau1_shapesubtract[j]);
 		//cout<<"rhomA4: "<<jetpt_rhom4A[j]<<" , "<<jetmass_rhom4Area[j]<<endl;
 
 		// pruning, trimming, filtering  -------------
@@ -964,10 +966,15 @@ fastjet::PseudoJet ewk::GroomedJetFiller::do_rhoA_correction(fastjet::PseudoJet 
 
 
 
-void ewk::GroomedJetFiller::do_GenericShape_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new)
+void ewk::GroomedJetFiller::do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtract)
 {
 	Mass jetshape_mass; 
 	Pt   jetshape_pt;
+
+	double beta = mNsubjettinessKappa; // power for angular dependence, e.g. beta = 1 --> linear k-means, beta = 2 --> quadratic/classic k-means
+	double R0 = mJetRadius; // Characteristic jet radius for normalization	      
+	double Rcut = mJetRadius; // maximum R particles can be from axis to be included in jet	      
+	NSubjettinessRatio tau21(2, Njettiness::onepass_kt_axes, beta, R0, Rcut);
 
 	//GenericSubtractor gen_sub(mBgeMedi);
 	GenericSubtractor gen_sub(bge_rho);
@@ -981,7 +988,7 @@ void ewk::GroomedJetFiller::do_GenericShape_correction(fastjet::PseudoJet jet_or
 	// compute the subtracted shape, and retrieve additional information
 
 	jetpt_new = gen_sub(jetshape_pt, jet_origin, info);
-	cout<< "uncorr pt = " << jetshape_pt(jet_origin) << endl;
+	/*cout<< "uncorr pt = " << jetshape_pt(jet_origin) << endl;
 	cout<< "jetshape_pt corr  = " << jetpt_new << endl;
 	cout << "  rho  = " << info.rho() << endl;
 	cout << "  rhom = " << info.rhom() << endl;
@@ -990,9 +997,10 @@ void ewk::GroomedJetFiller::do_GenericShape_correction(fastjet::PseudoJet jet_or
 	cout << "  unsubtracted: " << info.unsubtracted() << endl;
 	cout << "  1st order: " << info.first_order_subtracted() << endl;
 	cout << "# step used: " << info.ghost_scale_used() << endl;
+	*/
 
 	jetmass_new = gen_sub(jetshape_mass, jet_origin, info);
-	cout<< "uncorr mass = " << jetshape_mass(jet_origin) << endl;
+	/*cout<< "uncorr mass = " << jetshape_mass(jet_origin) << endl;
 	cout<< "jetshape_mass corr  = " << jetmass_new << endl;
 	cout << "  rho  = " << info.rho() << endl;
 	cout << "  rhom = " << info.rhom() << endl;
@@ -1001,6 +1009,11 @@ void ewk::GroomedJetFiller::do_GenericShape_correction(fastjet::PseudoJet jet_or
 	cout << "  unsubtracted: " << info.unsubtracted() << endl;
 	cout << "  1st order: " << info.first_order_subtracted() << endl;
 	cout << "# step used: " << info.ghost_scale_used() << endl;
+	*/
+
+	cout<<"unsubtracted jets: "<<tau21(jet_origin)<<endl;
+	cout<<"  subtracted jets: "<<gen_sub(tau21, jet_origin)<<endl;
+	tau2tau1_shapesubtract = gen_sub(tau21, jet_origin); 
 
 }
 
@@ -1020,6 +1033,7 @@ void  ewk::GroomedJetFiller::get_nsubjettiness(fastjet::PseudoJet jet_origin, fl
 	tau3 = nSub3KT(jet_origin);
 	tau4 = nSub4KT(jet_origin);
 	tau2tau1 = tau2/tau1;
+	//cout<<"normal unsubtracted jets: "<<tau2tau1<<endl;
 }
 
 
@@ -1084,32 +1098,51 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 
 	// Jet cleansing
 	vector<JetCleanser> jetcleanser_vect;
-	fastjet::JetDefinition subjet_def(fastjet::kt_algorithm, 0.3);
+	fastjet::JetDefinition subjet_def_kt03(fastjet::kt_algorithm, 0.3);
+	fastjet::JetDefinition subjet_def_kt025(fastjet::kt_algorithm, 0.25);
+	fastjet::JetDefinition subjet_def_kt02(fastjet::kt_algorithm, 0.2);
+	fastjet::JetDefinition subjet_def_kt015(fastjet::kt_algorithm, 0.15);
 	// jvf
-	JetCleanser jetcleanser0=makeJVFCleanser(subjet_def, "CMS");
-	jetcleanser_vect.push_back(jetcleanser0);
+	JetCleanser jetcleanser01=makeJVFCleanser(subjet_def_kt03, "CMS"); jetcleanser_vect.push_back(jetcleanser01);
+	JetCleanser jetcleanser02=makeJVFCleanser(subjet_def_kt025, "CMS"); jetcleanser_vect.push_back(jetcleanser02);
+	JetCleanser jetcleanser03=makeJVFCleanser(subjet_def_kt02, "CMS"); jetcleanser_vect.push_back(jetcleanser03);
+	JetCleanser jetcleanser04=makeJVFCleanser(subjet_def_kt015, "CMS"); jetcleanser_vect.push_back(jetcleanser04);
 	// linear
 	for(Int_t linear_par=0; linear_par<=20; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def,0.4+0.01*linear_par, "CMS");
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt03,0.4+0.01*linear_par, "CMS");
 		jetcleanser_vect.push_back(jetcleanser1);
 	}
+	for(Int_t linear_par=0; linear_par<=20; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt025,0.4+0.01*linear_par, "CMS");
+		jetcleanser_vect.push_back(jetcleanser1);
+	}
+	for(Int_t linear_par=0; linear_par<=20; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt02,0.4+0.01*linear_par, "CMS");
+		jetcleanser_vect.push_back(jetcleanser1);
+	}
+	for(Int_t linear_par=0; linear_par<=20; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt015,0.4+0.01*linear_par, "CMS");
+		jetcleanser_vect.push_back(jetcleanser1);
+	} 
 	// gaus
-	JetCleanser jetcleanser2=makeGausCleanser(subjet_def, 0.67, 0.62, 0.20, 0.25, "CMS");
+	JetCleanser jetcleanser2=makeGausCleanser(subjet_def_kt03, 0.67, 0.62, 0.20, 0.25, "CMS");
 	jetcleanser_vect.push_back(jetcleanser2);
 
 	if( int(jetcleanser_vect.size()) >= NUM_JETCLEANSING_MODE_MAX ){ std::cout<<"Error! Jet Cleansing Mode is too many!"<<endl; BREAK(); }
+	cout<<"jetcleanser_vect.size()="<<jetcleanser_vect.size()<<endl;
 	for(Int_t j=0;j<int(jetcleanser_vect.size());j++){
 		fastjet::PseudoJet tmp_cleansed_jet = jetcleanser_vect[j]( jets_neutrals[0].constituents(), jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );//CMS
 		//( jets_plain[0], jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );/ATLAS
 		jetmass_JetCleansing_DiffMode[j]= tmp_cleansed_jet.m();
 		jetpt_JetCleansing_DiffMode[j]  = tmp_cleansed_jet.pt();
 		//cout<<jetcleanser_vect[j].description()<<endl<<"jet mass="<< tmp_cleansed_jet.m()<<" jet pt="<< tmp_cleansed_jet.pt()<<endl; cout<<"================"<<endl;
+		//cout<<j<<" mass="<< tmp_cleansed_jet.m()<<" pt="<< tmp_cleansed_jet.pt()<<endl; 
 	};
 
-
+/*
 	//----------------------------------------------------------
 	// ATLAS-like: cleansers
-	cout << "ATLAS-like JetCleansing:" << endl << endl;
+	//cout << "ATLAS-like JetCleansing:" << endl << endl;
 
 	JetCleanser jvf_cleanser_A(subjet_def, JetCleanser::jvf_cleansing, JetCleanser::input_nc_together);
 	jvf_cleanser_A.SetTrimming(0.01);
@@ -1133,7 +1166,7 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 		fastjet::PseudoJet lin_cleansed_jet = linear_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
 		fastjet::PseudoJet gau_cleansed_jet = gaussian_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
 
-		/*			cout << "                with pileup: pt = " << plain_jet.pt()
+					cout << "                with pileup: pt = " << plain_jet.pt()
 					<< " eta = " << plain_jet.eta()
 					<< " phi = " << plain_jet.phi()
 					<< "   m = " << plain_jet.m()
@@ -1157,12 +1190,11 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 					<< "   m = " << gau_cleansed_jet.m()
 					<< endl
 					<< endl;
-					*/	
 		jetmass_JetCleansingATLASjvf[i]=jvf_cleansed_jet.m();
 		jetmass_JetCleansingATLASlin[i]=lin_cleansed_jet.m();
 		jetmass_JetCleansingATLASgau[i]=gau_cleansed_jet.m();
 
 	}
-
+*/
 }
 
