@@ -33,7 +33,7 @@ void MyClass::Draw_and_Save(TH1D h1, TH1D h2){
 	h1.GetYaxis()->SetRangeUser(0., TMath::Max(h1.GetMaximum(), h2.GetMaximum())*1.2);
 	h1.Draw();
 	h2.Draw("same");
-	c1->Print(Form("%s/%s_%s_%s_and_%s.png",plot_Dir_DateTime.Data(),h1.GetTitle(),h2.GetTitle()));
+	c1->Print(Form("%s/%s_%s_%s_and_%s.png",plot_Dir_DateTime.Data(), JetType.Data(), PfType.Data(),  h1.GetTitle(),h2.GetTitle()));
 	delete c1;
 }
 void MyClass::Draw_and_Save(TH1D h1, TH1D h2, TH1D h3){
@@ -93,6 +93,7 @@ void MyClass::Loop()
 	if (fChain == 0) return;
 	Long64_t nentries = fChain->GetEntriesFast();
 
+
 	Double_t tmp_GEN_pt=0.;
 	Double_t tmp_GEN_eta=0.;
 	Double_t tmp_GEN_phi=0.;
@@ -135,6 +136,8 @@ void MyClass::Loop()
 	Double_t tmp_RECO_mass_JetCleansingCMSjvf=0.;
 	Double_t tmp_RECO_mass_JetCleansingCMSlin=0.;
 	Double_t tmp_RECO_mass_JetCleansingCMSgau=0.;*/
+	Double_t tmp_RECO_tau2tau1=0.;
+	Double_t tmp_RECO_tau2tau1_shapesubtract=0.;
 
 	Double_t tmp_event_nPV=0.;
 
@@ -148,6 +151,10 @@ void MyClass::Loop()
 	Int_t nbin_mass=60;Double_t jetmass_min=0;Double_t jetmass_max=300.;
 	Int_t nbin_pt=40;Double_t jetpt_min=50;Double_t jetpt_max=450.;
 	Int_t nbin_ratio=20; Double_t ratio_min=0.3; Double_t ratio_max=1.7; 
+	Double_t ratio_mrt_min=0.5; Double_t ratio_mrt_max=1.6; 
+	Double_t ratio_mrt_uncorr_min=0.5; Double_t ratio_mrt_uncorr_max=2.5; 
+	const Int_t nbin_eta=10;Double_t eta_min=-2.5;Double_t eta_max=2.5;
+	const Int_t nbin_tau2tau1=120;Double_t tau2tau1_min=-3;Double_t tau2tau1_max=3.;
 
 	if(!isBoosted){
 		nbin_mass=40; jetmass_min=0; jetmass_max=80.;
@@ -160,7 +167,7 @@ void MyClass::Loop()
 	TH1D h1_muplus_Pt("h1_muplus_Pt","h1_muplus_Pt;#mu^{+} Pt",40,0,400);
 
 	TH1D h1_GEN_pt("h1_GEN_pt","h1_GEN_pt; Gen Jet pT",nbin_pt, jetpt_min, jetpt_max); h1_GEN_pt.SetLineColor(kRed);
-	TH1D h1_GEN_eta("h1_GEN_eta","h1_GEN_eta; Gen Jet #eta",50,-2.5,2.5); h1_GEN_eta.SetLineColor(kRed);
+	TH1D h1_GEN_eta("h1_GEN_eta","h1_GEN_eta; Gen Jet #eta", nbin_eta, eta_min, eta_max); h1_GEN_eta.SetLineColor(kRed);
 	TH1D h1_GEN_phi("h1_GEN_phi","h1_GEN_phi; Gen Jet #phi",50,-4,4); h1_GEN_phi.SetLineColor(kRed);
 	TH1D h1_GEN_zjet_dr("h1_GEN_zjet_dr","h1_GEN_zjet_dr;dR(Z,j)",50,0,10); h1_GEN_zjet_dr.SetLineColor(kRed);
 	TH1D h1_GEN_zjet_dphi("h1_GEN_zjet_dphi","h1_GEN_zjet_dphi; d#phi(Z,j)",50,0,5); h1_GEN_zjet_dphi.SetLineColor(kRed);
@@ -204,7 +211,7 @@ void MyClass::Loop()
 	//TGraph gr_RECO_pt_rhoG4Area;
 	TGraph gr_RECO_pt_rhom4Area;
 
-	TH1D h1_RECO_eta("h1_RECO_eta","h1_RECO_eta",50,-2.5,2.5);
+	TH1D h1_RECO_eta("h1_RECO_eta","h1_RECO_eta", nbin_eta, eta_min, eta_max);
 	TH1D h1_RECO_phi("h1_RECO_phi","h1_RECO_phi",50,-4,4);
 	TH1D h1_RECO_zjet_dr("h1_RECO_zjet_dr","h1_RECO_zjet_dr;dR(Z,J)",50,0,7);
 	TH1D h1_RECO_zjet_dphi("h1_RECO_zjet_dphi","h1_RECO_zjet_dphi",50,0,5);
@@ -216,6 +223,9 @@ void MyClass::Loop()
 	TH2D h2_RECO_rhoHand_vs_nPV("h2_RECO_rhoHand_vs_nPV","h2_RECO_rhoHand_vs_nPV",nbin_rho,rhomin,rhomax, nbin_nPV, nPVmin, nPVmax);
 	TH2D h2_RECO_rhoHand2_vs_nPV("h2_RECO_rhoHand2_vs_nPV","h2_RECO_rhoHand2_vs_nPV",nbin_rho,rhomin,rhomax, nbin_nPV, nPVmin, nPVmax);
 	TH2D h2_RECO_rhoGrid_vs_nPV("h2_RECO_rhoGrid_vs_nPV","h2_RECO_rhoGrid_vs_nPV",nbin_rho,rhomin,rhomax, nbin_nPV, nPVmin, nPVmax);
+
+	TH1D h1_RECO_tau2tau1("h1_RECO_tau2tau1","h1_RECO_tau2tau1", nbin_tau2tau1, tau2tau1_min, tau2tau1_max);
+	TH1D h1_RECO_tau2tau1_shapesubtract("h1_RECO_tau2tau1_shapesubtract","h1_RECO_tau2tau1_shapesubtract", nbin_tau2tau1, tau2tau1_min, tau2tau1_max);
 
 	TH1D h1_RECO_area("h1_RECO_area","h1_RECO_area",50,0.6,1.1);
 
@@ -237,10 +247,25 @@ void MyClass::Loop()
 	TH1D h1_RECO_rho4A_recogenptratio("h1_RECO_rho4A_recogenptratio","h1_RECO_rho4A_recogenptratio",nbin_ratio, ratio_min, ratio_max);
 	TH1D h1_RECO_rhom4A_recogenptratio("h1_RECO_rhom4A_recogenptratio","h1_RECO_rhom4A_recogenptratio",nbin_ratio, ratio_min, ratio_max);
 	//TH1D h1_RECO_JetCleansing_recogenptratio("h1_RECO_JetCleansing_recogenptratio","h1_RECO_JetCleansing_recogenptratio",nbin_ratio, ratio_min, ratio_max);
+	
+	// reco/gen vs eta
+	mean_rms_tool mrt_PFCor_jec_recogenptratio("mrt_PFCor_jec_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_PFCor_uncorr_recogenptratio("mrt_PFCor_uncorr_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_PFCor_afterL1_recogenptratio("mrt_PFCor_afterL1_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_PFCor_afterL2_recogenptratio("mrt_PFCor_afterL2_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
 
+	mean_rms_tool mrt_RECO_jec_recogenptratio("mrt_RECO_jec_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_RECO_uncorr_recogenptratio("mrt_RECO_uncorr_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_RECO_l1rhosw_recogenptratio("mrt_RECO_l1rhosw_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_RECO_l1rhoHand_recogenptratio("mrt_RECO_l1rhoHand_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_RECO_l1rhoHand2_recogenptratio("mrt_RECO_l1rhoHand2_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_RECO_l1rhoGrid_recogenptratio("mrt_RECO_l1rhoGrid_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_RECO_rho4A_recogenptratio("mrt_RECO_rho4A_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	mean_rms_tool mrt_RECO_rhom4A_recogenptratio("mrt_RECO_rhom4A_recogenptratio_vs_eta",nbin_eta, eta_min, eta_max);
+	
 	TH2D h2_RECO_l1rhoHand_recogenptratio_vs_nPV("h2_RECO_l1rhoHand_recogenptratio_vs_nPV","h2_RECO_l1rhoHand_recogenptratio_vs_nPV", nbin_nPV, nPVmin, nPVmax, 50, 0, 2.5);
 	TH2D h2_RECO_l1rhoHand_recogenptratio_vs_ptHand("h2_RECO_l1rhoHand_recogenptratio_vs_ptHand","h2_RECO_l1rhoHand_recogenptratio_vs_ptHand",50,0,200, 50, 0, 2.5);
-	TH2D h2_RECO_l1rhoHand_recogenptratio_vs_eta("h2_RECO_l1rhoHand_recogenptratio_vs_eta","h2_RECO_l1rhoHand_recogenptratio_vs_eta", 50, -2.5, 2.5, 50, 0, 2.5);
+	TH2D h2_RECO_l1rhoHand_recogenptratio_vs_eta("h2_RECO_l1rhoHand_recogenptratio_vs_eta","h2_RECO_l1rhoHand_recogenptratio_vs_eta", nbin_eta, eta_min, eta_max, nbin_ratio, ratio_min, ratio_max);
 
 	//mass
 	TH1D h1_GEN_mass("h1_GEN_mass","h1_GEN_mass;jet mass;",nbin_mass,jetmass_min,jetmass_max); h1_GEN_mass.SetLineColor(kRed);
@@ -291,15 +316,17 @@ void MyClass::Loop()
 	TGraph gr_RECO_mass_JetCleansingCMSlin;
 	TGraph gr_RECO_mass_JetCleansingCMSgau;*/
 
+	//const Double_t NUM_JETCLEANSING_DIFFMODE =200; 
 	std::vector<TH1D>   vect_h1_RECO_mass_JetCleansing_DiffMode;
 	std::vector<TH2D>   vect_h2_RECO_mass_JetCleansing_DiffMode;
 	std::vector<TGraph> vect_gr_RECO_mass_JetCleansing_DiffMode;
 	std::vector<TH1D>   vect_h1_RECO_pt_JetCleansing_DiffMode;
 	std::vector<TH2D>   vect_h2_RECO_pt_JetCleansing_DiffMode;
 	std::vector<TGraph> vect_gr_RECO_pt_JetCleansing_DiffMode;
+	std::vector<mean_rms_tool> vect_mrt_RECO_pt_JetCleansing_DiffMode;
 
 	Int_t number_JetCleansing_DiffMode=0;
-	for(Int_t i=0;i<50;i++){
+	for(Int_t i=0;i<NUM_JETCLEANSING_DIFFMODE;i++){
 		TH1D h1_RECO_mass_JetCleansing_DiffMode(Form("h1_RECO_mass_JetCleansing_DiffMode%i",i),Form("h1_RECO_mass_JetCleansing_DiffMode%i;jet mass;",i),nbin_mass,jetmass_min,jetmass_max);
 		vect_h1_RECO_mass_JetCleansing_DiffMode.push_back(h1_RECO_mass_JetCleansing_DiffMode);
 		TH2D h2_RECO_mass_JetCleansing_DiffMode(Form("h2_RECO_mass_JetCleansing_DiffMode%i",i),Form("h2_RECO_mass_JetCleansing_DiffMode%i; gen jet mass; reco jet mass",i),nbin_mass,jetmass_min,jetmass_max,nbin_mass,jetmass_min,jetmass_max);
@@ -313,6 +340,10 @@ void MyClass::Loop()
 		vect_h2_RECO_pt_JetCleansing_DiffMode.push_back(h2_RECO_pt_JetCleansing_DiffMode);
 		TGraph gr_RECO_pt_JetCleansing_DiffMode;
 		vect_gr_RECO_pt_JetCleansing_DiffMode.push_back(gr_RECO_pt_JetCleansing_DiffMode);
+
+		mean_rms_tool mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode(Form("mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode%i",i),nbin_eta, eta_min, eta_max);
+		vect_mrt_RECO_pt_JetCleansing_DiffMode.push_back(mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode);
+
 	}
 
 
@@ -329,6 +360,10 @@ void MyClass::Loop()
 		tmp_GEN_phi = GenGroomedJet_phi[0];
 		tmp_RECO_eta = GroomedJet_eta[0];
 		tmp_RECO_phi = GroomedJet_phi[0];
+
+		tmp_RECO_tau2tau1 = GroomedJet_tau2tau1[0];
+		tmp_RECO_tau2tau1_shapesubtract = GroomedJet_tau2tau1_shapesubtract[0];
+		//cout<<"tau2tau1={ "<<tmp_RECO_tau2tau1<<" , "<<tmp_RECO_tau2tau1_shapesubtract<<" }"<<endl;
 
 		//RECO-GEN Jet matching efficiency
 		dr = TMath::Sqrt( (tmp_GEN_eta-tmp_RECO_eta)*(tmp_GEN_eta-tmp_RECO_eta) +
@@ -351,7 +386,7 @@ void MyClass::Loop()
 		//cout<<"isPFCor_matching_RECO="<<isPFCor_matching_RECO<<endl;
 		//cout<<"i_PFCorJet_matching_PFCHS="<<i_PFCorJet_matching_PFCHS<<endl;
 
-		if( dr <0.3 && isPFCor_matching_RECO) //Gen Jet matching with PF_uncerr
+		if( dr <0.3 && isPFCor_matching_RECO) //Gen Jet matching with PF_uncorr
 		{
 			tmp_GEN_pt = GenGroomedJet_pt[0];
 
@@ -387,29 +422,37 @@ void MyClass::Loop()
 			//PFCor
 			ratio = tmp_PFCor_pt/tmp_GEN_pt;
 			h1_PFCor_jec_recogenptratio.Fill(ratio);
+			mrt_PFCor_jec_recogenptratio.Fill(tmp_GEN_eta, ratio);
 			//PFCor uncorr
 			ratio = tmp_PFCor_Pt_uncorr/tmp_GEN_pt;
 			h1_PFCor_uncorr_recogenptratio.Fill(ratio);
+			mrt_PFCor_uncorr_recogenptratio.Fill(tmp_GEN_eta, ratio);
 			//PFCor L1
 			ratio = tmp_PFCor_Pt_afterL1/tmp_GEN_pt;
 			h1_PFCor_afterL1_recogenptratio.Fill(ratio);
+			mrt_PFCor_afterL1_recogenptratio.Fill(tmp_GEN_eta, ratio);
 			h1_PFCor_Pt_afterL1.Fill(tmp_PFCor_Pt_afterL1);
 			//PFCor L2
 			ratio = tmp_PFCor_Pt_afterL2/tmp_GEN_pt;
 			h1_PFCor_afterL2_recogenptratio.Fill(ratio);
+			mrt_PFCor_afterL2_recogenptratio.Fill(tmp_GEN_eta, ratio);
 
 			//RECO PF
 			ratio = tmp_RECO_pt/tmp_GEN_pt;
 			h1_RECO_jec_recogenptratio.Fill(ratio);
+			mrt_RECO_jec_recogenptratio.Fill(tmp_GEN_eta, ratio);
 			//RECO uncorr
 			ratio = tmp_RECO_pt_uncorr/tmp_GEN_pt;
 			h1_RECO_uncorr_recogenptratio.Fill(ratio);
+			mrt_RECO_uncorr_recogenptratio.Fill(tmp_GEN_eta, ratio);
 			//RECO rhoSW
 			ratio = tmp_RECO_pt_L1_rhoSW/tmp_GEN_pt;
 			h1_RECO_l1rhosw_recogenptratio.Fill(ratio);
+			mrt_RECO_l1rhosw_recogenptratio.Fill(tmp_GEN_eta, ratio);
 			//RECO rhohand
 			ratio = tmp_RECO_pt_L1_rhoHand/tmp_GEN_pt;
 			h1_RECO_l1rhoHand_recogenptratio.Fill(ratio);
+			mrt_RECO_l1rhoHand_recogenptratio.Fill(tmp_GEN_eta, ratio);
 
 			h2_RECO_l1rhoHand_recogenptratio_vs_nPV.Fill(tmp_event_nPV, ratio);
 			h2_RECO_l1rhoHand_recogenptratio_vs_ptHand.Fill(tmp_RECO_pt_L1_rhoHand, ratio);
@@ -418,15 +461,19 @@ void MyClass::Loop()
 			//RECO rhohand2
 			ratio = tmp_RECO_pt_L1_rhoHand2/tmp_GEN_pt;
 			h1_RECO_l1rhoHand2_recogenptratio.Fill(ratio);
+			mrt_RECO_l1rhoHand2_recogenptratio.Fill(tmp_GEN_eta, ratio);
 			//RECO rhogrid
 			ratio = tmp_RECO_pt_L1_rhoGrid/tmp_GEN_pt;
 			h1_RECO_l1rhoGrid_recogenptratio.Fill(ratio);
+			mrt_RECO_l1rhoGrid_recogenptratio.Fill(tmp_GEN_eta, ratio);
 
 			ratio = tmp_RECO_pt_rho4A/tmp_GEN_pt;
 			h1_RECO_rho4A_recogenptratio.Fill(ratio);
+			mrt_RECO_rho4A_recogenptratio.Fill(tmp_GEN_eta, ratio);
 
 			ratio = tmp_RECO_pt_rhom4A/tmp_GEN_pt;
 			h1_RECO_rhom4A_recogenptratio.Fill(ratio);
+			mrt_RECO_rhom4A_recogenptratio.Fill(tmp_GEN_eta, ratio);
 
 			//ratio = tmp_RECO_pt_JetCleansing/tmp_GEN_pt;
 			//h1_RECO_JetCleansing_recogenptratio.Fill(ratio);
@@ -453,6 +500,10 @@ void MyClass::Loop()
 			gr_RECO_pt_rhoGArea.SetPoint(num_points,tmp_GEN_pt, tmp_RECO_pt_L1_rhoGrid);
 			gr_RECO_pt_rho4Area.SetPoint(num_points,tmp_GEN_pt, tmp_RECO_pt_rho4A);
 			gr_RECO_pt_rhom4Area.SetPoint(num_points,tmp_GEN_pt, tmp_RECO_pt_rhom4A);
+
+			//tau2tau1
+			h1_RECO_tau2tau1.Fill(tmp_RECO_tau2tau1);
+			h1_RECO_tau2tau1_shapesubtract.Fill(tmp_RECO_tau2tau1_shapesubtract);
 
 			//eta
 			h1_GEN_eta.Fill(tmp_GEN_eta);
@@ -543,8 +594,7 @@ void MyClass::Loop()
 			h2_RECO_mass_rho4Area.Fill(tmp_GEN_mass, tmp_RECO_mass_rho4Area);
 			h2_RECO_mass_rhoG4Area.Fill(tmp_GEN_mass, tmp_RECO_mass_rhoG4Area);
 			h2_RECO_mass_rhom4Area.Fill(tmp_GEN_mass, tmp_RECO_mass_rhom4Area);
-			/*h2_RECO_mass_JetCleansingATLASjvf.Fill(tmp_GEN_mass, tmp_RECO_mass_JetCleansingATLASjvf);
-			  h2_RECO_mass_JetCleansingATLASlin.Fill(tmp_GEN_mass, tmp_RECO_mass_JetCleansingATLASlin);
+			/*h2_RECO_mass_JetCleansingATLASjvf.Fill(tmp_GEN_mass, tmp_RECO_mass_JetCleansingATLASjvf); h2_RECO_mass_JetCleansingATLASlin.Fill(tmp_GEN_mass, tmp_RECO_mass_JetCleansingATLASlin);
 			  h2_RECO_mass_JetCleansingATLASgau.Fill(tmp_GEN_mass, tmp_RECO_mass_JetCleansingATLASgau);
 			  h2_RECO_mass_JetCleansingCMSjvf.Fill(tmp_GEN_mass, tmp_RECO_mass_JetCleansingCMSjvf);
 			  h2_RECO_mass_JetCleansingCMSlin.Fill(tmp_GEN_mass, tmp_RECO_mass_JetCleansingCMSlin);
@@ -566,7 +616,7 @@ void MyClass::Loop()
 			  gr_RECO_mass_JetCleansingCMSgau.SetPoint(num_points,tmp_GEN_mass, tmp_RECO_mass_JetCleansingCMSgau);*/
 
 			Int_t tmp_number_JetCleansing_DiffMode=number_JetCleansing_DiffMode;
-			if(tmp_number_JetCleansing_DiffMode==0)tmp_number_JetCleansing_DiffMode=50;
+			if(tmp_number_JetCleansing_DiffMode==0)tmp_number_JetCleansing_DiffMode=NUM_JETCLEANSING_DIFFMODE;
 			for(Int_t k=0;k<tmp_number_JetCleansing_DiffMode;k++){
 				if (GroomedJet_mass_JetCleansing_DiffMode[k]>=0 && GroomedJet_pt_JetCleansing_DiffMode[k]>=0){
 					vect_h1_RECO_mass_JetCleansing_DiffMode[k].Fill(GroomedJet_mass_JetCleansing_DiffMode[k]);
@@ -577,15 +627,21 @@ void MyClass::Loop()
 					vect_h2_RECO_pt_JetCleansing_DiffMode[k].Fill(tmp_GEN_pt, GroomedJet_pt_JetCleansing_DiffMode[k]);
 					vect_gr_RECO_pt_JetCleansing_DiffMode[k].SetPoint(num_points,tmp_GEN_pt, GroomedJet_pt_JetCleansing_DiffMode[k]);
 
-					if(tmp_number_JetCleansing_DiffMode==50)number_JetCleansing_DiffMode++;
+
+					//RECO rhohand
+					ratio = GroomedJet_pt_JetCleansing_DiffMode[k]/tmp_GEN_pt;
+					vect_mrt_RECO_pt_JetCleansing_DiffMode[k].Fill(tmp_GEN_eta, ratio);
+
+
+
+
+					if(tmp_number_JetCleansing_DiffMode==NUM_JETCLEANSING_DIFFMODE)number_JetCleansing_DiffMode++;
 				}else{ break;}
 			}
 			num_points++;
 
 		}
 	}
-	cout<<"xuzj0"<<endl;
-
 	Draw_and_Save(h1_PFCor_jec_recogenptratio);
 	Draw_and_Save(h1_PFCor_uncorr_recogenptratio);
 	Draw_and_Save(h1_PFCor_afterL1_recogenptratio);
@@ -599,7 +655,19 @@ void MyClass::Loop()
 	Draw_and_Save(h1_RECO_rho4A_recogenptratio);
 	Draw_and_Save(h1_RECO_rhom4A_recogenptratio);
 	//Draw_and_Save(h1_RECO_JetCleansing_recogenptratio);
-	cout<<"xuzj1"<<endl;
+
+	Draw_and_Save(mrt_PFCor_jec_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_PFCor_uncorr_recogenptratio.get_hist(ratio_mrt_uncorr_min, ratio_mrt_uncorr_max));
+	Draw_and_Save(mrt_PFCor_afterL1_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_PFCor_afterL2_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_RECO_jec_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_RECO_uncorr_recogenptratio.get_hist(ratio_mrt_uncorr_min, ratio_mrt_uncorr_max));
+	Draw_and_Save(mrt_RECO_l1rhosw_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_RECO_l1rhoHand_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_RECO_l1rhoHand2_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_RECO_l1rhoGrid_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_RECO_rho4A_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save(mrt_RECO_rhom4A_recogenptratio.get_hist(ratio_mrt_min, ratio_mrt_max));
 
 	/*
 	   h1_RECO_uncorr_recogenptratio.SetLineColor(1); h1_RECO_uncorr_recogenptratio.SetLineStyle(2); h1_RECO_uncorr_recogenptratio.SetLineWidth(2);
@@ -622,10 +690,10 @@ void MyClass::Loop()
 	Draw_and_Save(h1_PFCor_area);
 	Draw_and_Save(h1_RECO_area);
 
-/*	h1_PFCor_area.SetLineColor(kBlue);
+	h1_PFCor_area.SetLineColor(kBlue);
 	h1_RECO_area.SetLineColor(kBlack); h1_RECO_area.SetLineStyle(2);
 	Draw_and_Save(h1_PFCor_area, h1_RECO_area);
-*/
+
 	//h1_rho_PFCor); 
 	Draw_and_Save(h1_nPV);
 	Draw_and_Save(h1_z_mass);
@@ -645,7 +713,6 @@ void MyClass::Loop()
 	  Draw_and_Save(h2_GEN_rhoHand2_vs_nPV);
 	  Draw_and_Save(h2_GEN_rhoGrid_vs_nPV);*/
 
-	cout<<"xuzj2"<<endl;
 	Draw_and_Save(h1_PFCor_Pt_afterL1);
 	Draw_and_Save(h1_RECO_pt_uncorr);
 	Draw_and_Save(h1_RECO_pt_rhoArea);
@@ -653,8 +720,7 @@ void MyClass::Loop()
 	Draw_and_Save(h1_RECO_pt_rho4Area);
 	Draw_and_Save(h1_RECO_pt_rhom4Area);
 	//Draw_and_Save(h1_RECO_pt_JetCleansing);
-	
-	cout<<"xuzj3"<<endl;
+
 	Draw_and_Save(h2_GEN_pt, Form("%g correlated", gr_GEN_pt.GetCorrelationFactor())   );
 	Draw_and_Save(h2_RECO_pt_uncorr				, Form("%g correlated", gr_RECO_pt_uncorr.GetCorrelationFactor())				 );
 	Draw_and_Save(h2_RECO_pt_rhoArea			, Form("%g correlated", gr_RECO_pt_rhoArea.GetCorrelationFactor())				);
@@ -662,11 +728,8 @@ void MyClass::Loop()
 	Draw_and_Save(h2_RECO_pt_rho4Area			, Form("%g correlated", gr_RECO_pt_rho4Area.GetCorrelationFactor())				);
 	Draw_and_Save(h2_RECO_pt_rhom4Area			, Form("%g correlated", gr_RECO_pt_rhom4Area.GetCorrelationFactor())				);
 
-
-
-	cout<<"xuzj4"<<endl;
-
-
+	Draw_and_Save(h1_RECO_tau2tau1);
+	Draw_and_Save(h1_RECO_tau2tau1_shapesubtract);
 
 	Draw_and_Save(h1_RECO_eta);
 	Draw_and_Save(h1_RECO_zjet_dr);
@@ -684,10 +747,7 @@ void MyClass::Loop()
 	h1_RECO_rhoSW.SetLineColor(kBlue);
 	h1_RECO_rhoHand.SetLineColor(kBlack);
 	h1_RECO_rhoHand.SetLineStyle(2);
-	//Draw_and_Save(h1_RECO_rhoSW, h1_RECO_rhoHand);
-
-	cout<<"xuzj5"<<endl;
-
+	Draw_and_Save(h1_RECO_rhoSW, h1_RECO_rhoHand);
 
 	Draw_and_Save(h2_RECO_l1rhoHand_recogenptratio_vs_nPV);
 	Draw_and_Save(h2_RECO_l1rhoHand_recogenptratio_vs_ptHand);
@@ -710,15 +770,15 @@ void MyClass::Loop()
 	  Draw_and_Save(h1_RECO_mass_JetCleansingCMSgau   );*/
 
 	cout<<"number_JetCleansing_DiffMode="<<number_JetCleansing_DiffMode<<endl;
-	if (number_JetCleansing_DiffMode>50) number_JetCleansing_DiffMode=50;
+	if (number_JetCleansing_DiffMode>NUM_JETCLEANSING_DIFFMODE) number_JetCleansing_DiffMode=NUM_JETCLEANSING_DIFFMODE;
 	for(Int_t k=0;k<number_JetCleansing_DiffMode;k++){
 		Draw_and_Save(vect_h1_RECO_mass_JetCleansing_DiffMode[k]);
 		Draw_and_Save(vect_h2_RECO_mass_JetCleansing_DiffMode[k]	, Form("%g correlated", vect_gr_RECO_mass_JetCleansing_DiffMode[k].GetCorrelationFactor()));
 
 		Draw_and_Save(vect_h1_RECO_pt_JetCleansing_DiffMode[k]);
 		Draw_and_Save(vect_h2_RECO_pt_JetCleansing_DiffMode[k]	, Form("%g correlated", vect_gr_RECO_pt_JetCleansing_DiffMode[k].GetCorrelationFactor()));
+		Draw_and_Save(vect_mrt_RECO_pt_JetCleansing_DiffMode[k].get_hist(ratio_mrt_min, ratio_mrt_max)	);
 	}
-	cout<<"xuzj6"<<endl;
 
 	Draw_and_Save(h2_GEN_mass, Form("%g correlated", gr_GEN_mass.GetCorrelationFactor())   );
 	Draw_and_Save(h2_RECO_mass_uncorr				, Form("%g correlated", gr_RECO_mass_uncorr.GetCorrelationFactor())				 );
