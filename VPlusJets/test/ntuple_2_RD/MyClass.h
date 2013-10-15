@@ -16,6 +16,8 @@
 #include <TString.h>
 #include <TROOT.h>
 #include <iostream>
+#include <TGraph.h>
+#include <TMath.h>
 using namespace std;
 
 // Header file for the classes stored in the TTree if any.
@@ -109,6 +111,7 @@ class MyClass {
 		Float_t         GroomedJet_mass_ft_uncorr[6];
 		Float_t         GroomedJet_mass_pr_uncorr[6];
 		Float_t         GroomedJet_tau2tau1[6];
+		Float_t         GroomedJet_tau2tau1_shapesubtract[6];
 		Float_t         GroomedJet_tau1[6];
 		Float_t         GroomedJet_tau2[6];
 		Float_t         GroomedJet_tau3[6];
@@ -175,8 +178,9 @@ class MyClass {
 		Float_t         GroomedJet_planarflow[11][6];
 		Float_t         GroomedJet_qjetmass[50];
 		Float_t         GroomedJet_qjetmassdrop[50];
-		Float_t         GroomedJet_mass_JetCleansing_DiffMode[50];
-		Float_t         GroomedJet_pt_JetCleansing_DiffMode[50];
+		static const Int_t NUM_JETCLEANSING_DIFFMODE =200; 
+		Float_t         GroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_constituents0_eta[100];
 		Float_t         GroomedJet_constituents0_phi[100];
 		Float_t         GroomedJet_constituents0_e[100];
@@ -189,7 +193,7 @@ class MyClass {
 		Double_t        GroomedJet_rhohand;
 		Double_t        GroomedJet_rhohand2;
 		Double_t        GroomedJet_rhogrid;
-	
+
 		Float_t         GenGroomedJet_pt_uncorr[6];
 		Int_t           GenGroomedJet_number_jet_central;
 		Float_t         GenGroomedJet_mass_uncorr[6];
@@ -197,6 +201,7 @@ class MyClass {
 		Float_t         GenGroomedJet_mass_ft_uncorr[6];
 		Float_t         GenGroomedJet_mass_pr_uncorr[6];
 		Float_t         GenGroomedJet_tau2tau1[6];
+		Float_t         GenGroomedJet_tau2tau1_shapesubtract[6];
 		Float_t         GenGroomedJet_tau1[6];
 		Float_t         GenGroomedJet_tau2[6];
 		Float_t         GenGroomedJet_tau3[6];
@@ -263,8 +268,8 @@ class MyClass {
 		Float_t         GenGroomedJet_planarflow[11][6];
 		Float_t         GenGroomedJet_qjetmass[50];
 		Float_t         GenGroomedJet_qjetmassdrop[50];
-		Float_t         GenGroomedJet_mass_JetCleansing_DiffMode[50];
-		Float_t         GenGroomedJet_pt_JetCleansing_DiffMode[50];
+		Float_t         GenGroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GenGroomedJet_constituents0_eta[100];
 		Float_t         GenGroomedJet_constituents0_phi[100];
 		Float_t         GenGroomedJet_constituents0_e[100];
@@ -480,6 +485,7 @@ class MyClass {
 		TBranch        *b_GroomedJet_mass_ft_uncorr;   //!
 		TBranch        *b_GroomedJet_mass_pr_uncorr;   //!
 		TBranch        *b_GroomedJet_tau2tau1;   //!
+		TBranch        *b_GroomedJet_tau2tau1_shapesubtract;   //!
 		TBranch        *b_GroomedJet_tau1;   //!
 		TBranch        *b_GroomedJet_tau2;   //!
 		TBranch        *b_GroomedJet_tau3;   //!
@@ -567,6 +573,7 @@ class MyClass {
 		TBranch        *b_GenGroomedJet_mass_ft_uncorr;   //!
 		TBranch        *b_GenGroomedJet_mass_pr_uncorr;   //!
 		TBranch        *b_GenGroomedJet_tau2tau1;   //!
+		TBranch        *b_GenGroomedJet_tau2tau1_shapesubtract;   //!
 		TBranch        *b_GenGroomedJet_tau1;   //!
 		TBranch        *b_GenGroomedJet_tau2;   //!
 		TBranch        *b_GenGroomedJet_tau3;   //!
@@ -791,6 +798,24 @@ class MyClass {
 
 };
 
+
+
+
+class mean_rms_tool{
+	public:
+		string name;
+		Int_t nbin;
+		Double_t xmin;
+		Double_t xmax;
+		std::vector<Double_t> vector_x;
+		std::vector< std::vector<Double_t> > vectors_y;
+		mean_rms_tool(char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax);
+		~mean_rms_tool(){};
+		void Fill(Double_t in_x, Double_t in_y);
+		TH1D get_hist();
+		TH1D get_hist(Double_t y_min, Double_t y_max);
+};
+
 #endif
 
 #ifdef MyClass_cxx
@@ -934,6 +959,7 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_ft_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_ft_uncorr, &b_GroomedJet_mass_ft_uncorr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_pr_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_pr_uncorr, &b_GroomedJet_mass_pr_uncorr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau2tau1", JetType.Data(), PfType.Data()), GroomedJet_tau2tau1, &b_GroomedJet_tau2tau1);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau2tau1_shapesubtract", JetType.Data(), PfType.Data()), GroomedJet_tau2tau1_shapesubtract, &b_GroomedJet_tau2tau1_shapesubtract);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau1", JetType.Data(), PfType.Data()), GroomedJet_tau1, &b_GroomedJet_tau1);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau2", JetType.Data(), PfType.Data()), GroomedJet_tau2, &b_GroomedJet_tau2);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau3", JetType.Data(), PfType.Data()), GroomedJet_tau3, &b_GroomedJet_tau3);
@@ -1022,6 +1048,7 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_ft_uncorr", JetType.Data() ), GenGroomedJet_mass_ft_uncorr, &b_GenGroomedJet_mass_ft_uncorr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_pr_uncorr", JetType.Data() ), GenGroomedJet_mass_pr_uncorr, &b_GenGroomedJet_mass_pr_uncorr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau2tau1", JetType.Data() ), GenGroomedJet_tau2tau1, &b_GenGroomedJet_tau2tau1);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau2tau1_shapesubtract", JetType.Data() ), GenGroomedJet_tau2tau1_shapesubtract, &b_GenGroomedJet_tau2tau1_shapesubtract);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau1", JetType.Data() ), GenGroomedJet_tau1, &b_GenGroomedJet_tau1);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau2", JetType.Data() ), GenGroomedJet_tau2, &b_GenGroomedJet_tau2);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau3", JetType.Data() ), GenGroomedJet_tau3, &b_GenGroomedJet_tau3);
@@ -1102,7 +1129,7 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_rhohand", JetType.Data() ), &GenGroomedJet_rhohand, &b_GenGroomedJet_rhohand);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_rhohand2", JetType.Data() ), &GenGroomedJet_rhohand2, &b_GenGroomedJet_rhohand2);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_rhogrid", JetType.Data() ), &GenGroomedJet_rhogrid, &b_GenGroomedJet_rhogrid);
-	
+
 
 
 	fChain->SetBranchAddress("Z_mass", &Z_mass, &b_Z_mass);
@@ -1255,4 +1282,58 @@ Int_t MyClass::Cut(Long64_t entry)
 	// returns -1 otherwise.
 	return 1;
 }
+
+
+
+
+
+
+
+//		std::vector<Double_t> vector_x;
+//		std::vector<std::vector<Double_t>> vectors_y;
+mean_rms_tool::mean_rms_tool(char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax){
+	name=in_name;
+	nbin=in_nbin;
+	xmax=in_xmax;
+	xmin=in_xmin;
+	for(Int_t i=0;i<=in_nbin;i++){
+		vector_x.push_back( in_xmin + (in_xmax- in_xmin)/in_nbin * i) ;
+		if(i>0){
+			std::vector<Double_t> tmp_vect_y;
+			vectors_y.push_back(tmp_vect_y);
+		}
+	}
+}
+void mean_rms_tool::Fill(Double_t in_x, Double_t in_y){
+	if( in_x <xmin || in_x >= xmax)return;
+
+	for(Int_t i=0;i<nbin;i++){
+		if( in_x >=vector_x[i] && in_x <vector_x[i+1]  ){
+			vectors_y[i].push_back(in_y);
+		}
+	}
+}
+TH1D mean_rms_tool::get_hist(){
+	TH1D h1(name.c_str(), name.c_str(), nbin, xmin, xmax);
+	for(Int_t i=0;i<nbin;i++){
+		Int_t n_y=vectors_y[i].size(); 
+		Double_t * array_y=new Double_t[n_y];
+		for(Int_t k=0;k<n_y;k++)array_y[k]=vectors_y[i][k];
+		Double_t mean=TMath::Mean(n_y, array_y);
+		Double_t rms=TMath::RMS(n_y, array_y);
+		h1.SetBinContent(i+1,mean);
+		h1.SetBinError(i+1, rms);
+	}
+	return h1;
+}
+
+TH1D mean_rms_tool::get_hist(Double_t y_min, Double_t y_max){
+	TH1D h1=get_hist();
+	h1.GetYaxis()->SetRangeUser(y_min, y_max);
+	return h1;
+}
+
+
+
+
 #endif // #ifdef MyClass_cxx
