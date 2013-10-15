@@ -122,7 +122,7 @@ namespace ewk
 
 			// ----------member data ---------------------------
 			static const int NUM_JET_MAX = 6;
-			static const int NUM_JETCLEANSING_MODE_MAX = 50;
+			static const int NUM_JETCLEANSING_MODE_MAX = 200;
 
 		protected:
 			// 'mutable' because we will fill it from a 'const' method
@@ -146,7 +146,7 @@ namespace ewk
 			Double_t getrho_Hand2(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
 			Double_t getrho_Grid(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
 			fastjet::PseudoJet do_rhoA_correction(fastjet::PseudoJet jet_origin, double rho, double area);
-			void do_GenericShape_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new);
+			void do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtract);
 			void get_nsubjettiness(fastjet::PseudoJet jet_origin, float &tau1, float &tau2, float &tau3, float &tau4, float & tau2tau1);
 
 			//Jet Cleansing
@@ -203,6 +203,7 @@ namespace ewk
 			float jetmass_ft_uncorr[NUM_JET_MAX];
 			float jetmass_pr_uncorr[NUM_JET_MAX];
 			float tau2tau1[NUM_JET_MAX];
+			float tau2tau1_shapesubtract[NUM_JET_MAX];
 			float tau1[NUM_JET_MAX];
 			float tau2[NUM_JET_MAX];
 			float tau3[NUM_JET_MAX];
