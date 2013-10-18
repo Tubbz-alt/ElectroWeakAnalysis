@@ -181,6 +181,7 @@ class MyClass {
 		static const Int_t NUM_JETCLEANSING_DIFFMODE =200; 
 		Float_t         GroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GroomedJet_tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_constituents0_eta[100];
 		Float_t         GroomedJet_constituents0_phi[100];
 		Float_t         GroomedJet_constituents0_e[100];
@@ -270,6 +271,7 @@ class MyClass {
 		Float_t         GenGroomedJet_qjetmassdrop[50];
 		Float_t         GenGroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GenGroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GenGroomedJet_constituents0_eta[100];
 		Float_t         GenGroomedJet_constituents0_phi[100];
 		Float_t         GenGroomedJet_constituents0_e[100];
@@ -554,6 +556,7 @@ class MyClass {
 		TBranch        *b_GroomedJet_qjetmassdrop;   //!
 		TBranch        *b_GroomedJet_mass_JetCleansing_DiffMode;   //!
 		TBranch        *b_GroomedJet_pt_JetCleansing_DiffMode;   //!
+		TBranch        *b_GroomedJet_tau2tau1_JetCleansing_DiffMode;   //!
 		TBranch        *b_GroomedJet_constituents0_eta;   //!
 		TBranch        *b_GroomedJet_constituents0_phi;   //!
 		TBranch        *b_GroomedJet_constituents0_e;   //!
@@ -642,6 +645,7 @@ class MyClass {
 		TBranch        *b_GenGroomedJet_qjetmassdrop;   //!
 		TBranch        *b_GenGroomedJet_mass_JetCleansing_DiffMode;   //!
 		TBranch        *b_GenGroomedJet_pt_JetCleansing_DiffMode;   //!
+		TBranch        *b_GenGroomedJet_tau2tau1_JetCleansing_DiffMode;   //!
 		TBranch        *b_GenGroomedJet_constituents0_eta;   //!
 		TBranch        *b_GenGroomedJet_constituents0_phi;   //!
 		TBranch        *b_GenGroomedJet_constituents0_e;   //!
@@ -814,6 +818,27 @@ class mean_rms_tool{
 		void Fill(Double_t in_x, Double_t in_y);
 		TH1D get_hist();
 		TH1D get_hist(Double_t y_min, Double_t y_max);
+};
+
+class correlation_tool{
+	public:
+		string name;
+
+		Int_t xnbin;
+		Double_t xmin;
+		Double_t xmax;
+		Int_t ynbin;
+		Double_t ymin;
+		Double_t ymax;
+		TGraph gr;
+		Int_t nPoints;//for gr
+		TH2D hist2D;
+
+		correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax);
+		~correlation_tool(){}//{if(hist2D)delete hist2D;}
+		void Fill(Double_t in_x, Double_t in_y);
+		TH2D get_hist2D();
+		TGraph get_graph();
 };
 
 #endif
@@ -1028,6 +1053,7 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_qjetmassdrop", JetType.Data(), PfType.Data()), GroomedJet_qjetmassdrop, &b_GroomedJet_qjetmassdrop);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansing_DiffMode, &b_GroomedJet_mass_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_pt_JetCleansing_DiffMode, &b_GroomedJet_pt_JetCleansing_DiffMode);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau2tau1_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_tau2tau1_JetCleansing_DiffMode, &b_GroomedJet_tau2tau1_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_constituents0_eta", JetType.Data(), PfType.Data()), GroomedJet_constituents0_eta, &b_GroomedJet_constituents0_eta);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_constituents0_phi", JetType.Data(), PfType.Data()), GroomedJet_constituents0_phi, &b_GroomedJet_constituents0_phi);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_constituents0_e", JetType.Data(), PfType.Data()), GroomedJet_constituents0_e, &b_GroomedJet_constituents0_e);
@@ -1117,6 +1143,7 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_qjetmassdrop", JetType.Data() ), GenGroomedJet_qjetmassdrop, &b_GenGroomedJet_qjetmassdrop);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_mass_JetCleansing_DiffMode, &b_GenGroomedJet_mass_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_pt_JetCleansing_DiffMode, &b_GenGroomedJet_pt_JetCleansing_DiffMode);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau2tau1_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_tau2tau1_JetCleansing_DiffMode, &b_GenGroomedJet_tau2tau1_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_constituents0_eta", JetType.Data() ), GenGroomedJet_constituents0_eta, &b_GenGroomedJet_constituents0_eta);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_constituents0_phi", JetType.Data() ), GenGroomedJet_constituents0_phi, &b_GenGroomedJet_constituents0_phi);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_constituents0_e", JetType.Data() ), GenGroomedJet_constituents0_e, &b_GenGroomedJet_constituents0_e);
@@ -1334,6 +1361,22 @@ TH1D mean_rms_tool::get_hist(Double_t y_min, Double_t y_max){
 }
 
 
+correlation_tool::correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax){
+	hist2D=TH2D(in_name, in_name, in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
+	xnbin=in_xnbin; xmin =in_xmin; xmax =in_xmax;
+	ynbin=in_ynbin; ymin =in_ymin; ymax =in_ymax;
+	nPoints=0;
+}
 
+void correlation_tool::Fill(Double_t in_x, Double_t in_y){
+	if( in_x > xmin && in_x <xmax && in_y>ymin && in_y <ymax){
+		hist2D.Fill(in_x, in_y);
+		gr.SetPoint(nPoints, in_x, in_y);
+		nPoints++;
+	}
+};
+
+TH2D correlation_tool::get_hist2D(){return hist2D;}
+TGraph correlation_tool::get_graph(){return gr;}
 
 #endif // #ifdef MyClass_cxx
