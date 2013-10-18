@@ -94,6 +94,28 @@ namespace ewk
 	typedef boost::shared_ptr<fastjet::GhostedAreaSpec>        ActiveAreaSpecPtr;
 	typedef boost::shared_ptr<fastjet::AreaDefinition>         AreaDefinitionPtr;
 	typedef boost::shared_ptr<fastjet::RangeDefinition>        RangeDefPtr;
+	class GroomTool{
+		public:
+			static const int NUM_JET_MAX = 6;
+			fastjet::Transformer* groomer;
+			std::string groomer_label;
+			float jetmass_groomed[NUM_JET_MAX];
+			float jetpt_groomed[NUM_JET_MAX];
+			float jeteta_groomed[NUM_JET_MAX];
+			float jetphi_groomed[NUM_JET_MAX];
+			float jete_groomed[NUM_JET_MAX];
+			float jetarea_groomed[NUM_JET_MAX];
+			float tau2tau1[NUM_JET_MAX];
+
+			GroomTool(string in_groom_label, fastjet::Transformer* in_groomer);
+			~GroomTool(){ if (groomer) delete groomer;}
+			void Init();
+			void SetBranchs(TTree *t1, string title);
+			void SetBranch(TTree *t1, float* obs, string title, string obs_label);
+			void Groom(fastjet::PseudoJet jet_raw, Int_t number_jet);
+			TLorentzVector getJECJet(fastjet::PseudoJet jet_raw);
+
+	};
 	class GroomedJetFiller {
 		public:
 			/// specify the name of the TTree, and the configuration for it
@@ -190,6 +212,9 @@ namespace ewk
 			double mNsubjettinessKappa;
 			bool   mSaveConstituents;
 
+			std::vector<GroomTool> vect_groomtools;
+
+
 
 
 
@@ -204,6 +229,7 @@ namespace ewk
 			float jetmass_pr_uncorr[NUM_JET_MAX];
 			float tau2tau1[NUM_JET_MAX];
 			float tau2tau1_shapesubtract[NUM_JET_MAX];
+			float tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float tau1[NUM_JET_MAX];
 			float tau2[NUM_JET_MAX];
 			float tau3[NUM_JET_MAX];
