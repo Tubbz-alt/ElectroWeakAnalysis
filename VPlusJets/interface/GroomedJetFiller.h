@@ -108,7 +108,7 @@ namespace ewk
 			float tau2tau1[NUM_JET_MAX];
 
 			GroomTool(string in_groom_label, fastjet::Transformer* in_groomer);
-			~GroomTool(){ if (groomer) delete groomer;}
+			~GroomTool(){};
 			void Init();
 			void SetBranchs(TTree *t1, string title);
 			void SetBranch(TTree *t1, float* obs, string title, string obs_label);
