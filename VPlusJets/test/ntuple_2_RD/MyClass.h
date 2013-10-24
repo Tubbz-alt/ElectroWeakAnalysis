@@ -808,16 +808,18 @@ class MyClass {
 class mean_rms_tool{
 	public:
 		string name;
-		Int_t nbin;
+		Int_t nbinx;
 		Double_t xmin;
 		Double_t xmax;
+		TH1D hist;
 		std::vector<Double_t> vector_x;
 		std::vector< std::vector<Double_t> > vectors_y;
-		mean_rms_tool(char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax);
+		mean_rms_tool(char* in_name, Int_t in_nbinx, Double_t in_xmin, Double_t in_xmax, Int_t in_nbiny=1, Double_t in_ymin=0, Double_t in_ymax=0);
 		~mean_rms_tool(){};
 		void Fill(Double_t in_x, Double_t in_y);
-		TH1D get_hist();
-		TH1D get_hist(Double_t y_min, Double_t y_max);
+		TH1D get_hist1D();
+		TH1D get_mr_hist();
+		TH1D get_mr_hist(Double_t y_min, Double_t y_max);
 };
 
 class correlation_tool{
@@ -833,11 +835,16 @@ class correlation_tool{
 		TGraph gr;
 		Int_t nPoints;//for gr
 		TH2D hist2D;
+		TH1D hist1D;
+		TH1D hist1D_responce;
 
 		correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax);
+		correlation_tool(char* in_name, char* in_title, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax);
 		~correlation_tool(){}//{if(hist2D)delete hist2D;}
 		void Fill(Double_t in_x, Double_t in_y);
 		TH2D get_hist2D();
+		TH1D get_hist1D();
+		TH1D get_hist1D_responce();
 		TGraph get_graph();
 };
 
@@ -1318,13 +1325,14 @@ Int_t MyClass::Cut(Long64_t entry)
 
 //		std::vector<Double_t> vector_x;
 //		std::vector<std::vector<Double_t>> vectors_y;
-mean_rms_tool::mean_rms_tool(char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax){
+mean_rms_tool::mean_rms_tool(char* in_name, Int_t in_nbinx, Double_t in_xmin, Double_t in_xmax, Int_t in_nbiny, Double_t in_ymin, Double_t in_ymax){
 	name=in_name;
-	nbin=in_nbin;
+	nbinx=in_nbinx;
 	xmax=in_xmax;
 	xmin=in_xmin;
-	for(Int_t i=0;i<=in_nbin;i++){
-		vector_x.push_back( in_xmin + (in_xmax- in_xmin)/in_nbin * i) ;
+	hist=TH1D(Form("h1_%s", in_name), Form("h1_%s", in_name), in_nbiny, in_ymin, in_ymax);
+	for(Int_t i=0;i<=in_nbinx;i++){
+		vector_x.push_back( in_xmin + (in_xmax- in_xmin)/in_nbinx * i) ;
 		if(i>0){
 			std::vector<Double_t> tmp_vect_y;
 			vectors_y.push_back(tmp_vect_y);
@@ -1334,15 +1342,18 @@ mean_rms_tool::mean_rms_tool(char* in_name, Int_t in_nbin, Double_t in_xmin, Dou
 void mean_rms_tool::Fill(Double_t in_x, Double_t in_y){
 	if( in_x <xmin || in_x >= xmax)return;
 
-	for(Int_t i=0;i<nbin;i++){
+	for(Int_t i=0;i<nbinx;i++){
 		if( in_x >=vector_x[i] && in_x <vector_x[i+1]  ){
 			vectors_y[i].push_back(in_y);
 		}
 	}
+	hist.Fill(in_y);
 }
-TH1D mean_rms_tool::get_hist(){
-	TH1D h1(name.c_str(), name.c_str(), nbin, xmin, xmax);
-	for(Int_t i=0;i<nbin;i++){
+TH1D mean_rms_tool::get_hist1D(){ return hist;}
+TH1D mean_rms_tool::get_mr_hist(){
+	TH1D h1(name.c_str(), name.c_str(), nbinx, xmin, xmax);
+	//cout<<"mrt "<<name.c_str()<<" :"<<endl; 
+	for(Int_t i=0;i<nbinx;i++){
 		Int_t n_y=vectors_y[i].size(); 
 		Double_t * array_y=new Double_t[n_y];
 		for(Int_t k=0;k<n_y;k++)array_y[k]=vectors_y[i][k];
@@ -1350,19 +1361,31 @@ TH1D mean_rms_tool::get_hist(){
 		Double_t rms=TMath::RMS(n_y, array_y);
 		h1.SetBinContent(i+1,mean);
 		h1.SetBinError(i+1, rms);
+		//cout<<"    point "<<i+1<<" :{ "<<mean<<" , "<<rms<<" }"<<endl; 
 	}
 	return h1;
 }
 
-TH1D mean_rms_tool::get_hist(Double_t y_min, Double_t y_max){
-	TH1D h1=get_hist();
+TH1D mean_rms_tool::get_mr_hist(Double_t y_min, Double_t y_max){
+	TH1D h1=get_mr_hist();
 	h1.GetYaxis()->SetRangeUser(y_min, y_max);
 	return h1;
 }
 
 
 correlation_tool::correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax){
-	hist2D=TH2D(in_name, in_name, in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
+	hist2D=TH2D(Form("h2_%s",in_name), Form("h2_%s",in_name), in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
+	hist1D=TH1D(Form("h1_%s",in_name), Form("h1_%s",in_name), in_ynbin, in_ymin, in_ymax);
+	hist1D_responce=TH1D(Form("h1_%s_responce",in_name), Form("h1_%s_responce",in_name), 100, 0., 2.);
+	xnbin=in_xnbin; xmin =in_xmin; xmax =in_xmax;
+	ynbin=in_ynbin; ymin =in_ymin; ymax =in_ymax;
+	nPoints=0;
+}
+
+correlation_tool::correlation_tool(char* in_name, char* in_title, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax){
+	hist2D=TH2D(Form("h2_%s",in_name), Form("h2_%s",in_title), in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
+	hist1D=TH1D(Form("h1_%s",in_name), Form("h1_%s",in_name), in_ynbin, in_ymin, in_ymax);
+	hist1D_responce=TH1D(Form("h1_%s_responce",in_name), Form("h1_%s_responce",in_name), 100, 0., 2.);
 	xnbin=in_xnbin; xmin =in_xmin; xmax =in_xmax;
 	ynbin=in_ynbin; ymin =in_ymin; ymax =in_ymax;
 	nPoints=0;
@@ -1371,12 +1394,16 @@ correlation_tool::correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xm
 void correlation_tool::Fill(Double_t in_x, Double_t in_y){
 	if( in_x > xmin && in_x <xmax && in_y>ymin && in_y <ymax){
 		hist2D.Fill(in_x, in_y);
+		hist1D.Fill(in_y);
+		hist1D_responce.Fill(in_y/in_x);
 		gr.SetPoint(nPoints, in_x, in_y);
 		nPoints++;
 	}
 };
 
 TH2D correlation_tool::get_hist2D(){return hist2D;}
+TH1D correlation_tool::get_hist1D(){return hist1D;}
+TH1D correlation_tool::get_hist1D_responce(){return hist1D_responce;}
 TGraph correlation_tool::get_graph(){return gr;}
 
 #endif // #ifdef MyClass_cxx
