@@ -159,9 +159,9 @@ void MyClass::Loop()
 	Int_t nbin_nPV=50; Double_t nPVmin=0.; Double_t nPVmax=50.;
 	Int_t nbin_mass=60;Double_t jetmass_min=0;Double_t jetmass_max=300.;
 	Int_t nbin_pt=40;Double_t jetpt_min=50;Double_t jetpt_max=450.;
-	Int_t nbin_ratio=70; Double_t ratio_min=0.3; Double_t ratio_max=1.7; 
-	Double_t ratio_mrt_min=0.3; Double_t ratio_mrt_max=1.7; 
-	Double_t ratio_mrt_uncorr_min=0.3; Double_t ratio_mrt_uncorr_max=1.7; 
+	Int_t nbin_ratio=300; Double_t ratio_min=0; Double_t ratio_max=3.; 
+	Double_t ratio_mrt_min=0.5; Double_t ratio_mrt_max=1.6; 
+	Double_t ratio_mrt_uncorr_min=0.5; Double_t ratio_mrt_uncorr_max=1.6; 
 	const Int_t nbin_eta=10;Double_t eta_min=-2.5;Double_t eta_max=2.5;
 	//const Int_t nbin_tau2tau1=40;Double_t tau2tau1_min=-0.5;Double_t tau2tau1_max=1.5;
 	const Int_t nbin_tau2tau1=40;Double_t tau2tau1_min=0.;Double_t tau2tau1_max=1.;
@@ -374,7 +374,7 @@ void MyClass::Loop()
 		TGraph gr_RECO_pt_JetCleansing_DiffMode;
 		vect_gr_RECO_pt_JetCleansing_DiffMode.push_back(gr_RECO_pt_JetCleansing_DiffMode);*/
 
-		mean_rms_tool mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode(Form("mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode%i",i),nbin_eta, eta_min, eta_max, nbin_ratio, ratio_mrt_min, ratio_mrt_max);
+		mean_rms_tool mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode(Form("mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode%i",i),nbin_eta, eta_min, eta_max, nbin_ratio, ratio_min, ratio_max);
 		vect_mrt_RECO_pt_JetCleansing_DiffMode.push_back(mrt_RECO_JetCleansing_recogenptratio_vs_eta_DiffMode);
 
 		correlation_tool ct_RECO_mass_JetCleansing_DiffMode(Form("ct_RECO_mass_JetCleansing_DiffMode%i",i), nbin_mass, jetmass_min, jetmass_max, nbin_mass, jetmass_min, jetmass_max);
