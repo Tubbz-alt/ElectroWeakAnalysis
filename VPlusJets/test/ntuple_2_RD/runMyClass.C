@@ -1,11 +1,11 @@
 void runMyClass( bool isBoosted=1 ) {
-	TString jetlable="AK8";//AK5
+	TString jetlable="AK5";//AK5
 	TString pflable="PF";//PFCHS
 	TString boostedlable;
 	if(isBoosted)boostedlable="boosted";
 	else boostedlable="unboosted";	
 	
-	gROOT->LoadMacro("MyClass.C+");
+	gROOT->LoadMacro("MyClass.cc+");
 	gROOT->LoadMacro("tdrstyle.C");
 	setTDRStyle(); //plotting style
 
@@ -24,11 +24,11 @@ void runMyClass( bool isBoosted=1 ) {
 	TFile *file1;
 	if (isBoosted){
 		//file1 = new TFile("full_boost_oct3_zmumujetsanalysisntuple.root");
-		file1 = new TFile("boosted_full_v4_zmumujetsanalysisntuple.root");
+		file1 = new TFile("boosted_full_v6_zmumujetsanalysisntuple.root");
 	}else{
 		//file1 = new TFile("unboosted_full_zmumujetsanalysisntuple.root");
 		//file1 = new TFile("zmumujetsanalysisntuple.root");
-		file1 = new TFile("unboosted_full_v1_zmumujetsanalysisntuple.root");
+		file1 = new TFile("unboosted_full_v6_zmumujetsanalysisntuple.root");
 	}
 
 	TFile *fout = new TFile(Form("%s/out_%s.root", plot_Dir_DateTime, boostedlable.Data()), "RECREATE");
