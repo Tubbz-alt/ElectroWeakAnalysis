@@ -836,7 +836,7 @@ class correlation_tool{
 		Int_t nPoints;//for gr
 		TH2D hist2D;
 		TH1D hist1D;
-		TH1D hist1D_responce;
+		TH1D hist1D_response;
 
 		correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax);
 		correlation_tool(char* in_name, char* in_title, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax);
@@ -844,7 +844,7 @@ class correlation_tool{
 		void Fill(Double_t in_x, Double_t in_y);
 		TH2D get_hist2D();
 		TH1D get_hist1D();
-		TH1D get_hist1D_responce();
+		TH1D get_hist1D_response();
 		TGraph get_graph();
 };
 
@@ -1376,7 +1376,7 @@ TH1D mean_rms_tool::get_mr_hist(Double_t y_min, Double_t y_max){
 correlation_tool::correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax){
 	hist2D=TH2D(Form("h2_%s",in_name), Form("h2_%s",in_name), in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
 	hist1D=TH1D(Form("h1_%s",in_name), Form("h1_%s",in_name), in_ynbin, in_ymin, in_ymax);
-	hist1D_responce=TH1D(Form("h1_%s_responce",in_name), Form("h1_%s_responce",in_name), 100, 0., 2.);
+	hist1D_response=TH1D(Form("h1_%s_response",in_name), Form("h1_%s_response",in_name), 100, 0., 2.);
 	xnbin=in_xnbin; xmin =in_xmin; xmax =in_xmax;
 	ynbin=in_ynbin; ymin =in_ymin; ymax =in_ymax;
 	nPoints=0;
@@ -1385,7 +1385,7 @@ correlation_tool::correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xm
 correlation_tool::correlation_tool(char* in_name, char* in_title, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax){
 	hist2D=TH2D(Form("h2_%s",in_name), Form("h2_%s",in_title), in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
 	hist1D=TH1D(Form("h1_%s",in_name), Form("h1_%s",in_name), in_ynbin, in_ymin, in_ymax);
-	hist1D_responce=TH1D(Form("h1_%s_responce",in_name), Form("h1_%s_responce",in_name), 100, 0., 2.);
+	hist1D_response=TH1D(Form("h1_%s_response",in_name), Form("h1_%s_response",in_name), 100, 0., 2.);
 	xnbin=in_xnbin; xmin =in_xmin; xmax =in_xmax;
 	ynbin=in_ynbin; ymin =in_ymin; ymax =in_ymax;
 	nPoints=0;
@@ -1395,7 +1395,7 @@ void correlation_tool::Fill(Double_t in_x, Double_t in_y){
 	if( in_x > xmin && in_x <xmax && in_y>ymin && in_y <ymax){
 		hist2D.Fill(in_x, in_y);
 		hist1D.Fill(in_y);
-		hist1D_responce.Fill(in_y/in_x);
+		hist1D_response.Fill(in_y/in_x);
 		gr.SetPoint(nPoints, in_x, in_y);
 		nPoints++;
 	}
@@ -1403,7 +1403,7 @@ void correlation_tool::Fill(Double_t in_x, Double_t in_y){
 
 TH2D correlation_tool::get_hist2D(){return hist2D;}
 TH1D correlation_tool::get_hist1D(){return hist1D;}
-TH1D correlation_tool::get_hist1D_responce(){return hist1D_responce;}
+TH1D correlation_tool::get_hist1D_response(){return hist1D_response;}
 TGraph correlation_tool::get_graph(){return gr;}
 
 #endif // #ifdef MyClass_cxx
