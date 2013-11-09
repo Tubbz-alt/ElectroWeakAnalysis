@@ -77,11 +77,11 @@ Bool_t MyClass::Select()
 	if(!( Z_mass>65 && Z_mass<105 ))return 0;
 	if(!( GenGroomedJet_pt[0]>20 && GenGroomedJet_pt[0]<5000 ))return 0;
 
-	//alpha cut: z and jet are back to back
+	/*//alpha cut: z and jet are back to back
 	if(GenGroomedJet_number_jet_central >1){
-		//cout<<"alpha="<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
+		cout<<"alpha = "<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
 		if( GenGroomedJet_pt[1]/GenGroomedJet_pt[0] >=0.3 ) return 0;
-	}
+	}*/
 
 	if(isBoosted){
 		if(!( Z_pt>100))return 0;
@@ -785,8 +785,8 @@ void MyClass::Loop()
 	Draw_and_Save(ct_RECO_tau2tau1.get_hist1D());
 	Draw_and_Save(ct_RECO_tau2tau1_shapesubtract.get_hist1D());
 
-	Draw_and_Save(ct_RECO_tau2tau1.get_hist1D_responce());
-	Draw_and_Save(ct_RECO_tau2tau1_shapesubtract.get_hist1D_responce());
+	Draw_and_Save(ct_RECO_tau2tau1.get_hist1D_response());
+	Draw_and_Save(ct_RECO_tau2tau1_shapesubtract.get_hist1D_response());
 	//Draw_and_Save(ct_GEN_tau2tau1.get_hist1D());
 	//Draw_and_Save(ct_GEN_tau2tau1_shapesubtract.get_hist1D());
 
@@ -795,6 +795,7 @@ void MyClass::Loop()
 	//Draw_and_Save(ct_GEN_tau2tau1.get_hist2D(), Form("%g correlated",ct_GEN_tau2tau1.get_graph().GetCorrelationFactor()));
 	//Draw_and_Save(ct_GEN_tau2tau1_shapesubtract.get_hist2D(), Form("%g correlated",ct_GEN_tau2tau1_shapesubtract.get_graph().GetCorrelationFactor()));
 
+	Draw_and_Save(h1_RecoGen_matching);
 	Draw_and_Save(h1_RECO_eta);
 	Draw_and_Save(h1_RECO_zjet_dr);
 	Draw_and_Save(h1_RECO_zjet_dphi);
@@ -829,14 +830,14 @@ void MyClass::Loop()
 	Draw_and_Save(ct_RECO_mass_rhoG4Area.get_hist1D()   );
 	Draw_and_Save(ct_RECO_mass_rhom4Area.get_hist1D()   );
 
-	Draw_and_Save(ct_GEN_mass.get_hist1D_responce()                );
-	Draw_and_Save(ct_RECO_mass_uncorr.get_hist1D_responce()      );
-	Draw_and_Save(ct_RECO_mass_jec.get_hist1D_responce()      );
-	Draw_and_Save(ct_RECO_mass_rhoArea.get_hist1D_responce()     );
-	Draw_and_Save(ct_RECO_mass_rhoGArea.get_hist1D_responce()    );
-	Draw_and_Save(ct_RECO_mass_rho4Area.get_hist1D_responce()    );
-	Draw_and_Save(ct_RECO_mass_rhoG4Area.get_hist1D_responce()   );
-	Draw_and_Save(ct_RECO_mass_rhom4Area.get_hist1D_responce()   );
+	Draw_and_Save(ct_GEN_mass.get_hist1D_response()                );
+	Draw_and_Save(ct_RECO_mass_uncorr.get_hist1D_response()      );
+	Draw_and_Save(ct_RECO_mass_jec.get_hist1D_response()      );
+	Draw_and_Save(ct_RECO_mass_rhoArea.get_hist1D_response()     );
+	Draw_and_Save(ct_RECO_mass_rhoGArea.get_hist1D_response()    );
+	Draw_and_Save(ct_RECO_mass_rho4Area.get_hist1D_response()    );
+	Draw_and_Save(ct_RECO_mass_rhoG4Area.get_hist1D_response()   );
+	Draw_and_Save(ct_RECO_mass_rhom4Area.get_hist1D_response()   );
 
 
 	Draw_and_Save(ct_GEN_mass.get_hist2D(), Form("%g correlated", ct_GEN_mass.get_graph().GetCorrelationFactor())   );
@@ -852,17 +853,17 @@ void MyClass::Loop()
 	cout<<"number_JetCleansing_DiffMode="<<number_JetCleansing_DiffMode<<endl;
 	if (number_JetCleansing_DiffMode>NUM_JETCLEANSING_DIFFMODE) number_JetCleansing_DiffMode=NUM_JETCLEANSING_DIFFMODE;
 	for(Int_t k=0;k<number_JetCleansing_DiffMode;k++){
-		Draw_and_Save(vect_ct_RECO_mass_JetCleansing_DiffMode[k].get_hist1D_responce() );
+		Draw_and_Save(vect_ct_RECO_mass_JetCleansing_DiffMode[k].get_hist1D_response() );
 		Draw_and_Save(vect_ct_RECO_mass_JetCleansing_DiffMode[k].get_hist1D() );
 		Draw_and_Save(vect_ct_RECO_mass_JetCleansing_DiffMode[k].get_hist2D(), Form("%g correlated", vect_ct_RECO_mass_JetCleansing_DiffMode[k].get_graph().GetCorrelationFactor()));
 
-		//Draw_and_Save(vect_ct_RECO_pt_JetCleansing_DiffMode[k].get_hist1D_responce());
+		//Draw_and_Save(vect_ct_RECO_pt_JetCleansing_DiffMode[k].get_hist1D_response());
 		//Draw_and_Save(vect_ct_RECO_pt_JetCleansing_DiffMode[k].get_hist1D());
 		//Draw_and_Save(vect_ct_RECO_pt_JetCleansing_DiffMode[k].get_hist2D(), Form("%g correlated", vect_ct_RECO_pt_JetCleansing_DiffMode[k].get_graph().GetCorrelationFactor()));
 		Draw_and_Save(vect_mrt_RECO_pt_JetCleansing_DiffMode[k].get_mr_hist(ratio_mrt_min, ratio_mrt_max)	);
 		Draw_and_Save(vect_mrt_RECO_pt_JetCleansing_DiffMode[k].get_hist1D()	);
 
-		Draw_and_Save(vect_ct_RECO_tau2tau1_JetCleansing_DiffMode[k].get_hist1D_responce());
+		Draw_and_Save(vect_ct_RECO_tau2tau1_JetCleansing_DiffMode[k].get_hist1D_response());
 		Draw_and_Save(vect_ct_RECO_tau2tau1_JetCleansing_DiffMode[k].get_hist2D(), Form("%g correlated",vect_ct_RECO_tau2tau1_JetCleansing_DiffMode[k].get_graph().GetCorrelationFactor()));
 	}
 
