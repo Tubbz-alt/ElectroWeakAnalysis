@@ -715,7 +715,9 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 			if (coreCtr < mJetRadius*10.){
 				float tmpm = 0, tmppt = 0;
 				computeCore( constits, coreCtr/10., tmpm, tmppt );
-				if (tmpm > 0) rcores[kk][j] = tmpm/out_jets.at(j).m();
+				if (tmpm > 0){
+					rcores[kk][j] = tmpm/out_jets.at(j).m();
+				}
 				if (tmppt > 0) ptcores[kk][j] = tmppt/out_jets.at(j).pt();
 			}
 		}
@@ -765,6 +767,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 					qjetmassdrop[ii] = 1.;
 				}
 
+				//qjet_seq.delete_self_when_unused();
 			}
 		}
 		// jet charge try (?) computation  -------------
@@ -793,6 +796,8 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 
 	delete subtractor_medi;
 	delete subtractor_grid;
+	//thisClustering_area.delete_self_when_unused();
+	//thisClustering_basic.delete_self_when_unused();
 
 
 	// jet JetCleansing
@@ -838,7 +843,7 @@ void ewk::GroomedJetFiller::computeCore( std::vector<fastjet::PseudoJet> constit
 	std::vector<fastjet::PseudoJet> out_jets = sorted_by_pt(thisClustering.inclusive_jets(0.0));
 	m_core = out_jets.at(0).m();
 	pt_core = out_jets.at(0).pt();
-
+	//thisClustering.delete_self_when_unused();
 }
 
 void ewk::GroomedJetFiller::computePlanarflow(std::vector<fastjet::PseudoJet> constits, double Rval, fastjet::PseudoJet jet,std::string mJetAlgo, float &planarflow){
@@ -894,6 +899,7 @@ void ewk::GroomedJetFiller::computePlanarflow(std::vector<fastjet::PseudoJet> co
 		//From arXiv 1012.2077
 		planarflow = 4*(I[1][1]*I[2][2] - I[1][2]*I[2][1])/((I[1][1]+I[2][2])*(I[1][1]+I[2][2])); 
 	}
+	//thisClustering.delete_self_when_unused();
 }
 
 float ewk::GroomedJetFiller::computeJetCharge( std::vector<fastjet::PseudoJet> constits, std::vector<float> pdgIds, float Ejet ){
@@ -976,6 +982,7 @@ Double_t ewk::GroomedJetFiller::getrho_Hand(std::vector<fastjet::PseudoJet>  FJp
 		*rho_on_the_fly = 0;
 	}
 
+	//fjClusterSeq_->delete_self_when_unused();
 	return *rho_on_the_fly;
 }
 
