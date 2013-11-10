@@ -96,6 +96,11 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	SetBranch( jetphi, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_phi");
 	SetBranch( jete, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_e");
 
+	SetBranch( jetpt_JECL1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JECL1");
+	SetBranch( jeteta_JECL1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_eta_JECL1");
+	SetBranch( jetphi_JECL1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_phi_JECL1");
+	SetBranch( jete_JECL1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_e_JECL1");
+
 	SetBranch( jetpt_L1_rhoSW, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_L1_rhoSW");
 	SetBranch( jetpt_L1_rhoHand, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_L1_rhoHand");
 	SetBranch( jetpt_L1_rhoHand2, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_L1_rhoHand2");
@@ -132,6 +137,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	SetBranch( prsubjet2_e, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_prsubjet2_e");
 
 	SetBranch( jetmass, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass");
+	SetBranch( jetmass_JECL1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_JECL1");
 	SetBranch( jetmass_rhoArea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoArea");
 	SetBranch( jetmass_rhoGArea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoGArea");
 	SetBranch( jetmass_rho4Area, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rho4Area");
@@ -237,6 +243,9 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	//std::string fDir = "JEC/"+JEC_GlobalTag_forGroomedJet;   
 	//std::cout<<"JEC_GlobalTag_forGroomedJet="<<JEC_GlobalTag_forGroomedJet<<std::endl;
 	std::vector< JetCorrectorParameters > jecPars;
+	std::vector< JetCorrectorParameters > jecL1Pars;
+	std::vector< JetCorrectorParameters > jecL2Pars;
+	std::vector< JetCorrectorParameters > jecL3Pars;
 	std::vector< std::string > jecStr;
 
 	if(applyJECToGroomedJets_) {
@@ -274,9 +283,15 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 		for (unsigned int i = 0; i < jecStr.size(); ++i){
 			JetCorrectorParameters* ijec = new JetCorrectorParameters( jecStr[i] );
 			jecPars.push_back( *ijec );
+			if( i==0 ){ jecL1Pars.push_back( *ijec );jecL2Pars.push_back( *ijec );jecL3Pars.push_back( *ijec ); }
+			if( i==1 ){ jecL2Pars.push_back( *ijec );jecL3Pars.push_back( *ijec ); }
+			if( i==2 ){ jecL3Pars.push_back( *ijec ); }
 		}
 
 		jec_ = new FactorizedJetCorrector(jecPars);
+		jecL1_ = new FactorizedJetCorrector(jecL1Pars);
+		jecL2_ = new FactorizedJetCorrector(jecL2Pars);
+		jecL3_ = new FactorizedJetCorrector(jecL3Pars);
 
 		if (jetAlgorithmAdditonalLabel_=="_PF"){
 			if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
@@ -405,6 +420,11 @@ void ewk::GroomedJetFiller::Init(){
 		jetphi[j] = -10.;
 		jete[j] = -1.;
 		jetmass[j] = -1.;
+		jetpt_JECL1[j] = -1.;
+		jeteta_JECL1[j] = -10.;
+		jetphi_JECL1[j] = -10.;
+		jete_JECL1[j] = -1.;
+		jetmass_JECL1[j] = -1.;
 		jetmass_rhoArea[j] = -1.;
 		jetmass_rhoGArea[j] = -1.;
 		jetmass_rho4Area[j] = -1.;
@@ -566,12 +586,20 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		jetpt_uncorr[j] = out_jets.at(j).pt();
 
 		// SW JEC corretion
-		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j),0);
+		TLorentzVector jet_corr = getCorrectedJet(out_jets.at(j), 100, 0);
 		jetmass[j] = jet_corr.M();
 		jetpt[j] = jet_corr.Pt();
 		jeteta[j] = jet_corr.Eta();
 		jetphi[j] = jet_corr.Phi();
 		jete[j]   = jet_corr.Energy();
+
+		// SW JEC L1 corretion
+		TLorentzVector jet_corrL1 = getCorrectedJet(out_jets.at(j), 1, 0);
+		jetmass_JECL1[j] = jet_corrL1.M();
+		jetpt_JECL1[j] = jet_corrL1.Pt();
+		jeteta_JECL1[j] = jet_corrL1.Eta();
+		jetphi_JECL1[j] = jet_corrL1.Phi();
+		jete_JECL1[j]   = jet_corrL1.Energy();
 		//print_p4(out_jets.at(j),"  jet before    corr"); print_p4(jet_corr,      "--jet after JEC corr");
 
 		//do rhoA correction
@@ -815,14 +843,57 @@ double ewk::GroomedJetFiller::getJEC(double curJetEta, double curJetPt, double c
 	double corr = jec_->getCorrection();
 	return corr;
 }
+double ewk::GroomedJetFiller::getJECL1(double curJetEta, double curJetPt, double curJetE, double curJetArea){
+	// Jet energy corrections, something like this...
+	jecL1_->setJetEta( curJetEta );
+	jecL1_->setJetPt ( curJetPt );
+	jecL1_->setJetE  ( curJetE );
+	jecL1_->setJetA  ( curJetArea );
+	jecL1_->setRho   ( rhoVal_ );
+	jecL1_->setNPV   ( nPV_ );
+	double corr = jecL1_->getCorrection();
+	return corr;
+}
+double ewk::GroomedJetFiller::getJECL2(double curJetEta, double curJetPt, double curJetE, double curJetArea){
+	// Jet energy corrections, something like this...
+	jecL2_->setJetEta( curJetEta );
+	jecL2_->setJetPt ( curJetPt );
+	jecL2_->setJetE  ( curJetE );
+	jecL2_->setJetA  ( curJetArea );
+	jecL2_->setRho   ( rhoVal_ );
+	jecL2_->setNPV   ( nPV_ );
+	double corr = jecL2_->getCorrection();
+	return corr;
+}
+double ewk::GroomedJetFiller::getJECL3(double curJetEta, double curJetPt, double curJetE, double curJetArea){
+	// Jet energy corrections, something like this...
+	jecL3_->setJetEta( curJetEta );
+	jecL3_->setJetPt ( curJetPt );
+	jecL3_->setJetE  ( curJetE );
+	jecL3_->setJetA  ( curJetArea );
+	jecL3_->setRho   ( rhoVal_ );
+	jecL3_->setNPV   ( nPV_ );
+	double corr = jecL3_->getCorrection();
+	return corr;
+}
 
-TLorentzVector ewk::GroomedJetFiller::getCorrectedJet(fastjet::PseudoJet& jet, bool debug) {
+TLorentzVector ewk::GroomedJetFiller::getCorrectedJet(fastjet::PseudoJet& jet, Int_t jeclevel, bool debug) {
 	double jecVal = 1.0;
 
-	if(applyJECToGroomedJets_ && !isGenJ) 
-	  jecVal = getJEC( jet.eta(), jet.pt(), jet.e(), jet.area() );   
+	if(applyJECToGroomedJets_ && !isGenJ){ 
+		if (jeclevel>=10) jecVal = getJEC( jet.eta(), jet.pt(), jet.e(), jet.area() );
+		if (jeclevel==1) jecVal = getJECL1( jet.eta(), jet.pt(), jet.e(), jet.area() );
+		if (jeclevel==2) jecVal = getJECL2( jet.eta(), jet.pt(), jet.e(), jet.area() );
+		if (jeclevel==3) jecVal = getJECL3( jet.eta(), jet.pt(), jet.e(), jet.area() );
+	}   
 
-	if(debug)std::cout<<"jecVal="<<jecVal<<std::endl;
+	if(debug){
+		std::cout<<"jecVal="<<jecVal<<std::endl;
+		std::cout<<"jec LA="<<getJEC( jet.eta(), jet.pt(), jet.e(), jet.area() )<<std::endl;
+		std::cout<<"jec L1="<<getJECL1( jet.eta(), jet.pt(), jet.e(), jet.area() )<<std::endl;
+		std::cout<<"jec L2="<<getJECL2( jet.eta(), jet.pt(), jet.e(), jet.area() )<<std::endl;
+		std::cout<<"jec L3="<<getJECL3( jet.eta(), jet.pt(), jet.e(), jet.area() )<<std::endl;
+	}
 	TLorentzVector jet_corr(jet.px() * jecVal, 
 				jet.py() * jecVal, 
 				jet.pz() * jecVal, 
