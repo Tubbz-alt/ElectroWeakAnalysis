@@ -130,6 +130,9 @@ namespace ewk
 			/// Destructor, does nothing 
 			~GroomedJetFiller(){  
 				if(jec_) delete jec_; 
+				if(jecL1_) delete jecL1_; 
+				if(jecL2_) delete jecL2_; 
+				if(jecL3_) delete jecL3_; 
 				if(jecUnc_) delete jecUnc_; 
 				if(mJetDef) delete mJetDef;
 				if(mAreaDefinition) delete mAreaDefinition;
@@ -156,7 +159,10 @@ namespace ewk
 			void SetBranchSingle( float* x, std::string name);
 			void SetBranchSingle( int* x, std::string name);
 			double getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
-			TLorentzVector getCorrectedJet(fastjet::PseudoJet& jet, bool debug=0);
+			double getJECL1(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
+			double getJECL2(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
+			double getJECL3(double curJetEta, double curJetPt, double curJetE, double curJetArea); 
+			TLorentzVector getCorrectedJet(fastjet::PseudoJet& jet, Int_t jeclevel=100, bool debug=0);
 			fastjet::PseudoJet getScaledJet(fastjet::PseudoJet& jet, double scale);
 			void computeCore( std::vector<fastjet::PseudoJet> constits, double Rval, float &m_core, float &pt_core );
 			void computePlanarflow(std::vector<fastjet::PseudoJet> constits,double Rval,fastjet::PseudoJet jet,std::string mJetAlgo,float &planarflow);
@@ -183,6 +189,9 @@ namespace ewk
 			bool applyJECToGroomedJets_;
 
 			FactorizedJetCorrector* jec_;
+			FactorizedJetCorrector* jecL1_;
+			FactorizedJetCorrector* jecL2_;
+			FactorizedJetCorrector* jecL3_;
 			JetCorrectionUncertainty* jecUnc_;
 
 			std::string jetAlgorithmLabel_;
@@ -243,6 +252,11 @@ namespace ewk
 			float jetphi[NUM_JET_MAX];
 			float jete[NUM_JET_MAX];
 
+			float jetpt_JECL1[NUM_JET_MAX];
+			float jeteta_JECL1[NUM_JET_MAX];
+			float jetphi_JECL1[NUM_JET_MAX];
+			float jete_JECL1[NUM_JET_MAX];
+
 			float jetpt_L1_rhoSW[NUM_JET_MAX];//rho from kt6PF SW
 			float jetpt_L1_rhoHand[NUM_JET_MAX];//rho from kt6PF Hand
 			float jetpt_L1_rhoHand2[NUM_JET_MAX];//rho from kt6PF Hand2
@@ -282,6 +296,7 @@ namespace ewk
 
 
 			float jetmass[NUM_JET_MAX];
+			float jetmass_JECL1[NUM_JET_MAX];
 			float jetmass_rhoArea[NUM_JET_MAX];
 			float jetmass_rhoGArea[NUM_JET_MAX];
 			float jetmass_rho4Area[NUM_JET_MAX];
