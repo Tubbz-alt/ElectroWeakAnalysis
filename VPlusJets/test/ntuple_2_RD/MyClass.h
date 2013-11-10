@@ -18,14 +18,31 @@
 #include <iostream>
 #include <TGraph.h>
 #include <TMath.h>
+#include <map>
 using namespace std;
 
 // Header file for the classes stored in the TTree if any.
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
+class Efficiency_Tool{
+	public:
+		Int_t number_step;
+		std::map< string, Int_t > map_stepname;
+		std::map< Int_t, string > map_stepnumber;
+		std::vector<Double_t> vect_step_event;
+		Efficiency_Tool();
+		~Efficiency_Tool(){}
+
+		void Add_Step(string newstepname);
+		void Add_Event(string newstepname, Double_t eventweight=1. );
+		TH1D Get_Eff_hist();
+};
+
+
 class MyClass {
 	public :
+		Efficiency_Tool efftool;//efficiency tool
 		Bool_t   isBoosted;//boosted Z or not
 		TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 		Int_t           fCurrent; //!current Tree number in a TChain
@@ -786,7 +803,7 @@ class MyClass {
 		MyClass(TTree *tree, char* inJetType, char* inPfType, Bool_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
 		virtual ~MyClass();
 		virtual Int_t    Cut(Long64_t entry);
-		virtual Bool_t   Select();
+		virtual Bool_t   preSelect();
 		virtual Int_t    GetEntry(Long64_t entry);
 		virtual Long64_t LoadTree(Long64_t entry);
 		virtual void     Init(TTree *tree);
@@ -1405,5 +1422,44 @@ TH2D correlation_tool::get_hist2D(){return hist2D;}
 TH1D correlation_tool::get_hist1D(){return hist1D;}
 TH1D correlation_tool::get_hist1D_response(){return hist1D_response;}
 TGraph correlation_tool::get_graph(){return gr;}
+
+
+Efficiency_Tool::Efficiency_Tool(){
+	number_step=0;
+	map_stepnumber.clear();
+	map_stepname.clear();
+	vect_step_event.clear();
+}
+
+void Efficiency_Tool::Add_Step(string newstepname){
+	map_stepnumber.insert( map< Int_t, string >::value_type( number_step, newstepname) );
+	map_stepname.insert( map< string, Int_t >::value_type( newstepname, number_step) );
+	vect_step_event.push_back(0.);
+	number_step++;
+}
+void Efficiency_Tool::Add_Event(string newstepname, Double_t eventweight){
+	map<string, Int_t >::iterator iter;
+	iter= map_stepname.find(newstepname);
+	if(iter == map_stepname.end()){ 
+		//cout<<"can't find this step"<<endl;return ;
+		Add_Step(newstepname);
+		iter= map_stepname.find(newstepname);
+	}
+	vect_step_event[iter->second]=vect_step_event[iter->second]+eventweight;
+}
+TH1D Efficiency_Tool::Get_Eff_hist(){
+	TH1D hist_eff("hist_eff","hist_eff;;Event Number",number_step, 0, number_step);
+	hist_eff.SetStats(0);
+	hist_eff.SetBit(TH1::kCanRebin);
+	map<Int_t, string>::iterator iter;
+	for(Int_t i=0;i<number_step;i++){
+		hist_eff.SetBinContent(i+1, vect_step_event[i]);
+		iter=map_stepnumber.find(i);
+		hist_eff.GetXaxis()->SetBinLabel(i+1, (iter->second).c_str() );
+	}
+	hist_eff.GetYaxis()->SetRangeUser( 0., 1.1*hist_eff.GetBinContent(1) );
+	return hist_eff;
+}
+
 
 #endif // #ifdef MyClass_cxx
