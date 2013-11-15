@@ -59,7 +59,7 @@ namespace ewk {
     /// specify the name of the TTree, and the configuration for it
     JetTreeFiller(const char *name, TTree* tree, 
 		  const std::string jetType,
-		  const edm::ParameterSet iConfig );
+		  const edm::ParameterSet iConfig, Bool_t keepvecterboson=kTRUE );
 
 
     /// default constructor
@@ -93,6 +93,9 @@ namespace ewk {
     void FillBranches() const;
     void init();
 
+
+    template <typename T1> 
+      void fillBasicJetQuantities(int iJet, const T1& pfjet); //only jet Quantities
 
     template <typename T1> 
       void fillBasicJetQuantities(int iJet, const T1& pfjet, 
@@ -146,6 +149,7 @@ namespace ewk {
 	edm::InputTag mInputMet;
 	edm::InputTag mInputMetMVA;
     edm::InputTag mInputBoson;
+    Bool_t  keepVecterBoson;
     edm::InputTag sourceByValue;
   	bool runoverAOD;
 	std::string bTagger;
