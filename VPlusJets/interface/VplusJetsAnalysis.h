@@ -113,7 +113,7 @@ namespace ewk
     std::auto_ptr<ewk::GroomedJetFiller> genCA12groomedJetFiller;
 
 
-    std::auto_ptr<ewk::JetTreeFiller> GenJetFiller;
+   // std::auto_ptr<ewk::JetTreeFiller> GenJetFiller;
   //  std::auto_ptr<ewk::PhotonTreeFiller> PhotonFiller;
     std::auto_ptr<ewk::VtoElectronTreeFiller> recoBosonFillerE;
     std::auto_ptr<ewk::VtoMuonTreeFiller> recoBosonFillerMu;
@@ -121,11 +121,13 @@ namespace ewk
 
 
     // private data members
+    float evWeight;
     int run;
     int event; 
     int lumi; 
     int bunch; 
     int nPV; 
+    int mFinalState;//0: ZJet; 1: Dijets
     int mNVB;
     float mpfMET;
     float mpfSumET;
