@@ -537,23 +537,25 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	}
 
 	// do re-clustering
-	fastjet::ClusterSequenceArea thisClustering_area(FJparticles, *mJetDef, *mAreaDefinition);
-	fastjet::ClusterSequence     thisClustering_basic(FJparticles, *mJetDef);
+	std::auto_ptr<fastjet::ClusterSequenceArea> thisClustering_area(new fastjet::ClusterSequenceArea(FJparticles, *mJetDef, *mAreaDefinition) );
+	std::auto_ptr<fastjet::ClusterSequence> thisClustering_basic(new fastjet::ClusterSequence(FJparticles, *mJetDef));
 
 	fastjet::Selector selected_eta = fastjet::SelectorAbsEtaMax(2.4);
-	std::vector<fastjet::PseudoJet> out_jets       = sorted_by_pt( selected_eta(thisClustering_area.inclusive_jets(15.0)) );
-	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_eta(thisClustering_basic.inclusive_jets(15.0)) );
+	std::vector<fastjet::PseudoJet> out_jets       = sorted_by_pt( selected_eta(thisClustering_area->inclusive_jets(15.0)) );
+	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_eta(thisClustering_basic->inclusive_jets(15.0)) );
+
+//memory leak begin
+	fastjet::Subtractor* subtractor_medi=NULL; fastjet::Subtractor* subtractor_grid=NULL;
 
 	rhoVal_ = getrho(iEvent); // ------ get rho from SW reco --------    
 	rhoVal_hand = getrho_Hand(FJparticles );
 
-	fastjet::Subtractor* subtractor_medi=NULL;
-	rhoVal_hand2 = getrho_Hand2(FJparticles, &subtractor_medi ); // ------ get rho by hand2--------    
 
-	fastjet::Subtractor* subtractor_grid=NULL;
+	rhoVal_hand2 = getrho_Hand2(FJparticles, &subtractor_medi ); // ------ get rho by hand2--------    
 	rhoVal_grid = getrho_Grid(FJparticles, &subtractor_grid); // ------ get rho by grid--------    
 	//std::cout<<"(kt6PF rho in SW) = "<<rhoVal_<<std::endl; std::cout << "(kt6PF rho by hand) = " << rhoVal_hand<<endl; std::cout<<"medi rho = "<<rhoVal_hand2<<endl; std::cout<<"grid rho = "<<rhoVal_grid<<endl;
-
+	
+	//memory leak end 
 	// define groomers
 	fastjet::Filter trimmer( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.03)));
 	fastjet::Filter filter( fastjet::Filter(fastjet::JetDefinition(fastjet::cambridge_algorithm, 0.3), fastjet::SelectorNHardest(3)));
@@ -628,7 +630,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		//cout<<"rho*A4: "<<jetpt_rho4A[j]<<" , "<<jetmass_rho4Area[j]<<endl;
 
 		//Generic Shape correction, arXiv 1211.2811
-		do_GenericShapeSubtract_correction(out_jets.at(j), mBgeMedi, jetpt_rhom4A[j], jetmass_rhom4Area[j], tau2tau1_shapesubtract[j]);
+		do_GenericShapeSubtract_correction(out_jets.at(j), mBgeMedi.get(), jetpt_rhom4A[j], jetmass_rhom4Area[j], tau2tau1_shapesubtract[j]);
 		//cout<<"rhomA4: "<<jetpt_rhom4A[j]<<" , "<<jetmass_rhom4Area[j]<<endl;
 
 
@@ -737,7 +739,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 
 		// cores computation  -------------
 		//std::cout<< "Beging the core computation" << endl;
-		std::vector<fastjet::PseudoJet> constits = thisClustering_area.constituents(out_jets.at(j));
+		std::vector<fastjet::PseudoJet> constits = thisClustering_area->constituents(out_jets.at(j));
 		for (int kk = 0; kk < 11; ++kk){
 			double coreCtr = (double) kk;    
 			if (coreCtr < mJetRadius*10.){
@@ -805,29 +807,26 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 				//std::cout << ii << ", " << jj << ": " << FJparticles.at(jj).pt() << ", " << out_jets_basic.at(j).constituents().at(ii).pt() << std::endl;
 				if (FJparticles.at(jj).pt() == out_jets_basic.at(j).constituents().at(ii).pt()){
 					pdgIds.push_back(PF_id_handle.at(jj));
-					/*if(!isGenJ) {
-					  if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
-					  pdgIds.push_back(PF_id_handle_AK5.at(jj));
-					  }else{
-					  pdgIds.push_back(PF_id_handle->at(jj));
-					  }
-					  }else{
-					  pdgIds.push_back(PF_id_handle_Gen.at(jj));
-					  }*/
+					//if(!isGenJ) {
+					//  if(mJetAlgo == "AK" && fabs(mJetRadius-0.5)<0.001) {
+					//  pdgIds.push_back(PF_id_handle_AK5.at(jj));
+					//  }else{
+					//  pdgIds.push_back(PF_id_handle->at(jj));
+					//  }
+					//  }else{
+					//  pdgIds.push_back(PF_id_handle_Gen.at(jj));
+					//  }
 					break;
 				}
 			}
 		}
 		//jetcharge[j] = computeJetCharge(out_jets_basic.at(j).constituents(),pdgIds,out_jets_basic.at(j).e());
-	}
+	}  
 
 
 	delete subtractor_medi;
 	delete subtractor_grid;
-	//thisClustering_area.delete_self_when_unused();
-	//thisClustering_basic.delete_self_when_unused();
-
-
+	
 	// jet JetCleansing
 	if(doJetCleansing) { DoJetCleansing( *mJetDef, FJparticles, FJparticles_hardcharge, FJparticles_pileupcharge, FJparticles_fullneutral); }
 }  
@@ -1060,21 +1059,19 @@ Double_t ewk::GroomedJetFiller::getrho_Hand(std::vector<fastjet::PseudoJet>  FJp
 Double_t ewk::GroomedJetFiller::getrho_Hand2(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor )
 {
 	double rhoEtaMax=4.4;
-	//fastjet::JetMedianBackgroundEstimator mBgeMedi(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), *mAreaDefinition );
-	mBgeMedi = new fastjet::JetMedianBackgroundEstimator(fastjet::SelectorAbsRapMax(rhoEtaMax), 
-				fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) );
+	mBgeMedi.reset(new fastjet::JetMedianBackgroundEstimator(fastjet::SelectorAbsRapMax(rhoEtaMax), fastjet::JetDefinition(fastjet::kt_algorithm,0.6), fastjet::VoronoiAreaSpec(0.9) ) );
 	mBgeMedi->set_particles(FJparticles);
 	if(*subtractor) delete *subtractor;
-	*subtractor= new fastjet::Subtractor(mBgeMedi);
+	*subtractor= new fastjet::Subtractor(mBgeMedi.get());
 	return mBgeMedi->rho();
 }
 Double_t ewk::GroomedJetFiller::getrho_Grid(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor )
 {
 	double rhoEtaMax=4.4;
-	mBgeGrid= new fastjet::GridMedianBackgroundEstimator(rhoEtaMax, 0.55);
+	mBgeGrid.reset(new fastjet::GridMedianBackgroundEstimator(rhoEtaMax, 0.55) );
 	mBgeGrid->set_particles(FJparticles);
 	if(*subtractor) delete *subtractor;
-	*subtractor= new fastjet::Subtractor(mBgeGrid);
+	*subtractor= new fastjet::Subtractor(mBgeGrid.get());
 	return mBgeGrid->rho();
 }
 
@@ -1251,7 +1248,7 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	jetcleanser_vect.push_back(jetcleanser2);
 
 	if( int(jetcleanser_vect.size()) >= NUM_JETCLEANSING_MODE_MAX ){ std::cout<<"Error! Jet Cleansing Mode is too many!"<<endl; BREAK(); }
-	cout<<"jetcleanser_vect.size()="<<jetcleanser_vect.size()<<endl;
+	//cout<<"jetcleanser_vect.size()="<<jetcleanser_vect.size()<<endl;
 	for(Int_t j=0;j<int(jetcleanser_vect.size());j++){
 		fastjet::PseudoJet tmp_cleansed_jet = jetcleanser_vect[j]( jets_neutrals[0].constituents(), jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );//CMS
 		//( jets_plain[0], jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );/ATLAS
@@ -1359,7 +1356,7 @@ void ewk::GroomTool::Groom(fastjet::PseudoJet jet_raw, Int_t number_jet){
 		jetphi_groomed[number_jet]=jet_groomed_corr.Phi();
 		jete_groomed[number_jet]=jet_groomed_corr.Energy();
 
-		if(number_jet==1) cout<<groomer_label<<" #jet = "<<number_jet<<" area= "<<jetarea_groomed[number_jet]<<" mass= "<<jetmass_groomed[number_jet]<<endl; 
+		//if(number_jet==1) cout<<groomer_label<<" #jet = "<<number_jet<<" area= "<<jetarea_groomed[number_jet]<<" mass= "<<jetmass_groomed[number_jet]<<endl; 
 	}
 }
 TLorentzVector ewk::GroomTool::getJECJet(fastjet::PseudoJet jet_raw){
