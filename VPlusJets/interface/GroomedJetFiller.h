@@ -77,6 +77,9 @@
 #include "ElectroWeakAnalysis/VPlusJets/interface/ExampleShapes.hh"
 #include "ElectroWeakAnalysis/VPlusJets/interface/JetCleanser.hh"
 
+#include "TROOT.h"
+#include "TObjectTable.h"
+
 
 #include "iostream"
 using namespace std;
@@ -136,8 +139,6 @@ namespace ewk
 				if(jecUnc_) delete jecUnc_; 
 				if(mJetDef) delete mJetDef;
 				if(mAreaDefinition) delete mAreaDefinition;
-				//if(mBgeGrid) delete mBgeGrid;
-				//if(mBgeMedi) delete mBgeMedi;
 			};
 			//~GroomedJetFiller(){ };
 
@@ -211,8 +212,8 @@ namespace ewk
 			//Jet Area
 			fastjet::AreaDefinition *mAreaDefinition;
 			//Jet background estimate
-			fastjet::JetMedianBackgroundEstimator*  mBgeMedi;
-			fastjet::GridMedianBackgroundEstimator* mBgeGrid;
+			std::auto_ptr<fastjet::JetMedianBackgroundEstimator>  mBgeMedi;
+			std::auto_ptr<fastjet::GridMedianBackgroundEstimator> mBgeGrid;
 
 			double mJetChargeKappa;
 			bool   mDoQJets; 
