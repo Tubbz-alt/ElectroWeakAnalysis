@@ -32,7 +32,7 @@
 
 const float BTAG_DISCRIM_DEFAULT=-999.;
 
-ewk::JetTreeFiller::JetTreeFiller(const char *name, TTree* tree, const std::string jetType, const edm::ParameterSet iConfig) {
+ewk::JetTreeFiller::JetTreeFiller(const char *name, TTree* tree, const std::string jetType, const edm::ParameterSet iConfig, Bool_t keepvecterboson) {
 	// ********** GenJets ********** //
 	if( jetType=="Gen" && iConfig.existsAs<edm::InputTag>("srcGen") )
 	  mInputJets = iConfig.getParameter<edm::InputTag>("srcGen"); 
@@ -51,9 +51,11 @@ ewk::JetTreeFiller::JetTreeFiller(const char *name, TTree* tree, const std::stri
 	if(  iConfig.existsAs<edm::InputTag>("srcMetMVA") ) mInputMetMVA = iConfig.getParameter<edm::InputTag>("srcMetMVA");
 
 	// ********** Vector boson ********** //
-	if(  iConfig.existsAs<edm::InputTag>("srcVectorBoson") )
-	  mInputBoson = iConfig.getParameter<edm::InputTag>("srcVectorBoson"); 
-
+	keepVecterBoson = keepvecterboson;
+	if (keepVecterBoson){
+		if(  iConfig.existsAs<edm::InputTag>("srcVectorBoson") )
+		  mInputBoson = iConfig.getParameter<edm::InputTag>("srcVectorBoson"); 
+	}
 	//*********************  Run Over AOD or PAT  ***********//
 	if( iConfig.existsAs<bool>("runningOverAOD"))
 	  runoverAOD = iConfig.getParameter<bool>("runningOverAOD");
@@ -209,62 +211,62 @@ void ewk::JetTreeFiller::SetBranches()
 	}
 
 	/*SetBranchSingle( &V2jMassMVAMET,  "MassV2j_" + jetType_ + "_MVAMET");
-	SetBranchSingle( &V2jMass,  "MassV2j_" + jetType_);
-	SetBranchSingle( &V3jMass, "MassV3j_" + jetType_);
-	SetBranchSingle( &V4jMass, "MassV4j_" + jetType_);
-	SetBranchSingle( &V5jMass, "MassV5j_" + jetType_);
-	SetBranchSingle( &V6jMass, "MassV6j_" + jetType_);
-	SetBranchSingle( &c2jMass, "Mass2j_" + jetType_);
-	SetBranchSingle( &c3jMass, "Mass3j_" + jetType_);
-	SetBranchSingle( &c4jMass, "Mass4j_" + jetType_);
-	SetBranchSingle( &c5jMass, "Mass5j_" + jetType_);
-	SetBranchSingle( &c6jMass, "Mass6j_" + jetType_);*/
+	  SetBranchSingle( &V2jMass,  "MassV2j_" + jetType_);
+	  SetBranchSingle( &V3jMass, "MassV3j_" + jetType_);
+	  SetBranchSingle( &V4jMass, "MassV4j_" + jetType_);
+	  SetBranchSingle( &V5jMass, "MassV5j_" + jetType_);
+	  SetBranchSingle( &V6jMass, "MassV6j_" + jetType_);
+	  SetBranchSingle( &c2jMass, "Mass2j_" + jetType_);
+	  SetBranchSingle( &c3jMass, "Mass3j_" + jetType_);
+	  SetBranchSingle( &c4jMass, "Mass4j_" + jetType_);
+	  SetBranchSingle( &c5jMass, "Mass5j_" + jetType_);
+	  SetBranchSingle( &c6jMass, "Mass6j_" + jetType_);*/
 
 
 	/*SetBranchSingle( &V2jCosJacksonAngle, "cosJacksonAngleV2j_" + jetType_);
-	SetBranchSingle( &c2jCosJacksonAngle, "cosJacksonAngle2j_" + jetType_);
-	SetBranchSingle( &V3jCosJacksonAngle, "cosJacksonAngleV3j_" + jetType_);
-	SetBranchSingle( &c3jCosJacksonAngle12, "cosJacksonAngle3j12_" + jetType_);
-	SetBranchSingle( &c3jCosJacksonAngle23, "cosJacksonAngle3j23_" + jetType_);
-	SetBranchSingle( &c3jCosJacksonAngle31, "cosJacksonAngle3j31_" + jetType_);
-	SetBranchSingle( &cosphiDecayPlane, "cosphiDecayPlane_" + jetType_); 
-	SetBranchSingle( &cosThetaLnu, "cosThetaLnu_" + jetType_); 
-	SetBranchSingle( &cosThetaJJ, "cosThetaJJ_" + jetType_);
+	  SetBranchSingle( &c2jCosJacksonAngle, "cosJacksonAngle2j_" + jetType_);
+	  SetBranchSingle( &V3jCosJacksonAngle, "cosJacksonAngleV3j_" + jetType_);
+	  SetBranchSingle( &c3jCosJacksonAngle12, "cosJacksonAngle3j12_" + jetType_);
+	  SetBranchSingle( &c3jCosJacksonAngle23, "cosJacksonAngle3j23_" + jetType_);
+	  SetBranchSingle( &c3jCosJacksonAngle31, "cosJacksonAngle3j31_" + jetType_);
+	  SetBranchSingle( &cosphiDecayPlane, "cosphiDecayPlane_" + jetType_); 
+	  SetBranchSingle( &cosThetaLnu, "cosThetaLnu_" + jetType_); 
+	  SetBranchSingle( &cosThetaJJ, "cosThetaJJ_" + jetType_);
 
 
-	if( jetType_ == "PF" || jetType_ == "PFCor" || jetType_ == "PFCorVBFTag") {
-		/// Color Correlation between W jets ( jets pull )
-		SetBranchSingle( &colorCorr01, "colorCorrPull01" + jetType_);
-		SetBranchSingle( &colorCorr02, "colorCorrPull02" + jetType_);
-		SetBranchSingle( &colorCorr12, "colorCorrPull12" + jetType_);
-		SetBranchSingle( &colorCorr03, "colorCorrPull03" + jetType_);
-		SetBranchSingle( &colorCorr13, "colorCorrPull13" + jetType_);
-		SetBranchSingle( &colorCorr23, "colorCorrPull23" + jetType_);
-		SetBranchSingle( &colorCorr04, "colorCorrPull04" + jetType_);
-		SetBranchSingle( &colorCorr14, "colorCorrPull14" + jetType_);
-		SetBranchSingle( &colorCorr24, "colorCorrPull24" + jetType_);
-		SetBranchSingle( &colorCorr34, "colorCorrPull34" + jetType_);
-		SetBranchSingle( &colorCorr05, "colorCorrPull05" + jetType_);
-		SetBranchSingle( &colorCorr15, "colorCorrPull15" + jetType_);
-		SetBranchSingle( &colorCorr25, "colorCorrPull25" + jetType_);
-		SetBranchSingle( &colorCorr35, "colorCorrPull35" + jetType_);
-		SetBranchSingle( &colorCorr45, "colorCorrPull45" + jetType_);
+	  if( jetType_ == "PF" || jetType_ == "PFCor" || jetType_ == "PFCorVBFTag") {
+	/// Color Correlation between W jets ( jets pull )
+	SetBranchSingle( &colorCorr01, "colorCorrPull01" + jetType_);
+	SetBranchSingle( &colorCorr02, "colorCorrPull02" + jetType_);
+	SetBranchSingle( &colorCorr12, "colorCorrPull12" + jetType_);
+	SetBranchSingle( &colorCorr03, "colorCorrPull03" + jetType_);
+	SetBranchSingle( &colorCorr13, "colorCorrPull13" + jetType_);
+	SetBranchSingle( &colorCorr23, "colorCorrPull23" + jetType_);
+	SetBranchSingle( &colorCorr04, "colorCorrPull04" + jetType_);
+	SetBranchSingle( &colorCorr14, "colorCorrPull14" + jetType_);
+	SetBranchSingle( &colorCorr24, "colorCorrPull24" + jetType_);
+	SetBranchSingle( &colorCorr34, "colorCorrPull34" + jetType_);
+	SetBranchSingle( &colorCorr05, "colorCorrPull05" + jetType_);
+	SetBranchSingle( &colorCorr15, "colorCorrPull15" + jetType_);
+	SetBranchSingle( &colorCorr25, "colorCorrPull25" + jetType_);
+	SetBranchSingle( &colorCorr35, "colorCorrPull35" + jetType_);
+	SetBranchSingle( &colorCorr45, "colorCorrPull45" + jetType_);
 
-		/// Helicity angles in the Higgs rest frame
-		SetBranchSingle( &j1Hel_HiggsCM, "cosThetaJ1HiggsCM_" + jetType_);
-		SetBranchSingle( &j2Hel_HiggsCM, "cosThetaJ2HiggsCM_" + jetType_);
-		SetBranchSingle( &l1Hel_HiggsCM, "cosThetaL1HiggsCM_" + jetType_);
-		SetBranchSingle( &l2Hel_HiggsCM, "cosThetaL2HiggsCM_" + jetType_);
-		SetBranchSingle( &b1Hel_HiggsCM, "cosThetaV1HiggsCM_" + jetType_);
-		SetBranchSingle( &b2Hel_HiggsCM, "cosThetaV2HiggsCM_" + jetType_);
+	/// Helicity angles in the Higgs rest frame
+	SetBranchSingle( &j1Hel_HiggsCM, "cosThetaJ1HiggsCM_" + jetType_);
+	SetBranchSingle( &j2Hel_HiggsCM, "cosThetaJ2HiggsCM_" + jetType_);
+	SetBranchSingle( &l1Hel_HiggsCM, "cosThetaL1HiggsCM_" + jetType_);
+	SetBranchSingle( &l2Hel_HiggsCM, "cosThetaL2HiggsCM_" + jetType_);
+	SetBranchSingle( &b1Hel_HiggsCM, "cosThetaV1HiggsCM_" + jetType_);
+	SetBranchSingle( &b2Hel_HiggsCM, "cosThetaV2HiggsCM_" + jetType_);
 
 	}*/
 
 	/*if( jetType_ == "PF" || jetType_ == "PFCor" || jetType_ == "PFCorVBFTag") {
-		SetBranch( isPileUpJetLoose, "Jet" + jetType_ + "_isPileUpJetLoose");
-		SetBranch( isPileUpJetMedium, "Jet" + jetType_ + "_isPileUpJetMedium");
-		SetBranch( isPileUpJetTight, "Jet" + jetType_ + "_isPileUpJetTight");
-	}*/
+	  SetBranch( isPileUpJetLoose, "Jet" + jetType_ + "_isPileUpJetLoose");
+	  SetBranch( isPileUpJetMedium, "Jet" + jetType_ + "_isPileUpJetMedium");
+	  SetBranch( isPileUpJetTight, "Jet" + jetType_ + "_isPileUpJetTight");
+	  }*/
 }
 
 
@@ -456,11 +458,11 @@ void ewk::JetTreeFiller::init()   {
 	colorCorr45 = -10.0;
 
 	/*j1Hel_HiggsCM = -10.0;
-	j2Hel_HiggsCM = -10.0;
-	l1Hel_HiggsCM = -10.0;
-	l2Hel_HiggsCM = -10.0;
-	b1Hel_HiggsCM = -10.0;
-	b2Hel_HiggsCM = -10.0;*/
+	  j2Hel_HiggsCM = -10.0;
+	  l1Hel_HiggsCM = -10.0;
+	  l2Hel_HiggsCM = -10.0;
+	  b1Hel_HiggsCM = -10.0;
+	  b2Hel_HiggsCM = -10.0;*/
 
 }
 
@@ -470,15 +472,17 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 	init();
 
 	edm::Handle<reco::CandidateView> boson;
-	iEvent.getByLabel( mInputBoson, boson);
-	const int nBoson = boson->size();
-	if( nBoson<1 ) return; // Nothing to fill
-
-	const reco::Candidate *Vboson = &((*boson)[0]); 
-
-	// in case when we have two candidates for the W boson in the event
+	const reco::Candidate *Vboson(0); 
 	const reco::Candidate *Vboson2(0);
-	if( nBoson==2) Vboson2  = &((*boson)[1]);
+	if( keepVecterBoson ){
+		iEvent.getByLabel( mInputBoson, boson);
+		const int nBoson = boson->size();
+		if( nBoson<1 ) return; // Nothing to fill
+		Vboson = &((*boson)[0]); 
+
+		// in case when we have two candidates for the W boson in the event
+		if( nBoson==2) Vboson2  = &((*boson)[1]);
+	}
 
 	//edm::Handle<edm::View<reco::Jet> > jets;
 	edm::Handle<edm::View<pat::Jet> > jets;
@@ -554,11 +558,15 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 	for (jet = jets->begin();  jet != endpjets;  ++jet, ++iJet) {
 		if( !(iJet< (unsigned int) NUM_JET_MAX) ) break;
 
-		//--------- store jet 4-vectors and related stuff ---
-		fillBasicJetQuantities(iJet, *jet, Vboson, Vboson2, (*pfmet)[0]);
+		if( keepVecterBoson){
+			//--------- store jet 4-vectors and related stuff ---
+			fillBasicJetQuantities(iJet, *jet, Vboson, Vboson2, (*pfmet)[0]);
+		}else{
+			fillBasicJetQuantities(iJet, *jet);
+		}
 		// --------- Fill b-tag information -----------
 		if(runoverAOD){
-		  fillBtagInfoRECO( iJet, svTagInfos, bTagsSSVHE, bTagsTCHE, bTagsCSV, bTagsJP, bTagsSSVHP, bTagsTCHP);
+			fillBtagInfoRECO( iJet, svTagInfos, bTagsSSVHE, bTagsTCHE, bTagsCSV, bTagsJP, bTagsSSVHP, bTagsTCHP);
 		}else { 
 			edm::Ptr<reco::Jet> ptrJet = jets->ptrAt( jet - jets->begin() );		  
 			if ( ptrJet.isNonnull() && ptrJet.isAvailable() ) {
@@ -573,11 +581,11 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 
 			// PFJet specific quantities
 			std::vector<reco::PFCandidatePtr> pfCandidates;/*
-			if(type == typeid(reco::PFJet)) {
-				reco::PFJet pfjet  = static_cast<const reco::PFJet &>(*jet);
-				fillEnergyFractionsPFjets(pfjet, iJet);
-				pfCandidates = pfjet.getPFConstituents();
-			}*/
+															  if(type == typeid(reco::PFJet)) {
+															  reco::PFJet pfjet  = static_cast<const reco::PFJet &>(*jet);
+															  fillEnergyFractionsPFjets(pfjet, iJet);
+															  pfCandidates = pfjet.getPFConstituents();
+															  }*/
 			if(type == typeid(pat::Jet)) {
 				//std::cout<<"type Name="<<type.name()<<", reco::PFJet"<<typeid(reco::PFJet).name()<<", pat::Jet"<<typeid(pat::Jet).name()<<endl;
 				//pat::Jet pfjet  = static_cast<const pat::Jet &>(*jet);
@@ -599,14 +607,14 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 
 
 	/*// get 4-vectors for the two daughters of vector boson
-	TLorentzVector p4lepton1;
-	TLorentzVector p4lepton2;
+	  TLorentzVector p4lepton1;
+	  TLorentzVector p4lepton2;
 
 
 	// 4body mass with MVA MET
 	if(metMVA->size() > 0 ) {
-		computeLeptonAndNu4Vectors(Vboson, (*metMVA)[0], p4lepton1, p4lepton2);
-		fillInvariantMasses(p4lepton1, p4lepton2);
+	computeLeptonAndNu4Vectors(Vboson, (*metMVA)[0], p4lepton1, p4lepton2);
+	fillInvariantMasses(p4lepton1, p4lepton2);
 	} // second pass will overwrite everithing, but 4-body mass with MVA MET. 
 
 	computeLeptonAndNu4Vectors(Vboson, (*pfmet)[0], p4lepton1, p4lepton2);
@@ -622,47 +630,47 @@ void ewk::JetTreeFiller::fill(const edm::Event& iEvent){
 	cosThetaLnu = 10.0; 
 	cosThetaJJ = 10.0;
 	if( NumJets>1 ) { 
-		TLorentzVector p4j1;
-		TLorentzVector p4j2;
-		p4j1.SetPxPyPzE( Px[0], Py[0], Pz[0], E[0] );
-		p4j2.SetPxPyPzE( Px[1], Py[1], Pz[1], E[1] );
-		dg_kin_Wuv_Wjj( p4lepton1, p4lepton2, 
-					p4j1, p4j2, cosphiDecayPlane, 
-					cosThetaLnu, cosThetaJJ);
+	TLorentzVector p4j1;
+	TLorentzVector p4j2;
+	p4j1.SetPxPyPzE( Px[0], Py[0], Pz[0], E[0] );
+	p4j2.SetPxPyPzE( Px[1], Py[1], Pz[1], E[1] );
+	dg_kin_Wuv_Wjj( p4lepton1, p4lepton2, 
+	p4j1, p4j2, cosphiDecayPlane, 
+	cosThetaLnu, cosThetaJJ);
 	}
 
 
 	// Color correlation between two leading jets ( jets pull ) 
 	if( jetType_!="Gen") {
-		if(NumJets>1) colorCorr01 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[1]) );
-		if(NumJets>2) {
-			colorCorr02 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[2]) );
-			colorCorr12 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[2]) );
-		}
-		if(NumJets>3) {
-			colorCorr03 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[3]) );
-			colorCorr13 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[3]) );
-			colorCorr23 = TMath::Abs( getDeltaTheta(  &(*jets)[2], &(*jets)[3]) );
-		}
-		if(NumJets>4) {
-			colorCorr04 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[4]) );
-			colorCorr14 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[4]) );
-			colorCorr24 = TMath::Abs( getDeltaTheta(  &(*jets)[2], &(*jets)[4]) );
-			colorCorr34 = TMath::Abs( getDeltaTheta(  &(*jets)[3], &(*jets)[4]) );
-		}
-		if(NumJets>5) {
-			colorCorr05 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[5]) );
-			colorCorr15 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[5]) );
-			colorCorr25 = TMath::Abs( getDeltaTheta(  &(*jets)[2], &(*jets)[5]) );
-			colorCorr35 = TMath::Abs( getDeltaTheta(  &(*jets)[3], &(*jets)[5]) );
-			colorCorr45 = TMath::Abs( getDeltaTheta(  &(*jets)[4], &(*jets)[5]) );
-		}
+	if(NumJets>1) colorCorr01 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[1]) );
+	if(NumJets>2) {
+	colorCorr02 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[2]) );
+	colorCorr12 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[2]) );
+	}
+	if(NumJets>3) {
+	colorCorr03 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[3]) );
+	colorCorr13 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[3]) );
+	colorCorr23 = TMath::Abs( getDeltaTheta(  &(*jets)[2], &(*jets)[3]) );
+	}
+	if(NumJets>4) {
+	colorCorr04 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[4]) );
+	colorCorr14 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[4]) );
+	colorCorr24 = TMath::Abs( getDeltaTheta(  &(*jets)[2], &(*jets)[4]) );
+	colorCorr34 = TMath::Abs( getDeltaTheta(  &(*jets)[3], &(*jets)[4]) );
+	}
+	if(NumJets>5) {
+	colorCorr05 = TMath::Abs( getDeltaTheta(  &(*jets)[0], &(*jets)[5]) );
+	colorCorr15 = TMath::Abs( getDeltaTheta(  &(*jets)[1], &(*jets)[5]) );
+	colorCorr25 = TMath::Abs( getDeltaTheta(  &(*jets)[2], &(*jets)[5]) );
+	colorCorr35 = TMath::Abs( getDeltaTheta(  &(*jets)[3], &(*jets)[5]) );
+	colorCorr45 = TMath::Abs( getDeltaTheta(  &(*jets)[4], &(*jets)[5]) );
+	}
 	} // not Gen Jet
 
 
 	// Cos(theta*) or Helicity Angles in Higgs rest frame
 	fillHelicityIn4bodyFrame( p4lepton1, p4lepton2);
-    */
+	*/
 
 	//FillBranches();
 }
@@ -686,7 +694,7 @@ void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet,
 	std::cout<<"L2  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(2)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(2)<<","<<pfjet.mass()<<")"<<endl; 
 	std::cout<<"L3  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(3)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(3)<<","<<pfjet.mass()<<")"<<endl; 
 	std::cout<<"All jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()<<","<<pfjet.mass()<<")"<<endl; 
-	
+
 	Et[iJet] = pfjet.et();
 	Pt[iJet] = pfjet.pt();
 	Pt_uncorr[iJet] = pfjet.pt()*pfjet.jecFactor(0);//before jec
@@ -745,16 +753,91 @@ void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet,
 		nConstituents[iJet]  = pfjet.nConstituents();
 	}
 }
+
+template <typename T1> 
+void ewk::JetTreeFiller::fillBasicJetQuantities(int iJet, const T1& pfjet)
+{
+	//print_p4((fastjet::PseudoJet)pfjet,"jet from PAT");
+	/*std::cout<<"    raw pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(0)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(0)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"L1  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(1)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(1)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"L2  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(2)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(2)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"L3  jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()*pfjet.jecFactor(3)<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()*pfjet.jecFactor(3)<<","<<pfjet.mass()<<")"<<endl; 
+	std::cout<<"All jec pat::jet (pt,eta,phi,E,m)=("<<pfjet.pt()<<","<<pfjet.eta()<<","<<pfjet.phi()<<","<<pfjet.energy()<<","<<pfjet.mass()<<")"<<endl; 
+	*/
+
+	Et[iJet] = pfjet.et();
+	Pt[iJet] = pfjet.pt();
+	Pt_uncorr[iJet] = pfjet.pt()*pfjet.jecFactor(0);//before jec
+	Pt_afterL1[iJet] = pfjet.pt()*pfjet.jecFactor(1);//after L1 jec
+	Pt_afterL2[iJet] = pfjet.pt()*pfjet.jecFactor(2);//after L2 jec
+	Eta[iJet] = pfjet.eta();
+	Phi[iJet] = pfjet.phi();
+	Theta[iJet] = pfjet.theta();
+	Px[iJet] = pfjet.px();
+	Py[iJet] = pfjet.py();
+	Pz[iJet] = pfjet.pz();
+	E[iJet]  = pfjet.energy();
+	Y[iJet]  = pfjet.rapidity();
+	Mass[iJet] = pfjet.mass();
+	Area[iJet] = pfjet.jetArea();
+	//std::cout<<"pat::jet area= "<<Area[iJet]<<endl;
+
+
+/*
+	Dphi[iJet] = dPhi( pfjet.phi(), Vboson->phi() );
+	Deta[iJet] = fabs( pfjet.eta() - Vboson->eta() );
+	DR[iJet] = radius( pfjet.eta(), pfjet.phi(), 
+				Vboson->eta(), Vboson->phi());
+	DphiMET[iJet] = dPhi( pfjet.phi(), met.phi() );
+
+	Response[iJet] = 10.0;
+	float vpt = Vboson->pt();
+	if( vpt>0.0 ) Response[iJet] = pfjet.pt() / vpt;
+
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > qstar 
+		= pfjet.p4() + Vboson->p4();
+	VjetMass[iJet] = qstar.M();
+
+
+
+	// ------- Compute deltaR (jet, vector boson) -----
+	if( !(Vboson2==0) ) {
+		DR2[iJet] = radius( pfjet.eta(), pfjet.phi(), 
+					Vboson2->eta(), Vboson2->phi());
+		Dphi2[iJet] = dPhi( pfjet.phi(), Vboson2->phi() );
+		Deta2[iJet] = fabs( pfjet.eta() - Vboson2->eta() );
+		Response2[iJet] = 10.0;
+		vpt = Vboson2->pt();
+		if( vpt>0.0 ) Response2[iJet] = pfjet.pt() / vpt;	
+		qstar = pfjet.p4() + Vboson2->p4();
+		VjetMass2[iJet] = qstar.M();	
+	}
+
+
+
+	if(runoverAOD){
+		etaetaMoment[iJet]  = pfjet.etaetaMoment();
+		phiphiMoment[iJet]  = pfjet.phiphiMoment();      
+		etaphiMoment[iJet]  = pfjet.etaphiMoment();
+		maxDistance[iJet]  = pfjet.maxDistance();
+		nConstituents[iJet]  = pfjet.nConstituents();
+	}
+	*/
+}
 /*template 
-void ewk::JetTreeFiller::fillBasicJetQuantities(int, const reco::PFJet&,
-			const reco::Candidate* Vboson, 
-			const reco::Candidate* Vboson2, 
-			const reco::MET met);*/
+  void ewk::JetTreeFiller::fillBasicJetQuantities(int, const reco::PFJet&,
+  const reco::Candidate* Vboson, 
+  const reco::Candidate* Vboson2, 
+  const reco::MET met);*/
 template 
 void ewk::JetTreeFiller::fillBasicJetQuantities(int, const pat::Jet&,
 			const reco::Candidate* Vboson, 
 			const reco::Candidate* Vboson2, 
 			const reco::MET met); 
+
+template 
+void ewk::JetTreeFiller::fillBasicJetQuantities(int, const pat::Jet&);
+
 
 
 //////////////////////////////////////////////////////////////////////
