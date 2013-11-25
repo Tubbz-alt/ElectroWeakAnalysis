@@ -48,6 +48,7 @@ class MyClass {
 		Int_t           fCurrent; //!current Tree number in a TChain
 
 		TString      plot_Dir_DateTime;
+		TString      FinalState;
 		TString      JetType;
 		TString      PfType;
 		// Declaration of leaf types
@@ -800,7 +801,7 @@ class MyClass {
 		TBranch        *b_event_mcPU_nvtx;   //!
 
 		//MyClass(TTree *tree=0, char* inJetType="AK8", char* inPfType="PF", char* plot_dir=""); //JetType: AK5 AK8, PF PFCHS 
-		MyClass(TTree *tree, char* inJetType, char* inPfType, Bool_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
+		MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
 		virtual ~MyClass();
 		virtual Int_t    Cut(Long64_t entry);
 		virtual Bool_t   preSelect();
@@ -868,7 +869,7 @@ class correlation_tool{
 #endif
 
 #ifdef MyClass_cxx
-MyClass::MyClass(TTree *tree, char* inJetType, char* inPfType, Bool_t in_isBoosted, char* plot_dir) : fChain(0) 
+MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted, char* plot_dir) : fChain(0) 
 {
 	// if parameter tree is not specified (or zero), connect the file
 	// used to generate this class and read the Tree.
@@ -881,10 +882,12 @@ MyClass::MyClass(TTree *tree, char* inJetType, char* inPfType, Bool_t in_isBoost
 
 	}
 	plot_Dir_DateTime=plot_dir;
+	FinalState=inFinalState;
 	JetType=inJetType;
 	PfType =inPfType;
 	isBoosted=in_isBoosted;
 	Init(tree);
+	cout<<"FinalState="<<FinalState<<endl;
 
 }
 
