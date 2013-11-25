@@ -78,16 +78,6 @@ Bool_t MyClass::preSelect()
 	if(!( Z_mass>65 && Z_mass<105 ))return 0;
 	efftool.Add_Event("zmass: 65 105");
 
-	if(!( GenGroomedJet_pt[0]>20 && GenGroomedJet_pt[0]<1e10 ))return 0;
-	efftool.Add_Event("Gen Jet Pt>20");
-
-	//alpha cut: z and jet are back to back
-	if(GroomedJet_number_jet_central >1){
-		//cout<<"alpha = "<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
-		if( GroomedJet_pt[1]/GroomedJet_pt[0] >=0.3 ) return 0;
-	}
-	efftool.Add_Event("alpha<0.3");
-
 	if(isBoosted){
 		if(!( Z_pt>100))return 0;
 		efftool.Add_Event("Z Pt>100");
@@ -97,7 +87,28 @@ Bool_t MyClass::preSelect()
 		//Double_t tmp_GEN_eta = GenGroomedJet_eta[0]; Double_t tmp_GEN_phi = GenGroomedJet_phi[0];
 		//Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_GEN_eta)*(Z_eta-tmp_GEN_eta) + (Z_phi-tmp_GEN_phi)*(Z_phi-tmp_GEN_phi) );
 		//if(!( tmpDeltaR_Vj>2.0 ))return 0;
+	}else{
+		if(!( GenGroomedJet_pt[0]>20 ))return 0;
+		efftool.Add_Event("Gen Jet Pt>20");
 	}
+
+	//alpha cut: z and jet are back to back
+	if(GroomedJet_number_jet_central >1){
+		//cout<<"alpha = "<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
+		if( GroomedJet_pt[1]/GroomedJet_pt[0] >=0.3 ) return 0;
+	}
+	efftool.Add_Event("alpha<0.3");
+
+	/*if(isBoosted){
+	  if(!( Z_pt>100))return 0;
+	  efftool.Add_Event("Z Pt>100");
+
+	  if(!( GenGroomedJet_pt[0]>100 ))return 0;
+	  efftool.Add_Event("Gen Jet Pt>100");
+	//Double_t tmp_GEN_eta = GenGroomedJet_eta[0]; Double_t tmp_GEN_phi = GenGroomedJet_phi[0];
+	//Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_GEN_eta)*(Z_eta-tmp_GEN_eta) + (Z_phi-tmp_GEN_phi)*(Z_phi-tmp_GEN_phi) );
+	//if(!( tmpDeltaR_Vj>2.0 ))return 0;
+	}*/
 	return 1;
 }
 
