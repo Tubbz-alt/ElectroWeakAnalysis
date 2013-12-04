@@ -182,7 +182,7 @@ namespace ewk
 			JetCleanser makeJVFCleanser(fastjet::JetDefinition subjet_def, std::string projectmode="CMS", double fcut=-1.0, int nsj=-1 );//projectmode: CMS or ATLAS
 			JetCleanser makeLinearCleanser(fastjet::JetDefinition subjet_def, double linear_para0,std::string projectmode="CMS", double fcut=-1, int nsj=-1 );//projectmode: CMS or ATLAS
 			JetCleanser makeGausCleanser(fastjet::JetDefinition subjet_def, double gaus_para0, double gaus_para1, double gaus_para2, double gaus_para3, std::string projectmode="CMS", double fcut=-1, int nsj=-1 );//projectmode: CMS or ATLAS
-			void DoJetCleansing(fastjet::JetDefinition jetDef, std::vector<fastjet::PseudoJet> FJparticles, std::vector<fastjet::PseudoJet> FJparticles_hardcharge, std::vector<fastjet::PseudoJet> FJparticles_pileupcharge, std::vector<fastjet::PseudoJet> FJparticles_fullneutral  );
+			void DoJetCleansing(fastjet::JetDefinition jetDef, std::vector<fastjet::PseudoJet> FJparticles, std::vector<fastjet::PseudoJet> FJparticles_hardcharge, std::vector<fastjet::PseudoJet> FJparticles_pileupcharge, std::vector<fastjet::PseudoJet> FJparticles_fullneutral, fastjet::PseudoJet recoJet  );
 
 			// ----------member data ---------------------------
 			TTree* tree_;
@@ -244,6 +244,14 @@ namespace ewk
 			float tau2[NUM_JET_MAX];
 			float tau3[NUM_JET_MAX];
 			float tau4[NUM_JET_MAX];
+			float tau1_shapesubtract[NUM_JET_MAX];
+			float tau2_shapesubtract[NUM_JET_MAX];
+			float tau3_shapesubtract[NUM_JET_MAX];
+			float tau4_shapesubtract[NUM_JET_MAX];
+			float tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
+			float tau2_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
+			float tau3_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
+			float tau4_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float massdrop_pr_uncorr[NUM_JET_MAX];
 
 			int   number_jet_central;
