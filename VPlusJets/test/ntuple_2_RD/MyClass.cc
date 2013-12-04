@@ -757,10 +757,10 @@ void MyClass::Loop() {
 
 	Int_t nbin_rho=50; Double_t rho_min=0.; Double_t rho_max=50.;
 	Int_t nbin_nPV=50; Double_t nPV_min=0.; Double_t nPV_max=50.;
-	Int_t nbin_mass=40;Double_t jetmass_min=-100;Double_t jetmass_max=300.;
+	Int_t nbin_mass=50;Double_t jetmass_min=-50;Double_t jetmass_max=200.;
 	Int_t nbin_pt=55;Double_t jetpt_min=-100;Double_t jetpt_max=1000.;
 	Int_t nbin_ratio=100; Double_t ratio_min=-1; Double_t ratio_max=3.; 
-	Int_t nbin_eta=10;Double_t jeteta_min=-3;Double_t jeteta_max=3.;
+	Int_t nbin_eta=10;Double_t jeteta_min=-2.4;Double_t jeteta_max=2.4;
 	Int_t nbin_tau2tau1=40;Double_t jettau2tau1_min=-0.2;Double_t jettau2tau1_max=1.2;
 	Double_t ratio_mrt_min=0.5; Double_t ratio_mrt_max=1.6; 
 	Double_t ratio_mrt_uncorr_min=0.5; Double_t ratio_mrt_uncorr_max=1.6; 
