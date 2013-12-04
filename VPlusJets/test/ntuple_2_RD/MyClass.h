@@ -1568,7 +1568,7 @@ TH1D JetCorrectionTool::get_hist1D_response( TString xdenominator_var_name,TStri
 	if ( !find_var_in_map(map_obs, xdenominator_var_name) ) { cout<<"When get_hist1D_response, fail to find "<<xdenominator_var_name.Data()<<endl;return TH1D("h1","h1",1,0,1);}
 	if ( !find_var_in_map(map_obs, xnumerator_var_name) ) { cout<<"When get_hist1D_response, fail to find "<<xnumerator_var_name.Data()<<endl;return TH1D("h1","h1",1,0,1);}
 
-	TH1D h1(Form("h1_JCT_%s_responce_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), Form("h1_JCT_%s_responce_%s_%s;%s/%s;Event Number", name.Data(),xnumerator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), nbin, xmin, xmax);
+	TH1D h1(Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), Form("h1response_JCT_%s_%s_%s;%s/%s;Event Number", name.Data(),xnumerator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), nbin, xmin, xmax);
 	if( map_obs[xdenominator_var_name].vect_x.size() == map_obs[xnumerator_var_name].vect_x.size() ){
 		for(Int_t k=0;k<map_obs[xdenominator_var_name].vect_x.size();k++){
 			h1.Fill( map_obs[xnumerator_var_name].vect_x[k]/ map_obs[xdenominator_var_name].vect_x[k] ); 
@@ -1616,13 +1616,15 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 
 	if( map_obs[x_var_name].vect_x.size() == map_obs[ydenominator_var_name].vect_x.size() && map_obs[ynumerator_var_name].vect_x.size() == map_obs[ydenominator_var_name].vect_x.size() ){
 
-	TH1D h1(Form("h1_JCT_%s_mean_rms_%s_%s", name.Data(),ynumerator_var_name.Data(),x_var_name.Data()), Form("h1_JCT_%s_mean_rms_%s_%s_%s;%s;%s/%s;", name.Data(),ynumerator_var_name.Data(),ydenominator_var_name.Data(),x_var_name.Data(),x_var_name.Data(), ynumerator_var_name.Data(), ydenominator_var_name.Data()), map_obs[x_var_name].nbin, map_obs[x_var_name].xmin, map_obs[x_var_name].xmax);
+		cout<<" get_mean_rms_hist: "<<x_var_name.Data()<<", "<<ydenominator_var_name.Data()<<", "<<ynumerator_var_name.Data()<<", "<<endl;
 
-	std::vector< std::vector<Double_t> > vectors_y;
-	for(Int_t j=0; j<map_obs[x_var_name].nbin; j++){ 
-		std::vector<Double_t> tmp_vect_y; 
-		vectors_y.push_back(tmp_vect_y); 
-	}
+		TH1D h1(Form("h1_JCT_%s_mean_rms_%s_%s", name.Data(),ynumerator_var_name.Data(),x_var_name.Data()), Form("h1_JCT_%s_mean_rms_%s_%s_%s;%s;%s/%s;", name.Data(),ynumerator_var_name.Data(),ydenominator_var_name.Data(),x_var_name.Data(),x_var_name.Data(), ynumerator_var_name.Data(), ydenominator_var_name.Data()), map_obs[x_var_name].nbin, map_obs[x_var_name].xmin, map_obs[x_var_name].xmax);
+
+		std::vector< std::vector<Double_t> > vectors_y;
+		for(Int_t j=0; j<map_obs[x_var_name].nbin; j++){ 
+			std::vector<Double_t> tmp_vect_y; 
+			vectors_y.push_back(tmp_vect_y); 
+		}
 
 
 		for(Int_t k=0;k<map_obs[x_var_name].vect_x.size();k++){
@@ -1631,6 +1633,7 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 			for(Int_t i=1;i<=map_obs[x_var_name].nbin;i++){
 				if( map_obs[x_var_name].vect_x[k] >=h1.GetBinLowEdge(i) && map_obs[x_var_name].vect_x[k] <h1.GetBinLowEdge(i+1)  ){
 					vectors_y[i-1].push_back(map_obs[ynumerator_var_name].vect_x[k] / map_obs[ydenominator_var_name].vect_x[k]);
+					//if(map_obs[ynumerator_var_name].vect_x[k] / map_obs[ydenominator_var_name].vect_x[k] >3 ||map_obs[ynumerator_var_name].vect_x[k] / map_obs[ydenominator_var_name].vect_x[k] <0  ) cout<<"x= "<<h1.GetBinLowEdge(i) <<" y= "<< map_obs[ynumerator_var_name].vect_x[k]<<" / "<< map_obs[ydenominator_var_name].vect_x[k] <<" ="<< map_obs[ynumerator_var_name].vect_x[k] / map_obs[ydenominator_var_name].vect_x[k]<<endl;
 					break;
 				}
 			}
@@ -1640,12 +1643,18 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 		for(Int_t j=0; j<map_obs[x_var_name].nbin; j++){ 
 
 			Int_t n_y=vectors_y[j].size(); 
-			Double_t * array_y=new Double_t[n_y];
-			for(Int_t k=0;k<n_y;k++)array_y[k]=vectors_y[j][k];
-			Double_t mean=TMath::Mean(n_y, array_y);
-			Double_t rms=TMath::RMS(n_y, array_y);
-			h1.SetBinContent(j+1,mean);
-			h1.SetBinError(j+1, rms);
+			if(n_y==0) {
+				h1.SetBinContent(j+1, 0.);
+				h1.SetBinError(j+1, 0.);
+			}else{
+				Double_t * array_y=new Double_t[n_y];
+				for(Int_t k=0;k<n_y;k++)array_y[k]=vectors_y[j][k];
+				Double_t mean=TMath::Mean(n_y, array_y);
+				Double_t rms=TMath::RMS(n_y, array_y);
+				h1.SetBinContent(j+1,mean);
+				h1.SetBinError(j+1, rms);
+				cout<<"x="<<h1.GetBinLowEdge(j+1)<<" y_mean="<<mean<<", y_rms="<<rms<<endl;
+			}
 		}
 
 		h1.GetYaxis()->SetRangeUser(ymin, ymax);
