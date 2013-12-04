@@ -185,6 +185,18 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1_JetCleansing_DiffMode").c_str(), tau2tau1_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
 	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1_JetCleansing_DiffMode").c_str() );
 
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau1_JetCleansing_DiffMode").c_str(), tau1_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau1_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau1_JetCleansing_DiffMode").c_str() );
+
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2_JetCleansing_DiffMode").c_str(), tau2_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2_JetCleansing_DiffMode").c_str() );
+
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau3_JetCleansing_DiffMode").c_str(), tau3_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau3_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau3_JetCleansing_DiffMode").c_str() );
+
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau4_JetCleansing_DiffMode").c_str(), tau4_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau4_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau4_JetCleansing_DiffMode").c_str() );
+
 	if( iConfig.existsAs<bool>("GroomedJet_saveConstituents") ) 
 	  mSaveConstituents=iConfig.getParameter< bool >("GroomedJet_saveConstituents");
 	else mSaveConstituents = true;
@@ -495,6 +507,10 @@ void ewk::GroomedJetFiller::Init(){
 		jetmass_JetCleansing_DiffMode[k]= -1;
 		jetpt_JetCleansing_DiffMode[k]  = -1;
 		tau2tau1_JetCleansing_DiffMode[k]= -1;
+		tau1_JetCleansing_DiffMode[k]= -1;
+		tau2_JetCleansing_DiffMode[k]= -1;
+		tau3_JetCleansing_DiffMode[k]= -1;
+		tau4_JetCleansing_DiffMode[k]= -1;
 	};
 	nPV_ = 0.; // number of Primery vertex
 	rhoVal_ = -99.; //rho of KT6PF from SW reco
@@ -544,7 +560,6 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	std::vector<fastjet::PseudoJet> out_jets       = sorted_by_pt( selected_eta(thisClustering_area->inclusive_jets(15.0)) );
 	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_eta(thisClustering_basic->inclusive_jets(15.0)) );
 
-//memory leak begin
 	fastjet::Subtractor* subtractor_medi=NULL; fastjet::Subtractor* subtractor_grid=NULL;
 
 	rhoVal_ = getrho(iEvent); // ------ get rho from SW reco --------    
@@ -555,7 +570,6 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	rhoVal_grid = getrho_Grid(FJparticles, &subtractor_grid); // ------ get rho by grid--------    
 	//std::cout<<"(kt6PF rho in SW) = "<<rhoVal_<<std::endl; std::cout << "(kt6PF rho by hand) = " << rhoVal_hand<<endl; std::cout<<"medi rho = "<<rhoVal_hand2<<endl; std::cout<<"grid rho = "<<rhoVal_grid<<endl;
 	
-	//memory leak end 
 	// define groomers
 	fastjet::Filter trimmer( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.03)));
 	fastjet::Filter filter( fastjet::Filter(fastjet::JetDefinition(fastjet::cambridge_algorithm, 0.3), fastjet::SelectorNHardest(3)));
@@ -569,6 +583,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	// ----------------start loop on jets-----------------------
 	number_jet_central = out_jets.size();
 	for(int j = 0; j < number_jet_central && j<NUM_JET_MAX; j++) {
+		//print_p4(out_jets.at(j), Form("%i jet",j));
 		if (mSaveConstituents && j==0){
 			if (out_jets_basic.at(j).constituents().size() >= 100) nconstituents0 = 100;
 			else nconstituents0 = (int) out_jets_basic.at(j).constituents().size();
@@ -828,7 +843,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	delete subtractor_grid;
 	
 	// jet JetCleansing
-	if(doJetCleansing) { DoJetCleansing( *mJetDef, FJparticles, FJparticles_hardcharge, FJparticles_pileupcharge, FJparticles_fullneutral); }
+	if(doJetCleansing) { DoJetCleansing( *mJetDef, FJparticles, FJparticles_hardcharge, FJparticles_pileupcharge, FJparticles_fullneutral, out_jets.at(0)); }
 }  
 
 double ewk::GroomedJetFiller::getJEC(double curJetEta, double curJetPt, double curJetE, double curJetArea){
@@ -1199,8 +1214,10 @@ JetCleanser ewk::GroomedJetFiller::makeGausCleanser(fastjet::JetDefinition subje
 void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::vector<fastjet::PseudoJet> FJparticles, 
 			std::vector<fastjet::PseudoJet> FJparticles_hardcharge,
 			std::vector<fastjet::PseudoJet> FJparticles_pileupcharge,
-			std::vector<fastjet::PseudoJet> FJparticles_fullneutral  )
+			std::vector<fastjet::PseudoJet> FJparticles_fullneutral,
+			fastjet::PseudoJet recoJet)
 {
+	//cout<<"DoJetCleansing:  "<<" FJparticles.size="<<FJparticles.size()<<" FJparticles_hardcharge.size="<<FJparticles_hardcharge.size()<<" FJparticles_pileupcharge.size="<<FJparticles_pileupcharge.size()<<" FJparticles_fullneutral.size="<<FJparticles_fullneutral.size()<<endl;
 	// find jets
 	vector< vector<fastjet::PseudoJet> > sets;
 	sets.push_back( FJparticles );           // calorimeter cells
@@ -1215,6 +1232,18 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	vector<fastjet::PseudoJet> jets_tracks_PU = jet_sets[2];
 	vector<fastjet::PseudoJet> jets_neutrals  = jet_sets[3];
 
+	//cout<<"jets_tracks_LV.size()="<<jets_tracks_LV.size()<<endl;
+	//cout<<"jets_tracks_PU.size()="<<jets_tracks_PU.size()<<endl;
+	//cout<<"jets_neutrals.size()="<<jets_neutrals.size()<<endl;
+
+	Int_t num_matching_with_reco=-1;//all reco jet eta<2.4
+	for(Int_t i=0; i< Int_t(jets_plain.size()); i++){
+		//cout<<i<<"st jet:"<<endl; print_p4( jets_plain[i], "jets_plain");
+		if ( isMatching(jets_plain[i], recoJet ) ){
+			num_matching_with_reco=i;
+			break;
+		}
+	}
 	// Jet cleansing
 	vector<JetCleanser> jetcleanser_vect;
 	fastjet::JetDefinition subjet_def_kt03(fastjet::kt_algorithm, 0.3);
@@ -1223,108 +1252,61 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	fastjet::JetDefinition subjet_def_kt015(fastjet::kt_algorithm, 0.15);
 	// jvf
 	JetCleanser jetcleanser01=makeJVFCleanser(subjet_def_kt03, "CMS"); jetcleanser_vect.push_back(jetcleanser01);
-	JetCleanser jetcleanser02=makeJVFCleanser(subjet_def_kt025, "CMS"); jetcleanser_vect.push_back(jetcleanser02);
-	JetCleanser jetcleanser03=makeJVFCleanser(subjet_def_kt02, "CMS"); jetcleanser_vect.push_back(jetcleanser03);
-	JetCleanser jetcleanser04=makeJVFCleanser(subjet_def_kt015, "CMS"); jetcleanser_vect.push_back(jetcleanser04);
-	// linear
-	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt03,0.4+0.01*linear_par, "CMS");
-		jetcleanser_vect.push_back(jetcleanser1);
-	}
-	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt025,0.4+0.01*linear_par, "CMS");
-		jetcleanser_vect.push_back(jetcleanser1);
-	}
-	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt02,0.4+0.01*linear_par, "CMS");
-		jetcleanser_vect.push_back(jetcleanser1);
-	}
-	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt015,0.4+0.01*linear_par, "CMS");
-		jetcleanser_vect.push_back(jetcleanser1);
-	} 
-	// gaus
-	JetCleanser jetcleanser2=makeGausCleanser(subjet_def_kt03, 0.67, 0.62, 0.20, 0.25, "CMS");
-	jetcleanser_vect.push_back(jetcleanser2);
+		JetCleanser jetcleanser02=makeJVFCleanser(subjet_def_kt025, "CMS"); jetcleanser_vect.push_back(jetcleanser02);
+		JetCleanser jetcleanser03=makeJVFCleanser(subjet_def_kt02, "CMS"); jetcleanser_vect.push_back(jetcleanser03);
+		JetCleanser jetcleanser04=makeJVFCleanser(subjet_def_kt015, "CMS"); jetcleanser_vect.push_back(jetcleanser04);
+		// linear
+		for(Int_t linear_par=0; linear_par<=30; linear_par++){
+			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt03,0.4+0.01*linear_par, "CMS");
+			jetcleanser_vect.push_back(jetcleanser1);
+		}
+		for(Int_t linear_par=0; linear_par<=30; linear_par++){
+			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt025,0.4+0.01*linear_par, "CMS");
+			jetcleanser_vect.push_back(jetcleanser1);
+		}
+		for(Int_t linear_par=0; linear_par<=30; linear_par++){
+			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt02,0.4+0.01*linear_par, "CMS");
+			jetcleanser_vect.push_back(jetcleanser1);
+		}
+		for(Int_t linear_par=0; linear_par<=30; linear_par++){
+			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt015,0.4+0.01*linear_par, "CMS");
+			jetcleanser_vect.push_back(jetcleanser1);
+		} 
+		// gaus
+		JetCleanser jetcleanser2=makeGausCleanser(subjet_def_kt03, 0.67, 0.62, 0.20, 0.25, "CMS");
+		jetcleanser_vect.push_back(jetcleanser2);
 
 	if( int(jetcleanser_vect.size()) >= NUM_JETCLEANSING_MODE_MAX ){ std::cout<<"Error! Jet Cleansing Mode is too many!"<<endl; BREAK(); }
 	//cout<<"jetcleanser_vect.size()="<<jetcleanser_vect.size()<<endl;
 	for(Int_t j=0;j<int(jetcleanser_vect.size());j++){
-		fastjet::PseudoJet tmp_cleansed_jet = jetcleanser_vect[j]( jets_neutrals[0].constituents(), jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );//CMS
-		//( jets_plain[0], jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );/ATLAS
+		//fastjet::PseudoJet tmp_cleansed_jet = jetcleanser_vect[j]( jets_neutrals[0].constituents(), jets_tracks_LV[0].constituents(), jets_tracks_PU[0].constituents() );//CMS model
+		fastjet::PseudoJet tmp_cleansed_jet = jetcleanser_vect[j]( jets_neutrals[num_matching_with_reco].constituents(), jets_tracks_LV[num_matching_with_reco].constituents(), jets_tracks_PU[num_matching_with_reco].constituents() );//CMS model
 		jetmass_JetCleansing_DiffMode[j]= tmp_cleansed_jet.m();
 		jetpt_JetCleansing_DiffMode[j]  = tmp_cleansed_jet.pt();
 
-		float tmp1;
-		float tmp2;
-		float tmp3;
-		float tmp4;
-		float tmp5;
+		float tmp1; float tmp2; float tmp3; float tmp4; float tmp5;
 		get_nsubjettiness(tmp_cleansed_jet, tmp1, tmp2, tmp3, tmp4, tmp5 );
+		tau1_JetCleansing_DiffMode[j]= tmp1;
+		tau2_JetCleansing_DiffMode[j]= tmp2;
+		tau3_JetCleansing_DiffMode[j]= tmp3;
+		tau4_JetCleansing_DiffMode[j]= tmp4;
 		tau2tau1_JetCleansing_DiffMode[j]= tmp5;
-		//cout<<"jet cleansing tau2tau1="<<tmp5<<endl;
 
+
+		//if( tmp_cleansed_jet.pt() <10 ){
+		//cout<<"jet cleansing pt="<<tmp_cleansed_jet.pt()<<endl;
+		//cout<<"jet cleansing mass="<<tmp_cleansed_jet.m()<<endl;
+		//cout<<"jet cleansing tau1="<<tmp1<<endl;
+		//cout<<"jet cleansing tau2="<<tmp2<<endl;
+		//cout<<"jet cleansing tau3="<<tmp3<<endl;
+		//cout<<"jet cleansing tau4="<<tmp4<<endl;
+		//cout<<"jet cleansing tau2tau1="<<tmp5<<endl;
+		//}
 		//cout<<jetcleanser_vect[j].description()<<endl<<"jet mass="<< tmp_cleansed_jet.m()<<" jet pt="<< tmp_cleansed_jet.pt()<<endl; cout<<"================"<<endl;
 		//cout<<j<<" mass="<< tmp_cleansed_jet.m()<<" pt="<< tmp_cleansed_jet.pt()<<endl; 
 	};
 
-	/*
-	//----------------------------------------------------------
-	// ATLAS-like: cleansers
-	//cout << "ATLAS-like JetCleansing:" << endl << endl;
 
-	JetCleanser jvf_cleanser_A(subjet_def, JetCleanser::jvf_cleansing, JetCleanser::input_nc_together);
-	jvf_cleanser_A.SetTrimming(0.01);
-
-	JetCleanser linear_cleanser_A(subjet_def, JetCleanser::linear_cleansing, JetCleanser::input_nc_together);
-	linear_cleanser_A.SetLinearParameters(0.65);
-
-	JetCleanser gaussian_cleanser_A(subjet_def, JetCleanser::gaussian_cleansing, JetCleanser::input_nc_together);
-	gaussian_cleanser_A.SetGaussianParameters(0.67,0.62,0.20,0.25);
-
-	// print info about cleansers
-	cout << jvf_cleanser_A.description() << endl;
-	cout << linear_cleanser_A.description() << endl;
-	cout << gaussian_cleanser_A.description() << endl;
-
-	// ATLAS-like: cleanse jets
-	int n_jets = min((int) jets_plain.size(),3);
-	for (int i=0; i<n_jets; i++){
-	fastjet::PseudoJet plain_jet = jets_plain[i];
-	fastjet::PseudoJet jvf_cleansed_jet = jvf_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
-	fastjet::PseudoJet lin_cleansed_jet = linear_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
-	fastjet::PseudoJet gau_cleansed_jet = gaussian_cleanser_A( jets_plain[i], jets_tracks_LV[i].constituents(), jets_tracks_PU[i].constituents() );
-
-	cout << "                with pileup: pt = " << plain_jet.pt()
-	<< " eta = " << plain_jet.eta()
-	<< " phi = " << plain_jet.phi()
-	<< "   m = " << plain_jet.m()
-	<< endl;
-
-	cout << " with pileup + jvf cleansed: pt = " << jvf_cleansed_jet.pt()
-	<< " eta = " << jvf_cleansed_jet.eta()
-	<< " phi = " << jvf_cleansed_jet.phi()
-	<< "   m = " << jvf_cleansed_jet.m()
-	<< endl;
-
-	cout << " with pileup + lin cleansed: pt = " << lin_cleansed_jet.pt()
-	<< " eta = " << lin_cleansed_jet.eta()
-	<< " phi = " << lin_cleansed_jet.phi()
-	<< "   m = " << lin_cleansed_jet.m()
-	<< endl;
-
-	cout << " with pileup + gau cleansed: pt = " << gau_cleansed_jet.pt()
-	<< " eta = " << gau_cleansed_jet.eta()
-	<< " phi = " << gau_cleansed_jet.phi()
-	<< "   m = " << gau_cleansed_jet.m()
-	<< endl
-	<< endl;
-	jetmass_JetCleansingATLASjvf[i]=jvf_cleansed_jet.m();
-	jetmass_JetCleansingATLASlin[i]=lin_cleansed_jet.m();
-	jetmass_JetCleansingATLASgau[i]=gau_cleansed_jet.m();
-
-	}
-	*/
 }
 
 ewk::GroomTool::GroomTool(string in_groom_label, fastjet::Transformer* in_groomer):groomer_label(in_groom_label) { 
