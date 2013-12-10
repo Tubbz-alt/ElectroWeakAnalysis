@@ -1250,32 +1250,36 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	fastjet::JetDefinition subjet_def_kt025(fastjet::kt_algorithm, 0.25);
 	fastjet::JetDefinition subjet_def_kt02(fastjet::kt_algorithm, 0.2);
 	fastjet::JetDefinition subjet_def_kt015(fastjet::kt_algorithm, 0.15);
+
+	JetCleanser jetcleanser1=makeJVFCleanser(subjet_def_kt03, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	JetCleanser jetcleanser2=makeJVFCleanser(subjet_def_kt02, "CMS"); jetcleanser_vect.push_back(jetcleanser2);
+	JetCleanser jetcleanser3=makeLinearCleanser(subjet_def_kt03,0.55, "CMS"); jetcleanser_vect.push_back(jetcleanser3);
+	JetCleanser jetcleanser4=makeLinearCleanser(subjet_def_kt02,0.55, "CMS"); jetcleanser_vect.push_back(jetcleanser4);
+	JetCleanser jetcleanser5=makeLinearCleanser(subjet_def_kt03,0.60, "CMS"); jetcleanser_vect.push_back(jetcleanser5);
+	JetCleanser jetcleanser6=makeLinearCleanser(subjet_def_kt02,0.60, "CMS"); jetcleanser_vect.push_back(jetcleanser6);
+	/*
 	// jvf
 	JetCleanser jetcleanser01=makeJVFCleanser(subjet_def_kt03, "CMS"); jetcleanser_vect.push_back(jetcleanser01);
-		JetCleanser jetcleanser02=makeJVFCleanser(subjet_def_kt025, "CMS"); jetcleanser_vect.push_back(jetcleanser02);
-		JetCleanser jetcleanser03=makeJVFCleanser(subjet_def_kt02, "CMS"); jetcleanser_vect.push_back(jetcleanser03);
-		JetCleanser jetcleanser04=makeJVFCleanser(subjet_def_kt015, "CMS"); jetcleanser_vect.push_back(jetcleanser04);
-		// linear
-		for(Int_t linear_par=0; linear_par<=30; linear_par++){
-			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt03,0.4+0.01*linear_par, "CMS");
-			jetcleanser_vect.push_back(jetcleanser1);
-		}
-		for(Int_t linear_par=0; linear_par<=30; linear_par++){
-			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt025,0.4+0.01*linear_par, "CMS");
-			jetcleanser_vect.push_back(jetcleanser1);
-		}
-		for(Int_t linear_par=0; linear_par<=30; linear_par++){
-			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt02,0.4+0.01*linear_par, "CMS");
-			jetcleanser_vect.push_back(jetcleanser1);
-		}
-		for(Int_t linear_par=0; linear_par<=30; linear_par++){
-			JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt015,0.4+0.01*linear_par, "CMS");
-			jetcleanser_vect.push_back(jetcleanser1);
-		} 
-		// gaus
-		JetCleanser jetcleanser2=makeGausCleanser(subjet_def_kt03, 0.67, 0.62, 0.20, 0.25, "CMS");
-		jetcleanser_vect.push_back(jetcleanser2);
-
+	JetCleanser jetcleanser02=makeJVFCleanser(subjet_def_kt025, "CMS"); jetcleanser_vect.push_back(jetcleanser02);
+	JetCleanser jetcleanser03=makeJVFCleanser(subjet_def_kt02, "CMS"); jetcleanser_vect.push_back(jetcleanser03);
+	JetCleanser jetcleanser04=makeJVFCleanser(subjet_def_kt015, "CMS"); jetcleanser_vect.push_back(jetcleanser04);
+	// linear
+	for(Int_t linear_par=0; linear_par<=30; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt03,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	}
+	for(Int_t linear_par=0; linear_par<=30; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt025,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	}
+	for(Int_t linear_par=0; linear_par<=30; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt02,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	}
+	for(Int_t linear_par=0; linear_par<=30; linear_par++){
+		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt015,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	} 
+	// gaus
+	JetCleanser jetcleanser2=makeGausCleanser(subjet_def_kt03, 0.67, 0.62, 0.20, 0.25, "CMS");
+	jetcleanser_vect.push_back(jetcleanser2);
+*/
 	if( int(jetcleanser_vect.size()) >= NUM_JETCLEANSING_MODE_MAX ){ std::cout<<"Error! Jet Cleansing Mode is too many!"<<endl; BREAK(); }
 	//cout<<"jetcleanser_vect.size()="<<jetcleanser_vect.size()<<endl;
 	for(Int_t j=0;j<int(jetcleanser_vect.size());j++){
