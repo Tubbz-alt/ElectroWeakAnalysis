@@ -60,6 +60,6 @@
 
 void print_p4(fastjet::PseudoJet tmpJ, std::string tmpName="",bool extra_info=0);
 void BREAK(std::string info="");
-
+Bool_t isMatching( fastjet::PseudoJet j1, fastjet::PseudoJet j2, Double_t deltaR=0.3);
 #endif   /* ----- #ifndef TOOLS_INC  ----- */
 
