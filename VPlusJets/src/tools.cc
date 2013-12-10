@@ -31,3 +31,13 @@ void BREAK(std::string info){
 	char tmp;std::cin>>tmp;
 }
 
+Bool_t isMatching( fastjet::PseudoJet j1, fastjet::PseudoJet j2, Double_t deltaR){
+	Double_t eta1=j1.eta();
+	Double_t eta2=j2.eta();
+	Double_t phi1=j1.phi();
+	Double_t phi2=j2.phi();
+	Double_t tmpR=TMath::Sqrt( (eta1-eta2)*(eta1-eta2) + (phi1-phi2)*(phi1-phi2) );
+	if (tmpR<deltaR)return 1;
+	else return 0;
+}
+
