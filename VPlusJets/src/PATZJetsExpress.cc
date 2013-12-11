@@ -1177,8 +1177,8 @@ void PATZJetsExpress::analyze(const Event& iEvent, const EventSetup& iSetup)
   if(nPhotonsGEN_>0) {
    float pt = myGenPhotons[0].p4.Pt();
    float eta = myGenPhotons[0].p4.Eta();
-   float DR=999;
-   if(myPhotons.size()>0)DR = myPhotons[0].p4.DeltaR(myGenPhotons[0].p4);
+   //float DR=999;
+   //if(myPhotons.size()>0)DR = myPhotons[0].p4.DeltaR(myGenPhotons[0].p4);
      hGenPhotonPt_->Fill(pt);
      hGenPhotonEta_->Fill(eta);
      if(photonRECODRGEN_<0.2) {
