@@ -47,20 +47,47 @@
 using namespace std;
 using namespace edm;
 
-ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) :
-	myTree ( fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree") ), 
-	CorrectedPFJetFiller ( iConfig.existsAs<edm::InputTag>("srcPFCor") ?  new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig, 0) : 0),
-	genAK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("genGroomedJetFiller", myTree, "AK5", "_GEN", iConfig, 1) : 0), //Gen
-	AK5groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PF", iConfig) : 0), 
-	AK5groomedJetFiller_PFCHS ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PFCHS", iConfig) : 0), 
-	genAK8groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("genGroomedJetFiller", myTree, "AK8", "_GEN", iConfig, 1) : 0), //Gen
-	AK8groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PF", iConfig) : 0),
-	AK8groomedJetFiller_PFCHS ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PFCHS", iConfig) : 0),
-	AK12groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_PF", iConfig) : 0), 
-	//PhotonFiller (  iConfig.existsAs<edm::InputTag>("srcPhoton") ?  new PhotonTreeFiller("PhotonFiller", myTree,  iConfig) : 0),
-	recoBosonFillerE( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
-	recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ), genBosonFiller( (iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC")) ?  new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) : 0) 
+/*
+   ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) :
+   myTree ( fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree") ), 
+   CorrectedPFJetFiller ( iConfig.existsAs<edm::InputTag>("srcPFCor") ?  new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig, 0) : 0),
+   genAK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("genGroomedJetFiller", myTree, "AK5", "_GEN", iConfig, 1) : 0), //Gen
+   AK5groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PF", iConfig) : 0), 
+   AK5groomedJetFiller_PFCHS ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PFCHS", iConfig) : 0), 
+   genAK8groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("genGroomedJetFiller", myTree, "AK8", "_GEN", iConfig, 1) : 0), //Gen
+   AK8groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PF", iConfig) : 0),
+   AK8groomedJetFiller_PFCHS ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PFCHS", iConfig) : 0),
+   AK12groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_PF", iConfig) : 0), 
+//PhotonFiller (  iConfig.existsAs<edm::InputTag>("srcPhoton") ?  new PhotonTreeFiller("PhotonFiller", myTree,  iConfig) : 0),
+recoBosonFillerE( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
+recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ), genBosonFiller( (iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC")) ?  new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) : 0) 
+*/
+ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) 
 {
+
+	myTree = fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree");
+	if( iConfig.existsAs<edm::InputTag>("srcPFCor") )
+	  CorrectedPFJetFiller.reset( new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig, 0) );
+	if (iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5"))  
+	  genAK5groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "AK5", "_GEN", iConfig, 1) );//Gen
+	if(iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) 
+	  AK5groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PF", iConfig) );
+	if(iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) 
+	  AK5groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PFCHS", iConfig) ); 
+	if(iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8"))
+	  genAK8groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "AK8", "_GEN", iConfig, 1) ); //Gen
+	if(iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8"))
+	  AK8groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PF", iConfig) );
+	if(iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8"))
+	  AK8groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PFCHS", iConfig) );
+	if(iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12"))
+	  AK12groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_PF", iConfig) );
+	if(iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC"))
+	  genBosonFiller( new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ); 
+	recoBosonFillerE.reset( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) );
+	recoBosonFillerMu.reset( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) );
+
+
 	// final state; 0: ZJet; 1: Dijets
 	if ( TString(iConfig.getParameter<std::string>("TreeName").c_str()).Contains("ZJet") ){ mFinalState=0;} 
 	else if( TString(iConfig.getParameter<std::string>("TreeName").c_str()).Contains("Dijets") ){ mFinalState=1; }
