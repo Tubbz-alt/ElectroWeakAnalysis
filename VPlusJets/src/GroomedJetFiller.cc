@@ -836,7 +836,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 			}
 		}
 		//jetcharge[j] = computeJetCharge(out_jets_basic.at(j).constituents(),pdgIds,out_jets_basic.at(j).e());
-	}  
+	}
 
 
 	delete subtractor_medi;
@@ -1018,6 +1018,7 @@ float ewk::GroomedJetFiller::getPdgIdCharge( float fid ){
 		qq = -1.;
 	}
 	else{
+	cout<<"id="<<id<<endl;
 		BREAK("unknown PDG id");
 		throw cms::Exception("GroomedJetFiller") << " unknown PDG id " << id << std::endl;
 	}
