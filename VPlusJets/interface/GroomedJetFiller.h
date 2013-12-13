@@ -224,19 +224,22 @@ namespace ewk
 
 			std::vector<GroomTool> vect_groomtools;
 
-
-
-
-
-
 		private:
 
 			// ----------member data ---------------------------
 			// names of modules, producing object collections    
 			float jetmass_uncorr[NUM_JET_MAX];
 			float jetmass_tr_uncorr[NUM_JET_MAX];
+			float jetmass_tr1_uncorr[NUM_JET_MAX]; //added
+			float jetmass_tr2_uncorr[NUM_JET_MAX]; //added
+			float jetmass_tr3_uncorr[NUM_JET_MAX]; //added
+
+
 			float jetmass_ft_uncorr[NUM_JET_MAX];
 			float jetmass_pr_uncorr[NUM_JET_MAX];
+			float jetmass_pr1_uncorr[NUM_JET_MAX];// added 
+			float jetmass_pr2_uncorr[NUM_JET_MAX];// added
+			float jetmass_pr3_uncorr[NUM_JET_MAX];// added
 			float tau2tau1[NUM_JET_MAX];
 			float tau2tau1_shapesubtract[NUM_JET_MAX];
 			float tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
@@ -253,6 +256,9 @@ namespace ewk
 			float tau3_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float tau4_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float massdrop_pr_uncorr[NUM_JET_MAX];
+			float massdrop_pr1_uncorr[NUM_JET_MAX];// added
+			float massdrop_pr2_uncorr[NUM_JET_MAX]; // added
+			float massdrop_pr3_uncorr[NUM_JET_MAX]; // added
 
 			int   number_jet_central;
 			float jetpt_uncorr[NUM_JET_MAX];
@@ -282,6 +288,28 @@ namespace ewk
 			float jetphi_tr[NUM_JET_MAX];
 			float jete_tr[NUM_JET_MAX];
 
+			float jetpt_tr1_uncorr[NUM_JET_MAX];//added 
+			float jetpt_tr1[NUM_JET_MAX]; // added
+			float jeteta_tr1[NUM_JET_MAX];//added
+			float jetphi_tr1[NUM_JET_MAX];//added
+			float jete_tr1[NUM_JET_MAX]; //added
+
+			float jetpt_tr2_uncorr[NUM_JET_MAX];//added 
+			float jetpt_tr2[NUM_JET_MAX]; // added
+			float jeteta_tr2[NUM_JET_MAX];//added
+			float jetphi_tr2[NUM_JET_MAX];//added
+			float jete_tr2[NUM_JET_MAX]; //added
+
+			float jetpt_tr3_uncorr[NUM_JET_MAX];//added 
+			float jetpt_tr3[NUM_JET_MAX]; // added
+			float jeteta_tr3[NUM_JET_MAX];//added
+			float jetphi_tr3[NUM_JET_MAX];//added
+			float jete_tr3[NUM_JET_MAX]; //added
+
+
+
+
+
 			float jetpt_ft_uncorr[NUM_JET_MAX];
 			float jetpt_ft[NUM_JET_MAX];
 			float jeteta_ft[NUM_JET_MAX];
@@ -293,6 +321,27 @@ namespace ewk
 			float jeteta_pr[NUM_JET_MAX];
 			float jetphi_pr[NUM_JET_MAX];
 			float jete_pr[NUM_JET_MAX];
+
+			float jetpt_pr1_uncorr[NUM_JET_MAX];// added
+			float jetpt_pr1[NUM_JET_MAX];
+			float jeteta_pr1[NUM_JET_MAX];
+			float jetphi_pr1[NUM_JET_MAX];
+			float jete_pr1[NUM_JET_MAX];
+
+			float jetpt_pr2_uncorr[NUM_JET_MAX];// added
+			float jetpt_pr2[NUM_JET_MAX];
+			float jeteta_pr2[NUM_JET_MAX];
+			float jetphi_pr2[NUM_JET_MAX];
+			float jete_pr2[NUM_JET_MAX];
+
+			float jetpt_pr3_uncorr[NUM_JET_MAX];// added
+			float jetpt_pr3[NUM_JET_MAX];
+			float jeteta_pr3[NUM_JET_MAX];
+			float jetphi_pr3[NUM_JET_MAX];
+			float jete_pr3[NUM_JET_MAX];
+
+
+
 
 			float prsubjet1_px[NUM_JET_MAX];
 			float prsubjet1_py[NUM_JET_MAX];
@@ -311,21 +360,34 @@ namespace ewk
 			float jetmass_rho4Area[NUM_JET_MAX];
 			float jetmass_rhoG4Area[NUM_JET_MAX];
 			float jetmass_rhom4Area[NUM_JET_MAX];
-			float jetmass_JetCleansingATLASjvf[NUM_JET_MAX];
-			float jetmass_JetCleansingATLASlin[NUM_JET_MAX];
-			float jetmass_JetCleansingATLASgau[NUM_JET_MAX];
-			float jetmass_JetCleansingCMSjvf[NUM_JET_MAX];
-			float jetmass_JetCleansingCMSlin[NUM_JET_MAX];
-			float jetmass_JetCleansingCMSgau[NUM_JET_MAX];
 			float jetmass_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
-			float jetmass_tr[NUM_JET_MAX];
+			float jetmass_tr[NUM_JET_MAX];//main
+			float jetmass_tr1[NUM_JET_MAX]; // added
+			float jetmass_tr2[NUM_JET_MAX]; // added
+			float jetmass_tr3[NUM_JET_MAX]; // added
+
 			float jetmass_ft[NUM_JET_MAX];
 			float jetmass_pr[NUM_JET_MAX];
+			float jetmass_pr1[NUM_JET_MAX];// added
+			float jetmass_pr2[NUM_JET_MAX];// added
+			float jetmass_pr3[NUM_JET_MAX];// added
+
 			float jetarea[NUM_JET_MAX];
 			float jetarea_tr[NUM_JET_MAX];
+			float jetarea_tr1[NUM_JET_MAX];// added
+			float jetarea_tr2[NUM_JET_MAX];// added
+			float jetarea_tr3[NUM_JET_MAX];// added 
+
 			float jetarea_ft[NUM_JET_MAX];
-			float jetarea_pr[NUM_JET_MAX];        
+			float jetarea_pr[NUM_JET_MAX]; 
+			float jetarea_pr1[NUM_JET_MAX];// added
+			float jetarea_pr2[NUM_JET_MAX];// added
+			float jetarea_pr3[NUM_JET_MAX];// added          
 			float massdrop_pr[NUM_JET_MAX];
+			float massdrop_pr1[NUM_JET_MAX];// added
+			float massdrop_pr2[NUM_JET_MAX];//added
+			float massdrop_pr3[NUM_JET_MAX];//added
+
 			float jetconstituents[NUM_JET_MAX];   
 			float jetcharge[NUM_JET_MAX];           
 
