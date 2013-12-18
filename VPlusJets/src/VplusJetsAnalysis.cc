@@ -150,8 +150,7 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	lumi  = iEvent.luminosityBlock();
 	bunch = iEvent.bunchCrossing();
 	//if( event != 5119780 && event!=5119805 && event!=5120829  ) return ;
-	if( event != 453 || lumi!=388  ) return ;
-
+	//if( event != 453 || lumi!=388  ) return ;
 
 	// primary/secondary vertices
 	// edm::Handle<reco::VertexCollection > recVtxs;
