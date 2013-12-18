@@ -67,6 +67,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	else if (mJetAlgo == "CA") mJetDef->set_jet_algorithm( fastjet::cambridge_algorithm );
 	else if (mJetAlgo == "KT") mJetDef->set_jet_algorithm( fastjet::kt_algorithm );
 	else throw cms::Exception("GroomedJetFiller") << " unknown jet algorithm " << std::endl;
+	cout<<"mJetRadius="<<mJetRadius<<endl;
 
 	//Jet Area
 	double ghostEtaMax = 4.4;
@@ -672,6 +673,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 			std::vector<fastjet::PseudoJet> FJparticles_pileupcharge, 
 			std::vector<fastjet::PseudoJet> FJparticles_fullneutral ) 
 {
+
 	// ------ start processing ------    
 	if (FJparticles.size() < 1){ return;}
 	//else{ std::cout << "FJparticles.size() = " << FJparticles.size() << std::endl; }
@@ -708,7 +710,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	rhoVal_hand2 = getrho_Hand2(FJparticles, &subtractor_medi ); // ------ get rho by hand2--------    
 	rhoVal_grid = getrho_Grid(FJparticles, &subtractor_grid); // ------ get rho by grid--------    
 	//std::cout<<"(kt6PF rho in SW) = "<<rhoVal_<<std::endl; std::cout << "(kt6PF rho by hand) = " << rhoVal_hand<<endl; std::cout<<"medi rho = "<<rhoVal_hand2<<endl; std::cout<<"grid rho = "<<rhoVal_grid<<endl;
-	
+
 	// define groomers
 	fastjet::Filter trimmer( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.03)));
 	fastjet::Filter trimmer1( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.05)));
@@ -825,24 +827,28 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 				jetmass_tr_uncorr[j] = transformedJet.m();
 				jetpt_tr_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_tr_corr = getCorrectedJet(transformedJet);
-				jetmass_tr[j] = jet_tr_corr.M();
-				jetpt_tr[j] = jet_tr_corr.Pt();
-				jeteta_tr[j] = jet_tr_corr.Eta();
-				jetphi_tr[j] = jet_tr_corr.Phi();
-				jete_tr[j]   = jet_tr_corr.Energy();
-				jetarea_tr[j] = transformedJet.area();
+				if(jet_tr_corr.Energy()>0){
+					jetmass_tr[j] = jet_tr_corr.M();
+					jetpt_tr[j] = jet_tr_corr.Pt();
+					jeteta_tr[j] = jet_tr_corr.Eta();
+					jetphi_tr[j] = jet_tr_corr.Phi();
+					jete_tr[j]   = jet_tr_corr.Energy();
+					jetarea_tr[j] = transformedJet.area();
+				}
 
 			}
 			else if (transctr == 1){        // trimmed1 Added
 				jetmass_tr1_uncorr[j] = transformedJet.m();
 				jetpt_tr1_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_tr1_corr = getCorrectedJet(transformedJet);
-				jetmass_tr1[j] = jet_tr1_corr.M();
-				jetpt_tr1[j] = jet_tr1_corr.Pt();
-				jeteta_tr1[j] = jet_tr1_corr.Eta();
-				jetphi_tr1[j] = jet_tr1_corr.Phi();
-				jete_tr1[j]   = jet_tr1_corr.Energy();
-				jetarea_tr1[j] = transformedJet.area();
+				if(jet_tr1_corr.Energy()>0){
+					jetmass_tr1[j] = jet_tr1_corr.M();
+					jetpt_tr1[j] = jet_tr1_corr.Pt();
+					jeteta_tr1[j] = jet_tr1_corr.Eta();
+					jetphi_tr1[j] = jet_tr1_corr.Phi();
+					jete_tr1[j]   = jet_tr1_corr.Energy();
+					jetarea_tr1[j] = transformedJet.area();
+				}
 
 			}
 
@@ -850,150 +856,164 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 				jetmass_tr2_uncorr[j] = transformedJet.m();
 				jetpt_tr2_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_tr2_corr = getCorrectedJet(transformedJet);
-				jetmass_tr2[j] = jet_tr2_corr.M();
-				jetpt_tr2[j] = jet_tr2_corr.Pt();
-				jeteta_tr2[j] = jet_tr2_corr.Eta();
-				jetphi_tr2[j] = jet_tr2_corr.Phi();
-				jete_tr2[j]   = jet_tr2_corr.Energy();
-				jetarea_tr2[j] = transformedJet.area();
+				if(jet_tr2_corr.Energy()>0){
+					jetmass_tr2[j] = jet_tr2_corr.M();
+					jetpt_tr2[j] = jet_tr2_corr.Pt();
+					jeteta_tr2[j] = jet_tr2_corr.Eta();
+					jetphi_tr2[j] = jet_tr2_corr.Phi();
+					jete_tr2[j]   = jet_tr2_corr.Energy();
+					jetarea_tr2[j] = transformedJet.area();
+				}
 			}
 
 			else if(transctr==3){         // Added
 				jetmass_tr3_uncorr[j] = transformedJet.m();
 				jetpt_tr3_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_tr3_corr = getCorrectedJet(transformedJet);
-				jetmass_tr3[j] = jet_tr3_corr.M();
-				jetpt_tr3[j] = jet_tr3_corr.Pt();
-				jeteta_tr3[j] = jet_tr3_corr.Eta();
-				jetphi_tr3[j] = jet_tr3_corr.Phi();
-				jete_tr3[j]   = jet_tr3_corr.Energy();
-				jetarea_tr3[j] = transformedJet.area();
+				//print_p4(jet_tr3_corr,"jet_tr3_corr");
+				if(jet_tr3_corr.Energy()>0){
+					jetmass_tr3[j] = jet_tr3_corr.M();
+					jetpt_tr3[j] = jet_tr3_corr.Pt();
+					jeteta_tr3[j] = jet_tr3_corr.Eta();
+					jetphi_tr3[j] = jet_tr3_corr.Phi();
+					jete_tr3[j]   = jet_tr3_corr.Energy();
+					jetarea_tr3[j] = transformedJet.area();
+				}
 			}
 
 			else if (transctr == 4){ // filtered
 				jetmass_ft_uncorr[j] = transformedJet.m();
 				jetpt_ft_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_ft_corr = getCorrectedJet(transformedJet);
-				jetmass_ft[j] = jet_ft_corr.M();
-				jetpt_ft[j] = jet_ft_corr.Pt();
-				jeteta_ft[j] = jet_ft_corr.Eta();
-				jetphi_ft[j] = jet_ft_corr.Phi();
-				jete_ft[j]   = jet_ft_corr.Energy();
-				jetarea_ft[j] = transformedJet.area();                    
+				if(jet_ft_corr.Energy()>0){
+					jetmass_ft[j] = jet_ft_corr.M();
+					jetpt_ft[j] = jet_ft_corr.Pt();
+					jeteta_ft[j] = jet_ft_corr.Eta();
+					jetphi_ft[j] = jet_ft_corr.Phi();
+					jete_ft[j]   = jet_ft_corr.Energy();
+					jetarea_ft[j] = transformedJet.area();                    
+				}
 			}
 			else if (transctr == 5){ // pruned
 				jetmass_pr_uncorr[j] = transformedJet.m();
 				jetpt_pr_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_pr_corr = getCorrectedJet(transformedJet);
-				jetmass_pr[j] = jet_pr_corr.M();
-				jetpt_pr[j] = jet_pr_corr.Pt();
-				jeteta_pr[j] = jet_pr_corr.Eta();
-				jetphi_pr[j] = jet_pr_corr.Phi();
-				jete_pr[j]   = jet_pr_corr.Energy();
-				jetarea_pr[j] = transformedJet.area();
+				if(jet_pr_corr.Energy()>0){
+					jetmass_pr[j] = jet_pr_corr.M();
+					jetpt_pr[j] = jet_pr_corr.Pt();
+					jeteta_pr[j] = jet_pr_corr.Eta();
+					jetphi_pr[j] = jet_pr_corr.Phi();
+					jete_pr[j]   = jet_pr_corr.Energy();
+					jetarea_pr[j] = transformedJet.area();
+				}
 			}        
 			else if(transctr ==6){         // Added
 				jetmass_pr1_uncorr[j] = transformedJet.m();
 				jetpt_pr1_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_pr1_corr = getCorrectedJet(transformedJet);
-				jetmass_pr1[j] = jet_pr1_corr.M();
-				jetpt_pr1[j] = jet_pr1_corr.Pt();
-				jeteta_pr1[j] = jet_pr1_corr.Eta();
-				jetphi_pr1[j] = jet_pr1_corr.Phi();
-				jete_pr1[j]   = jet_pr1_corr.Energy();
-				jetarea_pr1[j] = transformedJet.area();
+				if(jet_pr1_corr.Energy()>0){
+					jetmass_pr1[j] = jet_pr1_corr.M();
+					jetpt_pr1[j] = jet_pr1_corr.Pt();
+					jeteta_pr1[j] = jet_pr1_corr.Eta();
+					jetphi_pr1[j] = jet_pr1_corr.Phi();
+					jete_pr1[j]   = jet_pr1_corr.Energy();
+					jetarea_pr1[j] = transformedJet.area();
+				}
 			}   
 			else if(transctr ==7){         //Added
 				jetmass_pr2_uncorr[j] = transformedJet.m();
 				jetpt_pr2_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_pr2_corr = getCorrectedJet(transformedJet);
-				jetmass_pr2[j] = jet_pr2_corr.M();
-				jetpt_pr2[j] = jet_pr2_corr.Pt();
-				jeteta_pr2[j] = jet_pr2_corr.Eta();
-				jetphi_pr2[j] = jet_pr2_corr.Phi();
-				jete_pr2[j]   = jet_pr2_corr.Energy();
-				jetarea_pr2[j] = transformedJet.area();
+				if(jet_pr2_corr.Energy()>0){
+					jetmass_pr2[j] = jet_pr2_corr.M();
+					jetpt_pr2[j] = jet_pr2_corr.Pt();
+					jeteta_pr2[j] = jet_pr2_corr.Eta();
+					jetphi_pr2[j] = jet_pr2_corr.Phi();
+					jete_pr2[j]   = jet_pr2_corr.Energy();
+					jetarea_pr2[j] = transformedJet.area();
+				}
 			}  
 			else if(transctr==8){         // Added
 				jetmass_pr3_uncorr[j] = transformedJet.m();
 				jetpt_pr3_uncorr[j] = transformedJet.pt();
 				TLorentzVector jet_pr3_corr = getCorrectedJet(transformedJet);
-				jetmass_pr3[j] = jet_pr3_corr.M();
-				jetpt_pr3[j] = jet_pr3_corr.Pt();
-				jeteta_pr3[j] = jet_pr3_corr.Eta();
-				jetphi_pr3[j] = jet_pr3_corr.Phi();
-				jete_pr3[j]   = jet_pr3_corr.Energy();
-				jetarea_pr3[j] = transformedJet.area();       
+				if(jet_pr3_corr.Energy()>0){
+					jetmass_pr3[j] = jet_pr3_corr.M();
+					jetpt_pr3[j] = jet_pr3_corr.Pt();
+					jeteta_pr3[j] = jet_pr3_corr.Eta();
+					jetphi_pr3[j] = jet_pr3_corr.Phi();
+					jete_pr3[j]   = jet_pr3_corr.Energy();
+					jetarea_pr3[j] = transformedJet.area();       
 
-				jetarea_pr[j] = transformedJet.area();                    
-				//decompose into requested number of subjets:
-				if (transformedJet_basic.constituents().size() > 1){
-					int nsubjetstokeep = 2;
-					std::vector<fastjet::PseudoJet> subjets = transformedJet_basic.associated_cluster_sequence()->exclusive_subjets(transformedJet_basic,nsubjetstokeep);    
+					jetarea_pr[j] = transformedJet.area();                    
+					//decompose into requested number of subjets:
+					if (transformedJet_basic.constituents().size() > 1){
+						int nsubjetstokeep = 2;
+						std::vector<fastjet::PseudoJet> subjets = transformedJet_basic.associated_cluster_sequence()->exclusive_subjets(transformedJet_basic,nsubjetstokeep);    
 
-					//                    for (unsigned k = 0; k < subjets.size(); k++) {
-					//                        std::cout << "subjet " << k << ": mass = " << subjets.at(k).m() << " and pt = " << subjets.at(k).pt() << std::endl;
-					//                    }
-					TLorentzVector sj1( subjets.at(0).px(),subjets.at(0).py(),subjets.at(0).pz(),subjets.at(0).e());
-					TLorentzVector sj2( subjets.at(1).px(),subjets.at(1).py(),subjets.at(1).pz(),subjets.at(1).e());     
-					prsubjet1_px[j] = subjets.at(0).px(); prsubjet1_py[j] = subjets.at(0).py(); prsubjet1_pz[j] = subjets.at(0).pz(); prsubjet1_e[j] = subjets.at(0).e();
-					prsubjet2_px[j] = subjets.at(1).px(); prsubjet2_py[j] = subjets.at(1).py(); prsubjet2_pz[j] = subjets.at(1).pz(); prsubjet2_e[j] = subjets.at(1).e();                    
-					TLorentzVector fullj = sj1 + sj2; 
+						//                    for (unsigned k = 0; k < subjets.size(); k++) {
+						//                        std::cout << "subjet " << k << ": mass = " << subjets.at(k).m() << " and pt = " << subjets.at(k).pt() << std::endl;
+						//                    }
+						TLorentzVector sj1( subjets.at(0).px(),subjets.at(0).py(),subjets.at(0).pz(),subjets.at(0).e());
+						TLorentzVector sj2( subjets.at(1).px(),subjets.at(1).py(),subjets.at(1).pz(),subjets.at(1).e());     
+						prsubjet1_px[j] = subjets.at(0).px(); prsubjet1_py[j] = subjets.at(0).py(); prsubjet1_pz[j] = subjets.at(0).pz(); prsubjet1_e[j] = subjets.at(0).e();
+						prsubjet2_px[j] = subjets.at(1).px(); prsubjet2_py[j] = subjets.at(1).py(); prsubjet2_pz[j] = subjets.at(1).pz(); prsubjet2_e[j] = subjets.at(1).e();                    
+						TLorentzVector fullj = sj1 + sj2; 
 
 
-					if (subjets.at(0).m() >= subjets.at(1).m()){
-						massdrop_pr_uncorr[j] = subjets.at(0).m()/transformedJet.m();
-						massdrop_pr[j] = (subjets.at(0).m()/jetmass_pr[j]);                        
+						if (subjets.at(0).m() >= subjets.at(1).m()){
+							massdrop_pr_uncorr[j] = subjets.at(0).m()/transformedJet.m();
+							massdrop_pr[j] = (subjets.at(0).m()/jetmass_pr[j]);                        
+						}
+						else{
+							massdrop_pr_uncorr[j] = subjets.at(1).m()/transformedJet.m();
+							massdrop_pr[j] = (subjets.at(1).m()/jetmass_pr[j]);                                    
+						}
+
+
+
+						//Added
+						if (subjets.at(0).m() >= subjets.at(1).m()){
+							massdrop_pr1_uncorr[j] = subjets.at(0).m()/transformedJet.m();
+							massdrop_pr1[j] = (subjets.at(0).m()/jetmass_pr1[j]);
+						}
+						else{
+							massdrop_pr1_uncorr[j] = subjets.at(1).m()/transformedJet.m();
+							massdrop_pr1[j] = (subjets.at(1).m()/jetmass_pr1[j]);
+						}
+
+						//Added
+						if (subjets.at(0).m() >= subjets.at(1).m()){
+							massdrop_pr2_uncorr[j] = subjets.at(0).m()/transformedJet.m();
+							massdrop_pr2[j] = (subjets.at(0).m()/jetmass_pr2[j]);
+						}
+						else{
+							massdrop_pr2_uncorr[j] = subjets.at(1).m()/transformedJet.m();
+							massdrop_pr2[j] = (subjets.at(1).m()/jetmass_pr2[j]);
+						}
+
+						// Added
+						if (subjets.at(0).m() >= subjets.at(1).m()){
+							massdrop_pr3_uncorr[j] = subjets.at(0).m()/transformedJet.m();
+							massdrop_pr3[j] = (subjets.at(0).m()/jetmass_pr3[j]);
+						}
+						else{
+							massdrop_pr3_uncorr[j] = subjets.at(1).m()/transformedJet.m();
+							massdrop_pr3[j] = (subjets.at(1).m()/jetmass_pr3[j]);
+						}
+
 					}
-					else{
-						massdrop_pr_uncorr[j] = subjets.at(1).m()/transformedJet.m();
-						massdrop_pr[j] = (subjets.at(1).m()/jetmass_pr[j]);                                    
-					}
 
-
-
-					//Added
-					if (subjets.at(0).m() >= subjets.at(1).m()){
-						massdrop_pr1_uncorr[j] = subjets.at(0).m()/transformedJet.m();
-						massdrop_pr1[j] = (subjets.at(0).m()/jetmass_pr1[j]);
-					}
-					else{
-						massdrop_pr1_uncorr[j] = subjets.at(1).m()/transformedJet.m();
-						massdrop_pr1[j] = (subjets.at(1).m()/jetmass_pr1[j]);
-					}
-
-					//Added
-					if (subjets.at(0).m() >= subjets.at(1).m()){
-						massdrop_pr2_uncorr[j] = subjets.at(0).m()/transformedJet.m();
-						massdrop_pr2[j] = (subjets.at(0).m()/jetmass_pr2[j]);
-					}
-					else{
-						massdrop_pr2_uncorr[j] = subjets.at(1).m()/transformedJet.m();
-						massdrop_pr2[j] = (subjets.at(1).m()/jetmass_pr2[j]);
-					}
-
-					// Added
-					if (subjets.at(0).m() >= subjets.at(1).m()){
-						massdrop_pr3_uncorr[j] = subjets.at(0).m()/transformedJet.m();
-						massdrop_pr3[j] = (subjets.at(0).m()/jetmass_pr3[j]);
-					}
-					else{
-						massdrop_pr3_uncorr[j] = subjets.at(1).m()/transformedJet.m();
-						massdrop_pr3[j] = (subjets.at(1).m()/jetmass_pr3[j]);
-					}
-
-
-				}
-
-				// pruned tests
-				if (mSaveConstituents && j==0){
-					if (transformedJet_basic.constituents().size() >= 100) nconstituents0pr = 100;
-					else nconstituents0pr = (int) transformedJet_basic.constituents().size();
-					std::vector<fastjet::PseudoJet> cur_constituentspr = sorted_by_pt(transformedJet_basic.constituents());
-					for (int aa = 0; aa < nconstituents0pr; aa++){        
-						constituents0pr_eta[aa] = cur_constituentspr.at(aa).eta();
-						constituents0pr_phi[aa] = cur_constituentspr.at(aa).phi();                
-						constituents0pr_e[aa] = cur_constituentspr.at(aa).e();                                
+					// pruned tests
+					if (mSaveConstituents && j==0){
+						if (transformedJet_basic.constituents().size() >= 100) nconstituents0pr = 100;
+						else nconstituents0pr = (int) transformedJet_basic.constituents().size();
+						std::vector<fastjet::PseudoJet> cur_constituentspr = sorted_by_pt(transformedJet_basic.constituents());
+						for (int aa = 0; aa < nconstituents0pr; aa++){        
+							constituents0pr_eta[aa] = cur_constituentspr.at(aa).eta();
+							constituents0pr_phi[aa] = cur_constituentspr.at(aa).phi();                
+							constituents0pr_e[aa] = cur_constituentspr.at(aa).e();                                
+						}
 					}
 				}
 			}
@@ -1495,8 +1515,8 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 		}
 	}
 	if( num_matching_with_reco==-1) throw cms::Exception("JetCleansing Failed") << " couldn't matching"<< std::endl;
-	  // Jet cleansing
-	  vector<JetCleanser> jetcleanser_vect;
+	// Jet cleansing
+	vector<JetCleanser> jetcleanser_vect;
 	fastjet::JetDefinition subjet_def_kt03(fastjet::kt_algorithm, 0.3);
 	fastjet::JetDefinition subjet_def_kt025(fastjet::kt_algorithm, 0.25);
 	fastjet::JetDefinition subjet_def_kt02(fastjet::kt_algorithm, 0.2);
