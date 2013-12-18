@@ -45,10 +45,12 @@ process.load("ElectroWeakAnalysis.VPlusJets.AllPassFilter_cfi")
 if not isMC:
     process.GlobalTag.globaltag = 'GR_R_53_V10::All'
 else:
-    process.GlobalTag.globaltag = 'START53_V7E::All'
+    #process.GlobalTag.globaltag = 'START53_V7E::All'
+    process.GlobalTag.globaltag = 'START53_V26::All'
 
 OutputFileName = "zmumujetsanalysisntuple.root"
-#numEventsToRun = 4000
+#numEventsToRun = 2000
+#numEventsToRun =  20000
 numEventsToRun = -1
 ############################################
 ########################################################################################
@@ -78,26 +80,37 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 #)
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
 	   #'file:/uscms_data/d3/zixu/BoostJet/ZPlusJets_jetsubstructure/July29/B2G/CMSSW_5_3_8_patch1/src/TopQuarkAnalysis/TopPairBSM/test/tlbsm_53x_v3_mc.root'
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_90_1_7J2.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_100_1_pQ0.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_101_1_pSM.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_102_1_5fo.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_103_1_x3K.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_104_1_NJx.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_105_1_4bY.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_106_1_JUM.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_107_1_2hy.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_108_1_6is.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_109_1_4B2.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_110_1_GjM.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_111_1_fRz.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_112_1_Tzx.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_113_1_ydz.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_114_1_D4s.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_115_1_FYR.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_116_1_Op0.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_117_1_Aue.root',
-       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_118_1_C5o.root'
+       #'/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_118_1_C5o.root'
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_101_1_LmQ.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_102_1_ZUF.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_103_1_9Ws.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_104_1_zRb.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_105_1_PnP.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_106_1_Tp7.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_107_1_YWN.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_108_1_sC5.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_109_1_dp6.root',
+       #'/store/user/bparida/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/DYJetsToLL_PtZ-100_TuneZ2star_8TeV-madgraph/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_100_1_8Xh.root'
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_100_1_zkU.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_101_1_HLF.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_102_1_1EG.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_103_1_ZKL.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_104_1_TJW.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_105_1_Sng.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_106_1_mUf.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_107_1_ogj.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_108_1_BX2.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_109_1_9IX.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_110_1_cjH.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_111_1_Ach.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_112_1_Vx7.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_113_1_vQl.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_114_1_bpx.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_115_1_MYk.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_116_1_jvw.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_117_1_iQz.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_118_1_ENJ.root',
+       '/store/user/zixu/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball/DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_v0/d1dd4fe4091510a6bd0f3de124216781/tlbsm_53x_v3_mc_10_1_ZF8.root'
 ) )
 
 
@@ -131,6 +144,7 @@ process.primaryVertex.cut = cms.string(" ");
 
 ##-------- Save V+jets trees --------
 process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis", 
+    TreeName    = cms.string('ZJet'), # ZJet or Dijets
     jetType = cms.string("PF"),
   #  srcPFCor = cms.InputTag("selectedPatJetsPFlow"),
     srcPFCor = cms.InputTag("ak5PFJetsLooseId"),
@@ -140,7 +154,6 @@ process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis",
     srcVectorBoson = cms.InputTag("bestZmumu"),
     VBosonType     = cms.string('Z'),
     LeptonType     = cms.string('muon'),                          
-    TreeName    = cms.string('ZJet'),
     srcPrimaryVertex = cms.InputTag("goodOfflinePrimaryVertices"),                               
     runningOverMC = cms.bool(isMC),			
     runningOverAOD = cms.bool(False),			
@@ -164,8 +177,8 @@ process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis",
     applyJECToGroomedJets=cms.bool(True),
     doGroomedAK5 = cms.bool(True),
     doGroomedAK7 = cms.bool(False),
-    doGroomedAK8 = cms.bool(False),
-    doGroomedAK12= cms.bool(False),
+    doGroomedAK8 = cms.bool(True),
+    doGroomedAK12= cms.bool(True),
     doGroomedCA8 = cms.bool(False),
     doGroomedCA12= cms.bool(False),
     GroomedJet_doQJets = cms.bool(False)#drop QJets process
@@ -173,7 +186,8 @@ process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis",
 
 if isMC:
     #process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("START53_V15")
-    process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("START53_V7G")
+    #process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("START53_V7G")
+    process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("START53_V26")
 else:
     process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("FT_53_V10_AN3")
     #process.VplusJets.JEC_GlobalTag_forGroomedJet = cms.string("GR_R_53_V10")
