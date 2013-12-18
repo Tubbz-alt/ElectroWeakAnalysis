@@ -119,7 +119,6 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 
 	SetBranch( jetpt_rho4A, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_rho4A");
 	SetBranch( jetpt_rhom4A, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_rhom4A");
-	SetBranch( jetpt_JetCleansing, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JetCleansing");
 
 	// trimming
 	SetBranch( jetpt_tr_uncorr, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_tr_uncorr");
@@ -250,6 +249,12 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_JetCleansing_DiffMode").c_str() );
 	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JetCleansing_DiffMode").c_str(), jetpt_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
 	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_pt_JetCleansing_DiffMode").c_str() );
+
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_eta_JetCleansing_DiffMode").c_str(), jeteta_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_eta_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_eta_JetCleansing_DiffMode").c_str() );
+
+	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_phi_JetCleansing_DiffMode").c_str(), jetphi_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_phi_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
+	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_phi_JetCleansing_DiffMode").c_str() );
 
 	tree_->Branch( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1_JetCleansing_DiffMode").c_str(), tau2tau1_JetCleansing_DiffMode, (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1_JetCleansing_DiffMode"+Form("[%i]/F",NUM_JETCLEANSING_MODE_MAX)).c_str() );
 	bnames.push_back( (lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_tau2tau1_JetCleansing_DiffMode").c_str() );
@@ -520,7 +525,6 @@ void ewk::GroomedJetFiller::Init(){
 
 		jetpt_rho4A[j] = -1.;
 		jetpt_rhom4A[j] = -1.;
-		jetpt_JetCleansing[j] = -1.;
 
 		jetmass_tr[j] = -1.;
 		jetmass_tr1[j] = -1.; //Added
@@ -639,6 +643,8 @@ void ewk::GroomedJetFiller::Init(){
 	for(Int_t k=0;k<NUM_JETCLEANSING_MODE_MAX ;k++){
 		jetmass_JetCleansing_DiffMode[k]= -1;
 		jetpt_JetCleansing_DiffMode[k]  = -1;
+		jeteta_JetCleansing_DiffMode[k]  = -1;
+		jetphi_JetCleansing_DiffMode[k]  = -1;
 		tau2tau1_JetCleansing_DiffMode[k]= -1;
 		tau1_JetCleansing_DiffMode[k]= -1;
 		tau2_JetCleansing_DiffMode[k]= -1;
@@ -1261,8 +1267,8 @@ float ewk::GroomedJetFiller::getPdgIdCharge( float fid ){
 		qq = -1.;
 	}
 	else{
-	cout<<"id="<<id<<endl;
-		BREAK("unknown PDG id");
+		cout<<"id="<<id<<endl;
+		//BREAK("unknown PDG id");
 		throw cms::Exception("GroomedJetFiller") << " unknown PDG id " << id << std::endl;
 	}
 	return qq;
@@ -1483,13 +1489,14 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	Int_t num_matching_with_reco=-1;//all reco jet eta<2.4
 	for(Int_t i=0; i< Int_t(jets_plain.size()); i++){
 		//cout<<i<<"st jet:"<<endl; print_p4( jets_plain[i], "jets_plain");
-		if ( isMatching(jets_plain[i], recoJet ) ){
+		if ( isMatching(jets_plain[i], recoJet, 0.1 ) ){
 			num_matching_with_reco=i;
 			break;
 		}
 	}
-	// Jet cleansing
-	vector<JetCleanser> jetcleanser_vect;
+	if( num_matching_with_reco==-1) throw cms::Exception("JetCleansing Failed") << " couldn't matching"<< std::endl;
+	  // Jet cleansing
+	  vector<JetCleanser> jetcleanser_vect;
 	fastjet::JetDefinition subjet_def_kt03(fastjet::kt_algorithm, 0.3);
 	fastjet::JetDefinition subjet_def_kt025(fastjet::kt_algorithm, 0.25);
 	fastjet::JetDefinition subjet_def_kt02(fastjet::kt_algorithm, 0.2);
@@ -1501,6 +1508,31 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	JetCleanser jetcleanser4=makeLinearCleanser(subjet_def_kt02,0.55, "CMS"); jetcleanser_vect.push_back(jetcleanser4);
 	JetCleanser jetcleanser5=makeLinearCleanser(subjet_def_kt03,0.60, "CMS"); jetcleanser_vect.push_back(jetcleanser5);
 	JetCleanser jetcleanser6=makeLinearCleanser(subjet_def_kt02,0.60, "CMS"); jetcleanser_vect.push_back(jetcleanser6);
+
+
+	/*// define groomers
+	  fastjet::Filter trimmer( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.03)));
+	  fastjet::Filter trimmer1( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.2), fastjet::SelectorPtFractionMin(0.05)));
+	  fastjet::Filter trimmer2( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.3), fastjet::SelectorPtFractionMin(0.03)));
+	  fastjet::Filter trimmer3( fastjet::Filter(fastjet::JetDefinition(fastjet::kt_algorithm, 0.1), fastjet::SelectorPtFractionMin(0.03)));
+
+	  fastjet::Filter filter( fastjet::Filter(fastjet::JetDefinition(fastjet::cambridge_algorithm, 0.3), fastjet::SelectorNHardest(3)));
+
+	  if( fcut>0 && nsj<0){ tmpCleanser.SetTrimming(fcut);}
+	  else if( fcut<0 && nsj>0 ){ tmpCleanser.SetFiltering(nsj);}
+	  */
+
+	// linear + trimming
+	for(Int_t trim_par=0; trim_par<=8; trim_par++){
+		JetCleanser jetcleanser_lineartrim1=makeLinearCleanser(subjet_def_kt03, 0.55, "CMS", 0.01+0.01*trim_par); jetcleanser_vect.push_back(jetcleanser_lineartrim1);
+		JetCleanser jetcleanser_lineartrim2=makeLinearCleanser(subjet_def_kt02, 0.55, "CMS", 0.01+0.01*trim_par); jetcleanser_vect.push_back(jetcleanser_lineartrim2);
+	}
+	// linear + filtering
+	for(Int_t filt_par=0; filt_par<=5; filt_par++){
+		JetCleanser jetcleanser_linearfilt1=makeLinearCleanser(subjet_def_kt03, 0.55, "CMS", -1, 1+1*filt_par); jetcleanser_vect.push_back(jetcleanser_linearfilt1);
+		JetCleanser jetcleanser_linearfilt2=makeLinearCleanser(subjet_def_kt02, 0.55, "CMS", -1, 1+1*filt_par); jetcleanser_vect.push_back(jetcleanser_linearfilt2);
+	}
+
 	/*
 	// jvf
 	JetCleanser jetcleanser01=makeJVFCleanser(subjet_def_kt03, "CMS"); jetcleanser_vect.push_back(jetcleanser01);
@@ -1509,21 +1541,21 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	JetCleanser jetcleanser04=makeJVFCleanser(subjet_def_kt015, "CMS"); jetcleanser_vect.push_back(jetcleanser04);
 	// linear
 	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt03,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt03,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
 	}
 	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt025,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt025,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
 	}
 	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt02,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt02,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
 	}
 	for(Int_t linear_par=0; linear_par<=30; linear_par++){
-		JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt015,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
+	JetCleanser jetcleanser1=makeLinearCleanser(subjet_def_kt015,0.4+0.01*linear_par, "CMS"); jetcleanser_vect.push_back(jetcleanser1);
 	} 
 	// gaus
 	JetCleanser jetcleanser2=makeGausCleanser(subjet_def_kt03, 0.67, 0.62, 0.20, 0.25, "CMS");
 	jetcleanser_vect.push_back(jetcleanser2);
-*/
+	*/
 	if( int(jetcleanser_vect.size()) >= NUM_JETCLEANSING_MODE_MAX ){ std::cout<<"Error! Jet Cleansing Mode is too many!"<<endl; BREAK(); }
 	//cout<<"jetcleanser_vect.size()="<<jetcleanser_vect.size()<<endl;
 	for(Int_t j=0;j<int(jetcleanser_vect.size());j++){
@@ -1531,6 +1563,8 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 		fastjet::PseudoJet tmp_cleansed_jet = jetcleanser_vect[j]( jets_neutrals[num_matching_with_reco].constituents(), jets_tracks_LV[num_matching_with_reco].constituents(), jets_tracks_PU[num_matching_with_reco].constituents() );//CMS model
 		jetmass_JetCleansing_DiffMode[j]= tmp_cleansed_jet.m();
 		jetpt_JetCleansing_DiffMode[j]  = tmp_cleansed_jet.pt();
+		jeteta_JetCleansing_DiffMode[j]  = tmp_cleansed_jet.eta();
+		jetphi_JetCleansing_DiffMode[j]  = tmp_cleansed_jet.phi();
 
 		float tmp1; float tmp2; float tmp3; float tmp4; float tmp5;
 		get_nsubjettiness(tmp_cleansed_jet, tmp1, tmp2, tmp3, tmp4, tmp5 );
