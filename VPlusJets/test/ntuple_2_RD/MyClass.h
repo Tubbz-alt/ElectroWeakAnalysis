@@ -149,7 +149,6 @@ class MyClass {
 		Float_t         GroomedJet_pt_L1_rhoGrid[6];
 		Float_t         GroomedJet_pt_rho4A[6];
 		Float_t         GroomedJet_pt_rhom4A[6];
-		Float_t         GroomedJet_pt_JetCleansing[6];
 		Float_t         GroomedJet_pt_tr_uncorr[6];
 		Float_t         GroomedJet_pt_tr[6];
 		Float_t         GroomedJet_eta_tr[6];
@@ -179,12 +178,6 @@ class MyClass {
 		Float_t         GroomedJet_mass_rho4Area[6];
 		Float_t         GroomedJet_mass_rhoG4Area[6];
 		Float_t         GroomedJet_mass_rhom4Area[6];
-		Float_t         GroomedJet_mass_JetCleansingATLASjvf[6];
-		Float_t         GroomedJet_mass_JetCleansingATLASlin[6];
-		Float_t         GroomedJet_mass_JetCleansingATLASgau[6];
-		Float_t         GroomedJet_mass_JetCleansingCMSjvf[6];
-		Float_t         GroomedJet_mass_JetCleansingCMSlin[6];
-		Float_t         GroomedJet_mass_JetCleansingCMSgau[6];
 		Float_t         GroomedJet_mass_tr[6];
 		Float_t         GroomedJet_mass_ft[6];
 		Float_t         GroomedJet_mass_pr[6];
@@ -203,6 +196,8 @@ class MyClass {
 		static const Int_t NUM_JETCLEANSING_DIFFMODE =200; 
 		Float_t         GroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GroomedJet_eta_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GroomedJet_phi_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_constituents0_eta[100];
 		Float_t         GroomedJet_constituents0_phi[100];
@@ -240,7 +235,6 @@ class MyClass {
 		Float_t         GenGroomedJet_pt_L1_rhoGrid[6];
 		Float_t         GenGroomedJet_pt_rho4A[6];
 		Float_t         GenGroomedJet_pt_rhom4A[6];
-		Float_t         GenGroomedJet_pt_JetCleansing[6];
 		Float_t         GenGroomedJet_pt_tr_uncorr[6];
 		Float_t         GenGroomedJet_pt_tr[6];
 		Float_t         GenGroomedJet_eta_tr[6];
@@ -270,12 +264,6 @@ class MyClass {
 		Float_t         GenGroomedJet_mass_rho4Area[6];
 		Float_t         GenGroomedJet_mass_rhoG4Area[6];
 		Float_t         GenGroomedJet_mass_rhom4Area[6];
-		Float_t         GenGroomedJet_mass_JetCleansingATLASjvf[6];
-		Float_t         GenGroomedJet_mass_JetCleansingATLASlin[6];
-		Float_t         GenGroomedJet_mass_JetCleansingATLASgau[6];
-		Float_t         GenGroomedJet_mass_JetCleansingCMSjvf[6];
-		Float_t         GenGroomedJet_mass_JetCleansingCMSlin[6];
-		Float_t         GenGroomedJet_mass_JetCleansingCMSgau[6];
 		Float_t         GenGroomedJet_mass_tr[6];
 		Float_t         GenGroomedJet_mass_ft[6];
 		Float_t         GenGroomedJet_mass_pr[6];
@@ -293,6 +281,8 @@ class MyClass {
 		Float_t         GenGroomedJet_qjetmassdrop[50];
 		Float_t         GenGroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GenGroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_eta_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_phi_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GenGroomedJet_tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GenGroomedJet_constituents0_eta[100];
 		Float_t         GenGroomedJet_constituents0_phi[100];
@@ -408,6 +398,7 @@ class MyClass {
 		Float_t         Z_muminus_vy_gen;
 		Float_t         Z_muminus_vz_gen;
 		Float_t         Z_muminus_y_gen;
+		Float_t         EventWeight;
 		Int_t           event_runNo;
 		Int_t           event_evtNo;
 		Int_t           event_lumi;
@@ -529,7 +520,6 @@ class MyClass {
 		TBranch        *b_GroomedJet_pt_L1_rhoGrid;   //!
 		TBranch        *b_GroomedJet_pt_rho4A;   //!
 		TBranch        *b_GroomedJet_pt_rhom4A;   //!
-		TBranch        *b_GroomedJet_pt_JetCleansing;   //!
 		TBranch        *b_GroomedJet_pt_tr_uncorr;   //!
 		TBranch        *b_GroomedJet_pt_tr;   //!
 		TBranch        *b_GroomedJet_eta_tr;   //!
@@ -559,12 +549,6 @@ class MyClass {
 		TBranch        *b_GroomedJet_mass_rho4Area;   //!
 		TBranch        *b_GroomedJet_mass_rhoG4Area;   //!
 		TBranch        *b_GroomedJet_mass_rhom4Area;   //!
-		TBranch        *b_GroomedJet_mass_JetCleansingATLASjvf;   //!
-		TBranch        *b_GroomedJet_mass_JetCleansingATLASlin;   //!
-		TBranch        *b_GroomedJet_mass_JetCleansingATLASgau;   //!
-		TBranch        *b_GroomedJet_mass_JetCleansingCMSjvf;   //!
-		TBranch        *b_GroomedJet_mass_JetCleansingCMSlin;   //!
-		TBranch        *b_GroomedJet_mass_JetCleansingCMSgau;   //!
 		TBranch        *b_GroomedJet_mass_tr;   //!
 		TBranch        *b_GroomedJet_mass_ft;   //!
 		TBranch        *b_GroomedJet_mass_pr;   //!
@@ -582,6 +566,8 @@ class MyClass {
 		TBranch        *b_GroomedJet_qjetmassdrop;   //!
 		TBranch        *b_GroomedJet_mass_JetCleansing_DiffMode;   //!
 		TBranch        *b_GroomedJet_pt_JetCleansing_DiffMode;   //!
+		TBranch        *b_GroomedJet_eta_JetCleansing_DiffMode;   //!
+		TBranch        *b_GroomedJet_phi_JetCleansing_DiffMode;   //!
 		TBranch        *b_GroomedJet_tau2tau1_JetCleansing_DiffMode;   //!
 		TBranch        *b_GroomedJet_constituents0_eta;   //!
 		TBranch        *b_GroomedJet_constituents0_phi;   //!
@@ -618,7 +604,6 @@ class MyClass {
 		TBranch        *b_GenGroomedJet_pt_L1_rhoGrid;   //!
 		TBranch        *b_GenGroomedJet_pt_rho4A;   //!
 		TBranch        *b_GenGroomedJet_pt_rhom4A;   //!
-		TBranch        *b_GenGroomedJet_pt_JetCleansing;   //!
 		TBranch        *b_GenGroomedJet_pt_tr_uncorr;   //!
 		TBranch        *b_GenGroomedJet_pt_tr;   //!
 		TBranch        *b_GenGroomedJet_eta_tr;   //!
@@ -648,12 +633,6 @@ class MyClass {
 		TBranch        *b_GenGroomedJet_mass_rho4Area;   //!
 		TBranch        *b_GenGroomedJet_mass_rhoG4Area;   //!
 		TBranch        *b_GenGroomedJet_mass_rhom4Area;   //!
-		TBranch        *b_GenGroomedJet_mass_JetCleansingATLASjvf;   //!
-		TBranch        *b_GenGroomedJet_mass_JetCleansingATLASlin;   //!
-		TBranch        *b_GenGroomedJet_mass_JetCleansingATLASgau;   //!
-		TBranch        *b_GenGroomedJet_mass_JetCleansingCMSjvf;   //!
-		TBranch        *b_GenGroomedJet_mass_JetCleansingCMSlin;   //!
-		TBranch        *b_GenGroomedJet_mass_JetCleansingCMSgau;   //!
 		TBranch        *b_GenGroomedJet_mass_tr;   //!
 		TBranch        *b_GenGroomedJet_mass_ft;   //!
 		TBranch        *b_GenGroomedJet_mass_pr;   //!
@@ -671,6 +650,8 @@ class MyClass {
 		TBranch        *b_GenGroomedJet_qjetmassdrop;   //!
 		TBranch        *b_GenGroomedJet_mass_JetCleansing_DiffMode;   //!
 		TBranch        *b_GenGroomedJet_pt_JetCleansing_DiffMode;   //!
+		TBranch        *b_GenGroomedJet_eta_JetCleansing_DiffMode;   //!
+		TBranch        *b_GenGroomedJet_phi_JetCleansing_DiffMode;   //!
 		TBranch        *b_GenGroomedJet_tau2tau1_JetCleansing_DiffMode;   //!
 		TBranch        *b_GenGroomedJet_constituents0_eta;   //!
 		TBranch        *b_GenGroomedJet_constituents0_phi;   //!
@@ -785,6 +766,7 @@ class MyClass {
 		TBranch        *b_Z_muminus_vy_gen;   //!
 		TBranch        *b_Z_muminus_vz_gen;   //!
 		TBranch        *b_Z_muminus_y_gen;   //!
+		TBranch        *b_EventWeight;   //!
 		TBranch        *b_event_runNo;   //!
 		TBranch        *b_event_evtNo;   //!
 		TBranch        *b_event_lumi;   //!
@@ -835,6 +817,7 @@ class RealVarArray{
 	Double_t xmin;
 	Double_t xmax;
 	std::vector< Double_t > vect_x;
+	std::vector< Double_t > vect_weight;
 
 	RealVarArray(const char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax);
 	RealVarArray();
@@ -860,7 +843,7 @@ class JetCorrectionTool{
 		~JetCorrectionTool(){};
 
 		void addVar( RealVarArray x );
-		Bool_t fill( TString var_name, Double_t in_val);
+		Bool_t fill( TString var_name, Double_t in_val, Double_t eventweight=1.0, Bool_t debug=0);
 
 		vector< TString > get_allvar_name();
 		TH1D get_hist1D(TString var_name);
@@ -1083,7 +1066,6 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_L1_rhoGrid", JetType.Data(), PfType.Data()), GroomedJet_pt_L1_rhoGrid, &b_GroomedJet_pt_L1_rhoGrid);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_rho4A", JetType.Data(), PfType.Data()), GroomedJet_pt_rho4A, &b_GroomedJet_pt_rho4A);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_rhom4A", JetType.Data(), PfType.Data()), GroomedJet_pt_rhom4A, &b_GroomedJet_pt_rhom4A);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_JetCleansing", JetType.Data(), PfType.Data()), GroomedJet_pt_JetCleansing, &b_GroomedJet_pt_JetCleansing);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_tr_uncorr", JetType.Data(), PfType.Data()), GroomedJet_pt_tr_uncorr, &b_GroomedJet_pt_tr_uncorr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_tr", JetType.Data(), PfType.Data()), GroomedJet_pt_tr, &b_GroomedJet_pt_tr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_eta_tr", JetType.Data(), PfType.Data()), GroomedJet_eta_tr, &b_GroomedJet_eta_tr);
@@ -1113,12 +1095,6 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rho4Area", JetType.Data(), PfType.Data()), GroomedJet_mass_rho4Area, &b_GroomedJet_mass_rho4Area);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rhoG4Area", JetType.Data(), PfType.Data()), GroomedJet_mass_rhoG4Area, &b_GroomedJet_mass_rhoG4Area);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rhom4Area", JetType.Data(), PfType.Data()), GroomedJet_mass_rhom4Area, &b_GroomedJet_mass_rhom4Area);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansingATLASjvf", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansingATLASjvf, &b_GroomedJet_mass_JetCleansingATLASjvf);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansingATLASlin", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansingATLASlin, &b_GroomedJet_mass_JetCleansingATLASlin);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansingATLASgau", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansingATLASgau, &b_GroomedJet_mass_JetCleansingATLASgau);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansingCMSjvf", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansingCMSjvf, &b_GroomedJet_mass_JetCleansingCMSjvf);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansingCMSlin", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansingCMSlin, &b_GroomedJet_mass_JetCleansingCMSlin);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansingCMSgau", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansingCMSgau, &b_GroomedJet_mass_JetCleansingCMSgau);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_tr", JetType.Data(), PfType.Data()), GroomedJet_mass_tr, &b_GroomedJet_mass_tr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_ft", JetType.Data(), PfType.Data()), GroomedJet_mass_ft, &b_GroomedJet_mass_ft);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_pr", JetType.Data(), PfType.Data()), GroomedJet_mass_pr, &b_GroomedJet_mass_pr);
@@ -1136,6 +1112,8 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_qjetmassdrop", JetType.Data(), PfType.Data()), GroomedJet_qjetmassdrop, &b_GroomedJet_qjetmassdrop);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_mass_JetCleansing_DiffMode, &b_GroomedJet_mass_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_pt_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_pt_JetCleansing_DiffMode, &b_GroomedJet_pt_JetCleansing_DiffMode);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_eta_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_eta_JetCleansing_DiffMode, &b_GroomedJet_eta_JetCleansing_DiffMode);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_phi_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_phi_JetCleansing_DiffMode, &b_GroomedJet_phi_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau2tau1_JetCleansing_DiffMode", JetType.Data(), PfType.Data()), GroomedJet_tau2tau1_JetCleansing_DiffMode, &b_GroomedJet_tau2tau1_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_constituents0_eta", JetType.Data(), PfType.Data()), GroomedJet_constituents0_eta, &b_GroomedJet_constituents0_eta);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_constituents0_phi", JetType.Data(), PfType.Data()), GroomedJet_constituents0_phi, &b_GroomedJet_constituents0_phi);
@@ -1173,7 +1151,6 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_L1_rhoGrid", JetType.Data() ), GenGroomedJet_pt_L1_rhoGrid, &b_GenGroomedJet_pt_L1_rhoGrid);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_rho4A", JetType.Data() ), GenGroomedJet_pt_rho4A, &b_GenGroomedJet_pt_rho4A);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_rhom4A", JetType.Data() ), GenGroomedJet_pt_rhom4A, &b_GenGroomedJet_pt_rhom4A);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_JetCleansing", JetType.Data() ), GenGroomedJet_pt_JetCleansing, &b_GenGroomedJet_pt_JetCleansing);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_tr_uncorr", JetType.Data() ), GenGroomedJet_pt_tr_uncorr, &b_GenGroomedJet_pt_tr_uncorr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_tr", JetType.Data() ), GenGroomedJet_pt_tr, &b_GenGroomedJet_pt_tr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_eta_tr", JetType.Data() ), GenGroomedJet_eta_tr, &b_GenGroomedJet_eta_tr);
@@ -1203,12 +1180,6 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rho4Area", JetType.Data() ), GenGroomedJet_mass_rho4Area, &b_GenGroomedJet_mass_rho4Area);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rhoG4Area", JetType.Data() ), GenGroomedJet_mass_rhoG4Area, &b_GenGroomedJet_mass_rhoG4Area);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rhom4Area", JetType.Data() ), GenGroomedJet_mass_rhom4Area, &b_GenGroomedJet_mass_rhom4Area);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansingATLASjvf", JetType.Data() ), GenGroomedJet_mass_JetCleansingATLASjvf, &b_GenGroomedJet_mass_JetCleansingATLASjvf);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansingATLASlin", JetType.Data() ), GenGroomedJet_mass_JetCleansingATLASlin, &b_GenGroomedJet_mass_JetCleansingATLASlin);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansingATLASgau", JetType.Data() ), GenGroomedJet_mass_JetCleansingATLASgau, &b_GenGroomedJet_mass_JetCleansingATLASgau);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansingCMSjvf", JetType.Data() ), GenGroomedJet_mass_JetCleansingCMSjvf, &b_GenGroomedJet_mass_JetCleansingCMSjvf);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansingCMSlin", JetType.Data() ), GenGroomedJet_mass_JetCleansingCMSlin, &b_GenGroomedJet_mass_JetCleansingCMSlin);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansingCMSgau", JetType.Data() ), GenGroomedJet_mass_JetCleansingCMSgau, &b_GenGroomedJet_mass_JetCleansingCMSgau);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_tr", JetType.Data() ), GenGroomedJet_mass_tr, &b_GenGroomedJet_mass_tr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_ft", JetType.Data() ), GenGroomedJet_mass_ft, &b_GenGroomedJet_mass_ft);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_pr", JetType.Data() ), GenGroomedJet_mass_pr, &b_GenGroomedJet_mass_pr);
@@ -1226,6 +1197,8 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_qjetmassdrop", JetType.Data() ), GenGroomedJet_qjetmassdrop, &b_GenGroomedJet_qjetmassdrop);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_mass_JetCleansing_DiffMode, &b_GenGroomedJet_mass_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_pt_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_pt_JetCleansing_DiffMode, &b_GenGroomedJet_pt_JetCleansing_DiffMode);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_eta_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_eta_JetCleansing_DiffMode, &b_GenGroomedJet_eta_JetCleansing_DiffMode);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_phi_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_phi_JetCleansing_DiffMode, &b_GenGroomedJet_phi_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau2tau1_JetCleansing_DiffMode", JetType.Data() ), GenGroomedJet_tau2tau1_JetCleansing_DiffMode, &b_GenGroomedJet_tau2tau1_JetCleansing_DiffMode);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_constituents0_eta", JetType.Data() ), GenGroomedJet_constituents0_eta, &b_GenGroomedJet_constituents0_eta);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_constituents0_phi", JetType.Data() ), GenGroomedJet_constituents0_phi, &b_GenGroomedJet_constituents0_phi);
@@ -1342,6 +1315,7 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress("Z_muminus_vy_gen", &Z_muminus_vy_gen, &b_Z_muminus_vy_gen);
 	fChain->SetBranchAddress("Z_muminus_vz_gen", &Z_muminus_vz_gen, &b_Z_muminus_vz_gen);
 	fChain->SetBranchAddress("Z_muminus_y_gen", &Z_muminus_y_gen, &b_Z_muminus_y_gen);
+	fChain->SetBranchAddress("EventWeight", &EventWeight, &b_EventWeight);
 	fChain->SetBranchAddress("event_runNo", &event_runNo, &b_event_runNo);
 	fChain->SetBranchAddress("event_evtNo", &event_evtNo, &b_event_evtNo);
 	fChain->SetBranchAddress("event_lumi", &event_lumi, &b_event_lumi);
@@ -1534,12 +1508,14 @@ void JetCorrectionTool::addVar( RealVarArray x) {
 	map_obs.insert( MAP_REALVARARRAY::value_type(x.name, x) );
 }
 
-Bool_t JetCorrectionTool::fill( TString var_name, Double_t in_val){
+Bool_t JetCorrectionTool::fill( TString var_name, Double_t in_val, Double_t eventweight, Bool_t debug){
 	MAP_REALVARARRAY::iterator it=map_obs.find(var_name);
 
 	if ( !find_var_in_map(map_obs, var_name) ) { cout<<"When fill, fail to find "<<var_name.Data()<<endl; return 0;}
 	else {
+		if(debug) cout<<var_name.Data()<<" = "<<in_val<<endl;
 		map_obs[var_name].vect_x.push_back(in_val);
+		map_obs[var_name].vect_weight.push_back(eventweight);
 		return 1;
 	}
 }
@@ -1558,7 +1534,7 @@ TH1D JetCorrectionTool::get_hist1D(TString var_name){
 
 	TH1D h1(Form("h1_JCT_%s_%s", name.Data(),var_name.Data()), Form("h1_JCT_%s_%s;%s;Event Number", name.Data(),var_name.Data(), var_name.Data()), map_obs[var_name].nbin, map_obs[var_name].xmin, map_obs[var_name].xmax );
 	for(Int_t k=0;k<map_obs[var_name].vect_x.size();k++){
-		h1.Fill( map_obs[var_name].vect_x[k] ); 
+		h1.Fill( map_obs[var_name].vect_x[k], map_obs[var_name].vect_weight[k] ); 
 	}
 	return h1;
 }
@@ -1571,7 +1547,7 @@ TH1D JetCorrectionTool::get_hist1D_response( TString xdenominator_var_name,TStri
 	TH1D h1(Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), Form("h1response_JCT_%s_%s_%s;%s/%s;Event Number", name.Data(),xnumerator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), nbin, xmin, xmax);
 	if( map_obs[xdenominator_var_name].vect_x.size() == map_obs[xnumerator_var_name].vect_x.size() ){
 		for(Int_t k=0;k<map_obs[xdenominator_var_name].vect_x.size();k++){
-			h1.Fill( map_obs[xnumerator_var_name].vect_x[k]/ map_obs[xdenominator_var_name].vect_x[k] ); 
+			h1.Fill( map_obs[xnumerator_var_name].vect_x[k]/ map_obs[xdenominator_var_name].vect_x[k], map_obs[xnumerator_var_name].vect_weight[k] ); 
 		}
 		return h1;
 	}else { cout<<"When get_hist1D_response, Two var didn't match: "<<xnumerator_var_name.Data()<<" , "<<xdenominator_var_name.Data()<<endl;return TH1D("h1","h1",1,0,1);}
@@ -1585,7 +1561,7 @@ TH2D JetCorrectionTool::get_hist2D( TString x_var_name,TString y_var_name ){
 	TH2D h2(Form("h2_JCT_%s_%s_%s", name.Data(),y_var_name.Data(),x_var_name.Data()), Form("h2_JCT_%s_%s_%s;%s;%s;", name.Data(),y_var_name.Data(),x_var_name.Data(), x_var_name.Data(), y_var_name.Data()), map_obs[x_var_name].nbin, map_obs[x_var_name].xmin, map_obs[x_var_name].xmax, map_obs[y_var_name].nbin, map_obs[y_var_name].xmin, map_obs[y_var_name].xmax  );
 	if( map_obs[x_var_name].vect_x.size() == map_obs[y_var_name].vect_x.size() ){
 		for(Int_t k=0;k<map_obs[x_var_name].vect_x.size();k++){
-			h2.Fill( map_obs[x_var_name].vect_x[k], map_obs[y_var_name].vect_x[k]); 
+			h2.Fill( map_obs[x_var_name].vect_x[k], map_obs[y_var_name].vect_x[k], map_obs[y_var_name].vect_weight[k]); 
 		}
 		return h2;
 	}else { cout<<"When get_hist2D, Two var didn't match: "<<y_var_name.Data()<<" , "<<x_var_name.Data()<<endl;return TH2D("h2","h2",1,0,1,1,0,1);}
