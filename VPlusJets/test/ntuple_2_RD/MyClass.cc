@@ -72,68 +72,68 @@ void MyClass::Draw_and_Save(TH2D h2, char* addtional_info){
 	delete c1;
 }
 /*
-Bool_t MyClass::preSelect()
-{
-	efftool.Add_Event("Init");
+   Bool_t MyClass::preSelect()
+   {
+   efftool.Add_Event("Init");
 
-	if( FinalState.Contains("Dijets") ){
+   if( FinalState.Contains("Dijets") ){
 
-		if(isBoosted){
-			if(!( GenGroomedJet_pt[0]>100 ))return 0;
-			efftool.Add_Event("Gen Jet Pt>100");
-			//Double_t tmp_GEN_eta = GenGroomedJet_eta[0]; Double_t tmp_GEN_phi = GenGroomedJet_phi[0];
-			//Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_GEN_eta)*(Z_eta-tmp_GEN_eta) + (Z_phi-tmp_GEN_phi)*(Z_phi-tmp_GEN_phi) );
-			//if(!( tmpDeltaR_Vj>2.0 ))return 0;
-		}else{
-			if(!( GenGroomedJet_pt[0]>20 ))return 0;
-			efftool.Add_Event("Gen Jet Pt>20");
-		}
+   if(isBoosted){
+   if(!( GenGroomedJet_pt[0]>100 ))return 0;
+   efftool.Add_Event("Gen Jet Pt>100");
+//Double_t tmp_GEN_eta = GenGroomedJet_eta[0]; Double_t tmp_GEN_phi = GenGroomedJet_phi[0];
+//Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_GEN_eta)*(Z_eta-tmp_GEN_eta) + (Z_phi-tmp_GEN_phi)*(Z_phi-tmp_GEN_phi) );
+//if(!( tmpDeltaR_Vj>2.0 ))return 0;
+}else{
+if(!( GenGroomedJet_pt[0]>20 ))return 0;
+efftool.Add_Event("Gen Jet Pt>20");
+}
 
-		if(!( GenGroomedJet_mass[0]> 0.1 ))return 0;
-		efftool.Add_Event("Gen Jet mass> 0.1");
+if(!( GenGroomedJet_mass[0]> 0.1 ))return 0;
+efftool.Add_Event("Gen Jet mass> 0.1");
 
-		//alpha cut: z and jet are back to back
-		if(GroomedJet_number_jet_central >3){
-			//cout<<"alpha = "<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
-			if( GroomedJet_pt[2]/GroomedJet_pt[1] >=0.3 ) return 0;
-		}
-		efftool.Add_Event("alpha<0.3");
+//alpha cut: z and jet are back to back
+if(GroomedJet_number_jet_central >3){
+//cout<<"alpha = "<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
+if( GroomedJet_pt[2]/GroomedJet_pt[1] >=0.3 ) return 0;
+}
+efftool.Add_Event("alpha<0.3");
 
 
 
-	}
-	else if ( FinalState.Contains("ZJet") ){
+}
+else if ( FinalState.Contains("ZJet") ){
 
-		if(!( Z_mass>65 && Z_mass<105 ))return 0;
-		efftool.Add_Event("zmass: 65 105");
+if(!( Z_mass>65 && Z_mass<105 ))return 0;
+efftool.Add_Event("zmass: 65 105");
 
-		if(isBoosted){
-			if(!( Z_pt>100))return 0;
-			efftool.Add_Event("Z Pt>100");
+if(isBoosted){
+if(!( Z_pt>100))return 0;
+efftool.Add_Event("Z Pt>100");
 
-			if(!( GenGroomedJet_pt[0]>100 ))return 0;
-			efftool.Add_Event("Gen Jet Pt>100");
-			//Double_t tmp_GEN_eta = GenGroomedJet_eta[0]; Double_t tmp_GEN_phi = GenGroomedJet_phi[0];
-			//Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_GEN_eta)*(Z_eta-tmp_GEN_eta) + (Z_phi-tmp_GEN_phi)*(Z_phi-tmp_GEN_phi) );
-			//if(!( tmpDeltaR_Vj>2.0 ))return 0;
-		}else{
-			if(!( GenGroomedJet_pt[0]>20 ))return 0;
-			efftool.Add_Event("Gen Jet Pt>20");
-		}
+if(!( GenGroomedJet_pt[0]>100 ))return 0;
+efftool.Add_Event("Gen Jet Pt>100");
+//Double_t tmp_GEN_eta = GenGroomedJet_eta[0]; Double_t tmp_GEN_phi = GenGroomedJet_phi[0];
+//Double_t tmpDeltaR_Vj = TMath::Sqrt( (Z_eta-tmp_GEN_eta)*(Z_eta-tmp_GEN_eta) + (Z_phi-tmp_GEN_phi)*(Z_phi-tmp_GEN_phi) );
+//if(!( tmpDeltaR_Vj>2.0 ))return 0;
+}else{
+if(!( GenGroomedJet_pt[0]>20 ))return 0;
+efftool.Add_Event("Gen Jet Pt>20");
+}
 
-		//alpha cut: z and jet are back to back
-		if(GroomedJet_number_jet_central >1){
-			//cout<<"alpha = "<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
-			if( GroomedJet_pt[1]/GroomedJet_pt[0] >=0.3 ) return 0;
-		}
-		efftool.Add_Event("alpha<0.3");
+//alpha cut: z and jet are back to back
+if(GroomedJet_number_jet_central >1){
+//cout<<"alpha = "<<GenGroomedJet_pt[1]/GenGroomedJet_pt[0]<<endl; 
+if( GroomedJet_pt[1]/GroomedJet_pt[0] >=0.3 ) return 0;
+}
+efftool.Add_Event("alpha<0.3");
 
-	}else{
-		cout<<"Wrong final state"<<endl;
-		return 0;
-	}
+}else{
+cout<<"Wrong final state"<<endl;
+return 0;
+}
 
-	return 1;
+return 1;
 } */
 Bool_t MyClass::preSelect()
 {
@@ -141,7 +141,11 @@ Bool_t MyClass::preSelect()
 
 	if( FinalState.Contains("Dijets") ){
 
-		if(isBoosted){
+		if(isBoosted==2){
+			if(!( GroomedJet_pt[0]>300 && GroomedJet_pt[0]<500 ))return 0;
+			efftool.Add_Event("recoJet Pt>300");
+		}
+		else if(isBoosted==1){
 			//if(!( GroomedJet_pt[0]>100 ))return 0;
 			if(!( GroomedJet_pt[0]>100 && GroomedJet_pt[0]<180 ))return 0;
 			efftool.Add_Event("recoJet Pt>100");
@@ -168,7 +172,7 @@ Bool_t MyClass::preSelect()
 		if(!( Z_mass>65 && Z_mass<105 ))return 0;
 		efftool.Add_Event("zmass: 65 105");
 
-		if(isBoosted){
+		if(isBoosted ==1){
 			if(!( Z_pt>100))return 0;
 			efftool.Add_Event("Z Pt>100");
 
@@ -799,18 +803,18 @@ void MyClass::Loop() {
 	Long64_t nentries = fChain->GetEntriesFast();
 
 	/*Int_t nbin_rho=50; Double_t rho_min=0.; Double_t rho_max=50.;
-	Int_t nbin_nPV=50; Double_t nPV_min=0.; Double_t nPV_max=50.;
-	Int_t nbin_mass=60;Double_t jetmass_min=0;Double_t jetmass_max=300.;
-	Int_t nbin_pt=40;Double_t jetpt_min=50;Double_t jetpt_max=1050.;
-	Int_t nbin_ratio=100; Double_t ratio_min=-1; Double_t ratio_max=3.; 
-	Int_t nbin_eta=10;Double_t jeteta_min=-2.5;Double_t jeteta_max=2.5;
-	Int_t nbin_tau2tau1=40;Double_t jettau2tau1_min=0.;Double_t jettau2tau1_max=1.;
-	Double_t ratio_mrt_min=0.5; Double_t ratio_mrt_max=1.6; 
-	Double_t ratio_mrt_uncorr_min=0.5; Double_t ratio_mrt_uncorr_max=1.6; 
-	if(!isBoosted){
-		nbin_mass=40; jetmass_min=0; jetmass_max=300.;
-		nbin_pt=30; jetpt_min=0; jetpt_max=1050.;
-	}*/
+	  Int_t nbin_nPV=50; Double_t nPV_min=0.; Double_t nPV_max=50.;
+	  Int_t nbin_mass=60;Double_t jetmass_min=0;Double_t jetmass_max=300.;
+	  Int_t nbin_pt=40;Double_t jetpt_min=50;Double_t jetpt_max=1050.;
+	  Int_t nbin_ratio=100; Double_t ratio_min=-1; Double_t ratio_max=3.; 
+	  Int_t nbin_eta=10;Double_t jeteta_min=-2.5;Double_t jeteta_max=2.5;
+	  Int_t nbin_tau2tau1=40;Double_t jettau2tau1_min=0.;Double_t jettau2tau1_max=1.;
+	  Double_t ratio_mrt_min=0.5; Double_t ratio_mrt_max=1.6; 
+	  Double_t ratio_mrt_uncorr_min=0.5; Double_t ratio_mrt_uncorr_max=1.6; 
+	  if(!isBoosted){
+	  nbin_mass=40; jetmass_min=0; jetmass_max=300.;
+	  nbin_pt=30; jetpt_min=0; jetpt_max=1050.;
+	  }*/
 
 	Int_t nbin_rho=60; Double_t rho_min=0.; Double_t rho_max=60.;
 	Int_t nbin_nPV=60; Double_t nPV_min=0.; Double_t nPV_max=60.;
@@ -978,7 +982,9 @@ void MyClass::Loop() {
 	TH1D h1_RecoGen_matching("h1_RecoGen_matching","h1_RecoGen_matching; #delta R( reco j, gen j)",40,0,4.); h1_RecoGen_matching.SetLineColor(kRed);//matching with GEN
 
 	Long64_t nbytes = 0, nb = 0;
-	for (Long64_t jentry=0; jentry<nentries;jentry++) {
+	//for (Long64_t jentry=0; jentry<nentries;jentry++)
+	for (Long64_t jentry=0; jentry<nentries && jentry <100000;jentry++)
+	{
 		//cout<<"jentry="<<jentry<<endl;
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
@@ -1020,16 +1026,16 @@ void MyClass::Loop() {
 		//cout<<"EventWeight="<<EventWeight<<endl;
 
 		//cout<<"jentry="<<jentry<<"  pt_raw="<<GroomedJet_pt_uncorr[0]<<endl;
-	//	cout<<"GroomedJet pt= "<<GenGroomedJet_pt[0]<<" , "<<GroomedJet_pt[0]<<" , "<<GroomedJet_pt_JetCleansing_DiffMode[0]<<" , "<<GroomedJet_pt_JetCleansing_DiffMode[1]<<" , "<<GroomedJet_pt_JetCleansing_DiffMode[2]<<endl;
-	//	cout<<"GroomedJet eta= "<<GenGroomedJet_eta[0]<<" , "<<GroomedJet_eta[0]<<" , "<<GroomedJet_eta_JetCleansing_DiffMode[0]<<" , "<<GroomedJet_eta_JetCleansing_DiffMode[1]<<" , "<<GroomedJet_eta_JetCleansing_DiffMode[2]<<endl;
-	//	cout<<"GroomedJet phi= "<<GenGroomedJet_phi[0]<<" , "<<GroomedJet_phi[0]<<" , "<<GroomedJet_phi_JetCleansing_DiffMode[0]<<" , "<<GroomedJet_phi_JetCleansing_DiffMode[1]<<" , "<<GroomedJet_phi_JetCleansing_DiffMode[2]<<endl;
+		//	cout<<"GroomedJet pt= "<<GenGroomedJet_pt[0]<<" , "<<GroomedJet_pt[0]<<" , "<<GroomedJet_pt_JetCleansing_DiffMode[0]<<" , "<<GroomedJet_pt_JetCleansing_DiffMode[1]<<" , "<<GroomedJet_pt_JetCleansing_DiffMode[2]<<endl;
+		//	cout<<"GroomedJet eta= "<<GenGroomedJet_eta[0]<<" , "<<GroomedJet_eta[0]<<" , "<<GroomedJet_eta_JetCleansing_DiffMode[0]<<" , "<<GroomedJet_eta_JetCleansing_DiffMode[1]<<" , "<<GroomedJet_eta_JetCleansing_DiffMode[2]<<endl;
+		//	cout<<"GroomedJet phi= "<<GenGroomedJet_phi[0]<<" , "<<GroomedJet_phi[0]<<" , "<<GroomedJet_phi_JetCleansing_DiffMode[0]<<" , "<<GroomedJet_phi_JetCleansing_DiffMode[1]<<" , "<<GroomedJet_phi_JetCleansing_DiffMode[2]<<endl;
 		EventWeight=1.0;
 
 		Bool_t debug =0.;
 		//if( GroomedJet_mass_JetCleansing_DiffMode[2]/GenGroomedJet_mass[num_genreco_matching] < 0.2 ||GroomedJet_mass_JetCleansing_DiffMode[2]/GenGroomedJet_mass[num_genreco_matching] > 4 || GroomedJet_mass_rhom4Area[0]/GenGroomedJet_mass[num_genreco_matching] < 0.2 ||GroomedJet_mass_rhom4Area[0]/GenGroomedJet_mass[num_genreco_matching] > 4 )
-		
+
 		if( (GenGroomedJet_mass[num_genreco_matching]>40) && ( GroomedJet_tau2tau1_shapesubtract[0] > 2 || GroomedJet_tau2tau1_shapesubtract[0] < -2   
-					||  GroomedJet_tau2tau1_JetCleansing_DiffMode[0]< -2 || GroomedJet_tau2tau1_JetCleansing_DiffMode[0]>2  ) )
+						||  GroomedJet_tau2tau1_JetCleansing_DiffMode[0]< -2 || GroomedJet_tau2tau1_JetCleansing_DiffMode[0]>2  ) )
 		{
 			debug =1;
 			cout<<"--------------"<<endl<<"event_evtNo= "<<event_evtNo<<" event_lumi="<<event_lumi<<endl;
@@ -1071,8 +1077,9 @@ void MyClass::Loop() {
 		jct.fill( "reco_mass_jetcleansing7", GroomedJet_mass_JetCleansing_DiffMode[26], EventWeight, debug);
 		jct.fill( "reco_mass_jetcleansing8", GroomedJet_mass_JetCleansing_DiffMode[27], EventWeight, debug);
 
-		//if( GenGroomedJet_mass[num_genreco_matching]>40 && GroomedJet_tau2tau1_JetCleansing_DiffMode[0]>-2000 && GroomedJet_tau2tau1_JetCleansing_DiffMode[0]<2000   ){
-		if( GenGroomedJet_mass[num_genreco_matching]>40 ){
+		//if( GenGroomedJet_mass[num_genreco_matching]>40 && GroomedJet_tau2tau1_JetCleansing_DiffMode[0]>-2000 && GroomedJet_tau2tau1_JetCleansing_DiffMode[0]<2000   )
+		if( GenGroomedJet_mass[num_genreco_matching]>40 )
+		{
 			jct.fill( "reco_tau2tau1_raw", GroomedJet_tau2tau1[0], EventWeight, debug);
 			if( GroomedJet_tau2tau1_shapesubtract[0]<0. || GroomedJet_tau2tau1_shapesubtract[0] >2 ) GroomedJet_tau2tau1_shapesubtract[0]=0. ;
 			jct.fill( "reco_tau2tau1_shapesubtract", GroomedJet_tau2tau1_shapesubtract[0], EventWeight, debug);
@@ -1115,7 +1122,6 @@ void MyClass::Loop() {
 		jct.fill( "reco_phi_jetcleansing6", GroomedJet_phi_JetCleansing_DiffMode[25], EventWeight, debug);;//jvf r=0.2 
 		jct.fill( "reco_phi_jetcleansing7", GroomedJet_phi_JetCleansing_DiffMode[26], EventWeight, debug);//linear r=0.3, gamma0=0.55
 		jct.fill( "reco_phi_jetcleansing8", GroomedJet_phi_JetCleansing_DiffMode[27], EventWeight, debug);//linear r=0.2, gamma0=0.55 
-
 
 	}
 
