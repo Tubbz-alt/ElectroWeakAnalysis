@@ -43,7 +43,8 @@ class Efficiency_Tool{
 class MyClass {
 	public :
 		Efficiency_Tool efftool;//efficiency tool
-		Bool_t   isBoosted;//boosted Z or not
+		//Bool_t   isBoosted;//boosted Z or not
+		Int_t   isBoosted;//boosted Z or not
 		TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 		Int_t           fCurrent; //!current Tree number in a TChain
 
@@ -790,8 +791,8 @@ class MyClass {
 		TBranch        *b_event_mcPU_bx;   //!
 		TBranch        *b_event_mcPU_nvtx;   //!
 
-		//MyClass(TTree *tree=0, char* inJetType="AK8", char* inPfType="PF", char* plot_dir=""); //JetType: AK5 AK8, PF PFCHS 
-		MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
+		//MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
+		MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Int_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
 		virtual ~MyClass();
 		virtual Int_t    Cut(Long64_t entry);
 		virtual Bool_t   preSelect();
@@ -904,7 +905,8 @@ bool match_dR(double a1, double a2, double b1, double b2, double delta=0.3, TH1D
 #endif
 
 #ifdef MyClass_cxx
-MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted, char* plot_dir) : fChain(0) 
+//MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted, char* plot_dir) : fChain(0) 
+MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Int_t in_isBoosted, char* plot_dir) : fChain(0) 
 {
 	// if parameter tree is not specified (or zero), connect the file
 	// used to generate this class and read the Tree.
