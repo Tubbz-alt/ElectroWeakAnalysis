@@ -13,18 +13,25 @@ void runMyClass() {
 	runMyClass_signle(1, "AK8", "PF");
 	runMyClass_signle(1, "AK8", "PFCHS");
 
+	runMyClass_signle(2, "AK8", "PF");
+	runMyClass_signle(2, "AK8", "PFCHS");
+
+
 	//runMyClass_signle(1, "AK12", "PF");
 	//runMyClass_signle(1, "AK12", "PFCHS");
 
 }
 
-void runMyClass_signle( bool isBoosted, TString jetlable, TString pflable) {
+//void runMyClass_signle( bool isBoosted, TString jetlable, TString pflable) 
+void runMyClass_signle( Int_t isBoosted, TString jetlable, TString pflable) 
+{
 
 	TString final_state="Dijets";//
 	//TString final_state="ZJet";//
 
 	TString boostedlable;
-	if(isBoosted)boostedlable="boosted";
+	if(isBoosted==2)boostedlable="veryboosted";
+	else if(isBoosted==1)boostedlable="boosted";
 	else boostedlable="unboosted";	
 	// mkdir plots fold accoding time
 	TString dir = gSystem->UnixPathName(gInterpreter->GetCurrentMacroName());
@@ -40,7 +47,7 @@ void runMyClass_signle( bool isBoosted, TString jetlable, TString pflable) {
 	TTree *tree1;
 
 	if (final_state.Contains("ZJet")){
-		if (isBoosted){
+		if (isBoosted ==1){
 			file1 = new TFile("full_DYPt1000_v8_zmumujetsanalysisntuple.root");
 			//file1 = new TFile("boosted_full_v7_zmumujetsanalysisntuple.root");
 		}else{
