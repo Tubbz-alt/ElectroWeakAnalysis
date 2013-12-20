@@ -2,7 +2,7 @@
 // This class has been automatically generated on
 // Wed Oct  2 07:21:13 2013 by ROOT version 5.32/00
 // from TTree ZJet/V+jets Tree
-// found on file: zmumujetsanalysisntuple.root
+// found on fout: zmumujetsanalysisntuple.root
 //////////////////////////////////////////////////////////
 
 #ifndef MyClass_h
@@ -19,6 +19,7 @@
 #include <TGraph.h>
 #include <TMath.h>
 #include <map>
+#include "fstream"
 using namespace std;
 
 // Header file for the classes stored in the TTree if any.
@@ -37,6 +38,21 @@ class Efficiency_Tool{
 		void Add_Step(string newstepname);
 		void Add_Event(string newstepname, Double_t eventweight=1. );
 		TH1D Get_Eff_hist();
+};
+
+class Table_Tool{ //print out tables into txt
+	private:
+		vector< TString> xaxis;
+		vector< TString> yaxis;
+		Int_t iter_x;
+		Int_t iter_y;
+		Double_t table_value[100][100];
+	public:
+		Table_Tool();
+		~Table_Tool(){};
+		void Insert(TString x_name, TString y_name, Double_t value);
+		void PrintTable(ofstream &fout);
+		//void PrintTable();
 };
 
 
@@ -1642,5 +1658,61 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 
 }
 
+
+Table_Tool::Table_Tool(){
+	iter_x=iter_y=0;
+	xaxis.clear();
+	yaxis.clear();
+	for(Int_t m=0; m <100; m++){
+		for(Int_t n=0; n <100; n++){
+			table_value[m][n]=-10000;
+		}
+	}
+}
+
+void Table_Tool::Insert(TString x_name, TString y_name, Double_t value){
+	Int_t x_pos=-1; Int_t y_pos=-1;
+	for(Int_t m=0;m<iter_x;m++){
+		if(xaxis[m]==x_name)x_pos=m;
+	}
+	for(Int_t m=0;m<iter_y;m++){
+		if(yaxis[m]==y_name)y_pos=m;
+	}
+
+	if( x_pos <0) {
+		xaxis.push_back(x_name);
+		x_pos=iter_x;
+		iter_x++; 
+	}
+
+	if( y_pos <0) {
+		yaxis.push_back(y_name);
+		y_pos=iter_y;
+		iter_y++; 
+	}
+
+	table_value[x_pos][y_pos]=value;
+
+
+}
+
+void Table_Tool::PrintTable(ofstream &fout)
+//void Table_Tool::PrintTable()
+{
+	//first line
+	fout<<"Table \t";
+	for(Int_t i=0; i< iter_x; i++)
+	  fout<<xaxis[i]<<" \t";
+	fout<<endl;
+
+	for(Int_t j=0; j< iter_y; j++){
+		fout<<yaxis[j]<<" \t";
+		for(Int_t k=0; k<iter_x; k++){
+			fout<<table_value[k][j]<<" \t";
+		}
+		fout<<endl;
+	}
+	fout<<endl;
+}
 
 #endif // #ifdef MyClass_cxx
