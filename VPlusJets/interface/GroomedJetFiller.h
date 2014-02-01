@@ -143,7 +143,8 @@ namespace ewk
 			//~GroomedJetFiller(){ };
 
 			/// To be called once per event to fill the values for groomed jets
-			void fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles, bool doJetCleansing=0, std::vector<fastjet::PseudoJet> FJparticles_hardcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_pileupcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_fullneutral=std::vector<fastjet::PseudoJet>() );        
+			void fill(const edm::Event& iEvent, std::vector<fastjet::PseudoJet> FJparticles, bool doJetCleansing=0, std::vector<fastjet::PseudoJet> FJparticles_hardcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_pileupcharge=std::vector<fastjet::PseudoJet>(), std::vector<fastjet::PseudoJet> FJparticles_fullneutral=std::vector<fastjet::PseudoJet>() ); //full event, bool, hard charge, pile up charge, full neutral
+ 
 			void Init();//init all the branch value
 
 			// ----------member data ---------------------------
@@ -241,7 +242,8 @@ namespace ewk
 			float jetmass_pr2_uncorr[NUM_JET_MAX];// added
 			float jetmass_pr3_uncorr[NUM_JET_MAX];// added
 			float tau2tau1[NUM_JET_MAX];
-			float tau2tau1_shapesubtract[NUM_JET_MAX];
+			float tau2tau1_shapesubtraction[NUM_JET_MAX];
+			float tau2tau1_trimmingshapesubtraction[NUM_JET_MAX];
 			float tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float tau1[NUM_JET_MAX];
 			float tau2[NUM_JET_MAX];
@@ -278,7 +280,8 @@ namespace ewk
 			float jetpt_L1_rhoGrid[NUM_JET_MAX];//rho from kt6PF Grid
 
 			float jetpt_rho4A[NUM_JET_MAX];
-			float jetpt_rhom4A[NUM_JET_MAX];
+			float jetpt_shapesubtraction[NUM_JET_MAX];
+			float jetpt_trimmingshapesubtraction[NUM_JET_MAX];
 			float jetpt_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float jeteta_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float jetphi_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
@@ -360,7 +363,8 @@ namespace ewk
 			float jetmass_rhoGArea[NUM_JET_MAX];
 			float jetmass_rho4Area[NUM_JET_MAX];
 			float jetmass_rhoG4Area[NUM_JET_MAX];
-			float jetmass_rhom4Area[NUM_JET_MAX];
+			float jetmass_shapesubtraction[NUM_JET_MAX];
+			float jetmass_trimmingshapesubtraction[NUM_JET_MAX];
 			float jetmass_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float jetmass_tr[NUM_JET_MAX];//main
 			float jetmass_tr1[NUM_JET_MAX]; // added
