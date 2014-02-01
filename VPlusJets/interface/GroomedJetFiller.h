@@ -279,8 +279,9 @@ namespace ewk
 
 			float jetpt_rho4A[NUM_JET_MAX];
 			float jetpt_rhom4A[NUM_JET_MAX];
-			float jetpt_JetCleansing[NUM_JET_MAX];
 			float jetpt_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
+			float jeteta_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
+			float jetphi_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 
 			float jetpt_tr_uncorr[NUM_JET_MAX];
 			float jetpt_tr[NUM_JET_MAX];
