@@ -159,11 +159,12 @@ process.VplusJets = cms.EDAnalyzer("VplusJetsAnalysis",
 
     applyJECToGroomedJets=cms.bool(True),
     doGroomedAK5 = cms.bool(True),
-    doGroomedAK7 = cms.bool(False),
     doGroomedAK8 = cms.bool(True),
+    doGroomedAK10= cms.bool(True),
     doGroomedAK12= cms.bool(True),
-    doGroomedCA8 = cms.bool(False),
-    doGroomedCA12= cms.bool(False),
+    doGroomedCA8 = cms.bool(True),
+    doGroomedCA10= cms.bool(True),
+    doGroomedCA12= cms.bool(True),
     GroomedJet_doQJets = cms.bool(False)#drop QJets process
 )
 
