@@ -98,6 +98,7 @@ namespace ewk
     std::auto_ptr<ewk::JetTreeFiller> CorrectedPFJetFiller;
     std::auto_ptr<ewk::JetTreeFiller> CorrectedPFJetFillerVBFTag; //For VBF Tag Jets
 
+	//====AK=================
     std::auto_ptr<ewk::GroomedJetFiller> genAK5groomedJetFiller;
     std::auto_ptr<ewk::GroomedJetFiller> AK5groomedJetFiller_PF;
     std::auto_ptr<ewk::GroomedJetFiller> AK5groomedJetFiller_PFCHS;
@@ -114,10 +115,22 @@ namespace ewk
     std::auto_ptr<ewk::GroomedJetFiller> AK12groomedJetFiller_PF;
     std::auto_ptr<ewk::GroomedJetFiller> AK12groomedJetFiller_PFCHS;
 
+	//====CA=================
+    std::auto_ptr<ewk::GroomedJetFiller> genCA5groomedJetFiller;
+    std::auto_ptr<ewk::GroomedJetFiller> CA5groomedJetFiller_PF;
+    std::auto_ptr<ewk::GroomedJetFiller> CA5groomedJetFiller_PFCHS;
+
     std::auto_ptr<ewk::GroomedJetFiller> genCA8groomedJetFiller;
-    std::auto_ptr<ewk::GroomedJetFiller> CA8groomedJetFiller;
+    std::auto_ptr<ewk::GroomedJetFiller> CA8groomedJetFiller_PF;
+    std::auto_ptr<ewk::GroomedJetFiller> CA8groomedJetFiller_PFCHS;
+
+    std::auto_ptr<ewk::GroomedJetFiller> genCA10groomedJetFiller;
+    std::auto_ptr<ewk::GroomedJetFiller> CA10groomedJetFiller_PF;
+    std::auto_ptr<ewk::GroomedJetFiller> CA10groomedJetFiller_PFCHS;
+
     std::auto_ptr<ewk::GroomedJetFiller> genCA12groomedJetFiller;
-    std::auto_ptr<ewk::GroomedJetFiller> CA12groomedJetFiller;
+    std::auto_ptr<ewk::GroomedJetFiller> CA12groomedJetFiller_PF;
+    std::auto_ptr<ewk::GroomedJetFiller> CA12groomedJetFiller_PFCHS;
 
     // std::auto_ptr<ewk::JetTreeFiller> GenJetFiller;
     //  std::auto_ptr<ewk::PhotonTreeFiller> PhotonFiller;
