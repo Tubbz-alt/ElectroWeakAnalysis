@@ -47,52 +47,57 @@
 using namespace std;
 using namespace edm;
 
-/*
-   ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) :
-   myTree ( fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree") ), 
-   CorrectedPFJetFiller ( iConfig.existsAs<edm::InputTag>("srcPFCor") ?  new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig, 0) : 0),
-   genAK5groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("genGroomedJetFiller", myTree, "AK5", "_GEN", iConfig, 1) : 0), //Gen
-   AK5groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PF", iConfig) : 0), 
-   AK5groomedJetFiller_PFCHS ((iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PFCHS", iConfig) : 0), 
-   genAK8groomedJetFiller ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("genGroomedJetFiller", myTree, "AK8", "_GEN", iConfig, 1) : 0), //Gen
-   AK8groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PF", iConfig) : 0),
-   AK8groomedJetFiller_PFCHS ((iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PFCHS", iConfig) : 0),
-   AK12groomedJetFiller_PF ((iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")) ?  new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_PF", iConfig) : 0), 
-//PhotonFiller (  iConfig.existsAs<edm::InputTag>("srcPhoton") ?  new PhotonTreeFiller("PhotonFiller", myTree,  iConfig) : 0),
-recoBosonFillerE( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ),
-recoBosonFillerMu( new VtoMuonTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ), 
-genBosonFiller( (iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC")) ?  new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) : 0) 
-*/
 ewk::VplusJetsAnalysis::VplusJetsAnalysis(const edm::ParameterSet& iConfig) 
 {
 
 	myTree = fs -> mkdir("../").make<TTree>(iConfig.getParameter<std::string>("TreeName").c_str(),"V+jets Tree");
 	if( iConfig.existsAs<edm::InputTag>("srcPFCor") )
 	  CorrectedPFJetFiller.reset( new JetTreeFiller("CorrectedPFJetFiller", myTree, "PFCor", iConfig, 0) );
-	//AK5
+	//========AK============
 	if (iConfig.existsAs<bool>("doGroomedAK5")&& iConfig.getParameter< bool >("doGroomedAK5")){  
 	  genAK5groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "AK5", "_GEN", iConfig, 1) );//Gen
 	  AK5groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PF", iConfig) );
 	  AK5groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK5", "_PFCHS", iConfig) ); 
 	}
-	//AK8
 	if(iConfig.existsAs<bool>("doGroomedAK8")&& iConfig.getParameter< bool >("doGroomedAK8")){
 	  genAK8groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "AK8", "_GEN", iConfig, 1) ); //Gen
 	  AK8groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PF", iConfig) );
 	  AK8groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK8", "_PFCHS", iConfig) );
 	}
-	//AK10
 	if(iConfig.existsAs<bool>("doGroomedAK10")&& iConfig.getParameter< bool >("doGroomedAK10")){
 	  genAK10groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "AK10", "_GEN", iConfig, 1) ); //Gen
 	  AK10groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK10", "_PF", iConfig) );
 	  AK10groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK10", "_PFCHS", iConfig) );
 	}
-	//AK12
 	if(iConfig.existsAs<bool>("doGroomedAK12")&& iConfig.getParameter< bool >("doGroomedAK12")){
 	  genAK12groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "AK12", "_GEN", iConfig, 1) ); //Gen
 	  AK12groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_PF", iConfig) );
 	  AK12groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "AK12", "_PFCHS", iConfig) );
 	}
+	//========CA============
+	if (iConfig.existsAs<bool>("doGroomedCA5")&& iConfig.getParameter< bool >("doGroomedCA5")){  
+	  genCA5groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "CA5", "_GEN", iConfig, 1) );//Gen
+	  CA5groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA5", "_PF", iConfig) );
+	  CA5groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA5", "_PFCHS", iConfig) ); 
+	}
+	if(iConfig.existsAs<bool>("doGroomedCA8")&& iConfig.getParameter< bool >("doGroomedCA8")){
+	  genCA8groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "CA8", "_GEN", iConfig, 1) ); //Gen
+	  CA8groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA8", "_PF", iConfig) );
+	  CA8groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA8", "_PFCHS", iConfig) );
+	}
+	if(iConfig.existsAs<bool>("doGroomedCA10")&& iConfig.getParameter< bool >("doGroomedCA10")){
+	  genCA10groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "CA10", "_GEN", iConfig, 1) ); //Gen
+	  CA10groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA10", "_PF", iConfig) );
+	  CA10groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA10", "_PFCHS", iConfig) );
+	}
+	if(iConfig.existsAs<bool>("doGroomedCA12")&& iConfig.getParameter< bool >("doGroomedCA12")){
+	  genCA12groomedJetFiller.reset(new GroomedJetFiller("genGroomedJetFiller", myTree, "CA12", "_GEN", iConfig, 1) ); //Gen
+	  CA12groomedJetFiller_PF.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA12", "_PF", iConfig) );
+	  CA12groomedJetFiller_PFCHS.reset(new GroomedJetFiller("GroomedJetFiller", myTree, "CA12", "_PFCHS", iConfig) );
+	}
+
+
+
 	if(iConfig.existsAs<bool>("runningOverMC") && iConfig.getParameter<bool>("runningOverMC"))
 	  genBosonFiller.reset( new MCTreeFiller(iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) ); 
 	recoBosonFillerE.reset( new VtoElectronTreeFiller( iConfig.getParameter<std::string>("VBosonType").c_str(), myTree, iConfig) );
@@ -403,28 +408,42 @@ void ewk::VplusJetsAnalysis::analyze(const edm::Event& iEvent,
 	}*/
 
 
-	bool doJetCleansing=1;
-	//std::cout<<"====================== ak5 PF JET =========================="<<std::endl;
-	if(genAK5groomedJetFiller.get() )genAK5groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
-	if(AK5groomedJetFiller_PF.get() )AK5groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);//full event, bool, hard charge, pile up charge, full neutral
-	if(AK5groomedJetFiller_PFCHS.get() )AK5groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
-	//std::cout<<"====================== ak8 PF JET =========================="<<std::endl;
-	if(genAK8groomedJetFiller.get() )genAK8groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
-	if(AK8groomedJetFiller_PF.get() )AK8groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);//full event, bool, hard charge, pile up charge, full neutral
-	if(AK8groomedJetFiller_PFCHS.get() )AK8groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
-	//std::cout<<"====================== ak10PF JET =========================="<<std::endl;
-	if(genAK10groomedJetFiller.get() )genAK10groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
-	if(AK10groomedJetFiller_PF.get() )AK10groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);//full event, bool, hard charge, pile up charge, full neutral
-	if(AK10groomedJetFiller_PFCHS.get() )AK10groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
-	//std::cout<<"====================== ak12PF JET =========================="<<std::endl;
-	if(genAK12groomedJetFiller.get() )genAK12groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
-	if(AK12groomedJetFiller_PF.get() )AK12groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);//full event, bool, hard charge, pile up charge, full neutral
-	if(AK12groomedJetFiller_PFCHS.get() )AK12groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
-
 	//std::cout<<"====================== PAT::JET =========================="<<std::endl;
 	if(CorrectedPFJetFiller.get()){ CorrectedPFJetFiller->fill(iEvent);}
 
-
+	bool doJetCleansing=1;
+	//std::cout<<"====================== AK5 PF JET =========================="<<std::endl;
+	if(genAK5groomedJetFiller.get() )genAK5groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(AK5groomedJetFiller_PF.get() )AK5groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(AK5groomedJetFiller_PFCHS.get() )AK5groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//std::cout<<"====================== AK8 PF JET =========================="<<std::endl;
+	if(genAK8groomedJetFiller.get() )genAK8groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(AK8groomedJetFiller_PF.get() )AK8groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(AK8groomedJetFiller_PFCHS.get() )AK8groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//std::cout<<"====================== AK10PF JET =========================="<<std::endl;
+	if(genAK10groomedJetFiller.get() )genAK10groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(AK10groomedJetFiller_PF.get() )AK10groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(AK10groomedJetFiller_PFCHS.get() )AK10groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//std::cout<<"====================== AK12PF JET =========================="<<std::endl;
+	if(genAK12groomedJetFiller.get() )genAK12groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(AK12groomedJetFiller_PF.get() )AK12groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(AK12groomedJetFiller_PFCHS.get() )AK12groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//std::cout<<"====================== CA5 PF JET =========================="<<std::endl;
+	if(genCA5groomedJetFiller.get() )genCA5groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(CA5groomedJetFiller_PF.get() )CA5groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(CA5groomedJetFiller_PFCHS.get() )CA5groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//std::cout<<"====================== CA8 PF JET =========================="<<std::endl;
+	if(genCA8groomedJetFiller.get() )genCA8groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(CA8groomedJetFiller_PF.get() )CA8groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(CA8groomedJetFiller_PFCHS.get() )CA8groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//std::cout<<"====================== CA10PF JET =========================="<<std::endl;
+	if(genCA10groomedJetFiller.get() )genCA10groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(CA10groomedJetFiller_PF.get() )CA10groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(CA10groomedJetFiller_PFCHS.get() )CA10groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
+	//std::cout<<"====================== CA12PF JET =========================="<<std::endl;
+	if(genCA12groomedJetFiller.get() )genCA12groomedJetFiller->fill(iEvent, fjinputs_gens_nonu);
+	if(CA12groomedJetFiller_PF.get() )CA12groomedJetFiller_PF->fill(iEvent, fjinputs_pfs_noLep_noCHS, doJetCleansing, fjinputs_pfs_charge,fjinputs_pfs_PileUp,fjinputs_pfs_neutral);
+	if(CA12groomedJetFiller_PFCHS.get() )CA12groomedJetFiller_PFCHS->fill(iEvent, fjinputs_pfs);
 
 
 
