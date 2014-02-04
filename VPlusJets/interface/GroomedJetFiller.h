@@ -361,8 +361,8 @@ namespace ewk
 			float jetmass_JECL1[NUM_JET_MAX];
 			float jetmass_rhoArea[NUM_JET_MAX];
 			float jetmass_rhoGArea[NUM_JET_MAX];
-			float jetmass_rho4Area[NUM_JET_MAX];
-			float jetmass_rhoG4Area[NUM_JET_MAX];
+			float jetmass_rho4A[NUM_JET_MAX];
+			float jetmass_rhoG4A[NUM_JET_MAX];
 			float jetmass_shapesubtraction[NUM_JET_MAX];
 			float jetmass_trimmingshapesubtraction[NUM_JET_MAX];
 			float jetmass_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
