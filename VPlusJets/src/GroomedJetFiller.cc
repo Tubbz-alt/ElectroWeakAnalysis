@@ -195,8 +195,8 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	SetBranch( jetmass_JECL1, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_JECL1");
 	SetBranch( jetmass_rhoArea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoArea");
 	SetBranch( jetmass_rhoGArea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoGArea");
-	SetBranch( jetmass_rho4Area, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rho4Area");
-	SetBranch( jetmass_rhoG4Area, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoG4Area");
+	SetBranch( jetmass_rho4A, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rho4A");
+	SetBranch( jetmass_rhoG4A, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoG4A");
 	SetBranch( jetmass_shapesubtraction, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_shapesubtraction");
 	SetBranch( jetmass_trimmingshapesubtraction, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_trimmingshapesubtraction");
 
@@ -519,8 +519,8 @@ void ewk::GroomedJetFiller::Init(){
 		jetmass_JECL1[j] = -1.;
 		jetmass_rhoArea[j] = -1.;
 		jetmass_rhoGArea[j] = -1.;
-		jetmass_rho4Area[j] = -1.;
-		jetmass_rhoG4Area[j] = -1.;
+		jetmass_rho4A[j] = -1.;
+		jetmass_rhoG4A[j] = -1.;
 		jetmass_shapesubtraction[j] = -1.;
 		jetmass_trimmingshapesubtraction[j] = -1.;
 
@@ -704,8 +704,8 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	std::auto_ptr<fastjet::ClusterSequence> thisClustering_basic(new fastjet::ClusterSequence(FJparticles, *mJetDef));
 
 	fastjet::Selector selected_eta = fastjet::SelectorAbsEtaMax(2.4);
-	std::vector<fastjet::PseudoJet> out_jets       = sorted_by_pt( selected_eta(thisClustering_area->inclusive_jets(15.0)) );
-	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_eta(thisClustering_basic->inclusive_jets(15.0)) );
+	std::vector<fastjet::PseudoJet> out_jets       = sorted_by_pt( selected_eta(thisClustering_area->inclusive_jets(25.0)) );
+	std::vector<fastjet::PseudoJet> out_jets_basic = sorted_by_pt( selected_eta(thisClustering_basic->inclusive_jets(25.0)) );
 
 	fastjet::Subtractor* subtractor_medi=NULL; fastjet::Subtractor* subtractor_grid=NULL;
 
@@ -804,9 +804,9 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		//print_p4(jet_corr_medi,      "--jet after medi rho4A corr"); print_p4(jet_corr_grid,      "--jet after grid rho4A corr");
 
 		jetpt_rho4A[j]= jet_corr_medi.pt();
-		jetmass_rho4Area[j]= jet_corr_medi.m();
-		jetmass_rhoG4Area[j]= jet_corr_grid.m();
-		//cout<<"rho*A4: "<<jetpt_rho4A[j]<<" , "<<jetmass_rho4Area[j]<<endl;
+		jetmass_rho4A[j]= jet_corr_medi.m();
+		jetmass_rhoG4A[j]= jet_corr_grid.m();
+		//cout<<"rho*A4: "<<jetpt_rho4A[j]<<" , "<<jetmass_rho4A[j]<<endl;
 
 		//Generic Shape correction, arXiv 1211.2811
 		do_GenericShapeSubtract_correction(out_jets.at(j), mBgeMedi.get(), jetpt_shapesubtraction[j], jetmass_shapesubtraction[j], tau2tau1_shapesubtraction[j]);
@@ -1509,7 +1509,7 @@ void ewk::GroomedJetFiller::DoJetCleansing(fastjet::JetDefinition jetDef, std::v
 	sets.push_back( FJparticles_fullneutral );   // neutral particles
 
 	// collect jets
-	vector< vector<fastjet::PseudoJet> > jet_sets = ClusterSets(jetDef, FJparticles, sets, 15.0);
+	vector< vector<fastjet::PseudoJet> > jet_sets = ClusterSets(jetDef, FJparticles, sets, 25.0);
 	vector<fastjet::PseudoJet> jets_plain     = jet_sets[0];
 	vector<fastjet::PseudoJet> jets_tracks_LV = jet_sets[1];
 	vector<fastjet::PseudoJet> jets_tracks_PU = jet_sets[2];
