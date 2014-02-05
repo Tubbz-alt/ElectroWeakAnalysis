@@ -71,6 +71,28 @@ void MyClass::Draw_and_Save(TH2D h2, char* addtional_info){
 	c1->Print(Form("%s/%s_%s_%s.png",plot_Dir_DateTime.Data(), JetType.Data(), PfType.Data(),h2.GetTitle()));
 	delete c1;
 }
+
+void MyClass::DrawPlots(vector< TString > plotnames)
+{
+	TString finalname("");
+	//TCanvas *c1 = new TCanvas(Form("c1_%s",h2.GetTitle()),Form("c1_%s",h2.GetTitle()),200,10,600,600);
+	TCanvas *c1 = new TCanvas(Form("c1_multiplots"),Form("c1_multiplots"),200,10,600,600);
+	c1->cd();
+
+	for(Int_t i=0; i< plotnames.size(); i++){
+		finalname+=plotnames[i];
+		TH1* h1;
+		cout<<"plotnames[i]="<<plotnames[i]<<endl;
+		fout->GetObject(plotnames[i].Data(), h1);
+		if (i==0) h1->Draw();
+		else h1->Draw("same");
+	}
+
+	c1->Print(Form("%s/multiplots_%s_%s_%s.png",plot_Dir_DateTime.Data(), JetType.Data(), PfType.Data(),finalname.Data()));
+	delete c1;
+}
+
+
 /*
    Bool_t MyClass::preSelect()
    {
@@ -983,7 +1005,8 @@ void MyClass::Loop() {
 
 	Long64_t nbytes = 0, nb = 0;
 	//for (Long64_t jentry=0; jentry<nentries;jentry++)
-	for (Long64_t jentry=0; jentry<nentries && jentry <100000;jentry++)
+	//for (Long64_t jentry=0; jentry<nentries && jentry <100000;jentry++)
+	for (Long64_t jentry=0; jentry<nentries && jentry <1000;jentry++)
 	{
 		//cout<<"jentry="<<jentry<<endl;
 		Long64_t ientry = LoadTree(jentry);
@@ -1132,6 +1155,15 @@ void MyClass::Loop() {
 		Draw_and_Save(jct.get_hist1D(vect_allvar[m].Data()) );
 	}
 
+
+	vector< TString > vect_pt_corrected;
+	vect_pt_corrected.clear();
+	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt")) );
+	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_A4L")) );
+	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jecL1")) );
+	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_comb")) );
+	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jetcleansing2")) );
+	DrawPlots(vect_pt_corrected);
 
 	//	Draw_and_Save(h1_PFCor_jec_recogenptratio);
 	//	Draw_and_Save(h1_PFCor_uncorr_recogenptratio);
@@ -1344,5 +1376,13 @@ void MyClass::Loop() {
 	//	Draw_and_Save(h1_PFCor_mass              );
 	//	Draw_and_Save(h2_RECO_mass_jec_vs_PV);
 
+
+	fout->Write();// fout->Close();
+
 } /**/
+
+
+
+void MyClass::Draw_and_Print_All() { }
+
 
