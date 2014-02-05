@@ -176,7 +176,7 @@ namespace ewk
 			Double_t getrho_Hand2(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
 			Double_t getrho_Grid(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
 			fastjet::PseudoJet do_rhoA_correction(fastjet::PseudoJet jet_origin, double rho, double area);
-			void do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtract, Double_t& rhom);
+			void do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtraction, Double_t& rhom);
 			void get_nsubjettiness(fastjet::PseudoJet jet_origin, float &tau1, float &tau2, float &tau3, float &tau4, float & tau2tau1);
 
 			//Jet Cleansing
@@ -249,10 +249,10 @@ namespace ewk
 			float tau2[NUM_JET_MAX];
 			float tau3[NUM_JET_MAX];
 			float tau4[NUM_JET_MAX];
-			float tau1_shapesubtract[NUM_JET_MAX];
-			float tau2_shapesubtract[NUM_JET_MAX];
-			float tau3_shapesubtract[NUM_JET_MAX];
-			float tau4_shapesubtract[NUM_JET_MAX];
+			float tau1_shapesubtraction[NUM_JET_MAX];
+			float tau2_shapesubtraction[NUM_JET_MAX];
+			float tau3_shapesubtraction[NUM_JET_MAX];
+			float tau4_shapesubtraction[NUM_JET_MAX];
 			float tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float tau2_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
 			float tau3_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
