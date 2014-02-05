@@ -176,7 +176,7 @@ namespace ewk
 			Double_t getrho_Hand2(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
 			Double_t getrho_Grid(std::vector<fastjet::PseudoJet>  FJparticles, fastjet::Subtractor** subtractor);
 			fastjet::PseudoJet do_rhoA_correction(fastjet::PseudoJet jet_origin, double rho, double area);
-			void do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtract);
+			void do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtract, Double_t& rhom);
 			void get_nsubjettiness(fastjet::PseudoJet jet_origin, float &tau1, float &tau2, float &tau3, float &tau4, float & tau2tau1);
 
 			//Jet Cleansing
@@ -363,6 +363,7 @@ namespace ewk
 			float jetmass_rhoGArea[NUM_JET_MAX];
 			float jetmass_rho4A[NUM_JET_MAX];
 			float jetmass_rhoG4A[NUM_JET_MAX];
+			float jetmass_rhom4Am[NUM_JET_MAX];
 			float jetmass_shapesubtraction[NUM_JET_MAX];
 			float jetmass_trimmingshapesubtraction[NUM_JET_MAX];
 			float jetmass_JetCleansing_DiffMode[NUM_JETCLEANSING_MODE_MAX];
