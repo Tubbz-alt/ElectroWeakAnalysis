@@ -1,24 +1,27 @@
+//void fianl_step();
+
 void runMyClass() {
 	gROOT->LoadMacro("MyClass.cc+");
 	gROOT->LoadMacro("tdrstyle.C");
 	setTDRStyle(); //plotting style
 
-	runMyClass_signle(0, "AK5", "PF");
-	runMyClass_signle(0, "AK5", "PFCHS");
+	//runMyClass_signle(0, "AK5", "PF");
+	//runMyClass_signle(0, "AK5", "PFCHS");
 	//runMyClass_signle(0, "AK8", "PF");
 	//runMyClass_signle(0, "AK8", "PFCHS");
 
 	//runMyClass_signle(1, "AK5", "PF");
 	//runMyClass_signle(1, "AK5", "PFCHS");
 	runMyClass_signle(1, "AK8", "PF");
-	runMyClass_signle(1, "AK8", "PFCHS");
+	//runMyClass_signle(1, "AK8", "PFCHS");
 
-	runMyClass_signle(2, "AK8", "PF");
-	runMyClass_signle(2, "AK8", "PFCHS");
-
+	//runMyClass_signle(2, "AK8", "PF");
+	//runMyClass_signle(2, "AK8", "PFCHS");
 
 	//runMyClass_signle(1, "AK12", "PF");
 	//runMyClass_signle(1, "AK12", "PFCHS");
+	
+	//fianl_step();
 
 }
 
@@ -60,23 +63,29 @@ void runMyClass_signle( Int_t isBoosted, TString jetlable, TString pflable)
 	}else if (final_state.Contains("Dijets")) {
 
 		//file1 = new TFile("dijetsanalysisntuple.root");
-		file1 = new TFile("full_dijetsanalysisntuple_Dec4.root");
-		//file1 = new TFile("full_PU50_dijetsanalysisntuple.root");
+		//file1 = new TFile("full_dijetsanalysisntuple_Dec4.root");
+		file1 = new TFile("full_PU50_dijetsanalysisntuple.root");
 		tree1 = (TTree*) file1->Get("Dijets");
 
 	}else{
 		cout<<"Wrong final state: "<<final_state<<endl;
 	}
-	TFile *fout = new TFile(Form("%s/out_%s.root", plot_Dir_DateTime, boostedlable.Data()), "RECREATE");
-
 
 	MyClass* analyzor;
 	cout<<"final_state="<<final_state.Data()<<endl;
 	analyzor =  new MyClass(tree1, final_state.Data(), jetlable.Data(), pflable.Data(), isBoosted, plot_Dir_DateTime);
 	analyzor->Loop();
 
-	fout->Write();
-	fout->Close();
+
 
 }
 
+//void fianl_step( char* plot_Dir_DateTime, TString boostedlable)
+/*void fianl_step( )
+{
+	//TFile *file = new TFile(Form("%s/out_%s.root", plot_Dir_DateTime, boostedlable.Data()));
+	TFile *file = new TFile("out_unboosted.root");
+	TH1D *h1 ;
+	file->GetObject("h1_JCT_ZJet_nPV", h1);
+	h1->Draw();
+}*/
