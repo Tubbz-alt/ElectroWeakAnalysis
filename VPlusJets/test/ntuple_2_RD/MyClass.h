@@ -58,6 +58,8 @@ class Table_Tool{ //print out tables into txt
 
 class MyClass {
 	public :
+		TFile *fout;
+
 		Efficiency_Tool efftool;//efficiency tool
 		//Bool_t   isBoosted;//boosted Z or not
 		Int_t   isBoosted;//boosted Z or not
@@ -825,20 +827,24 @@ class MyClass {
 		void     Draw_and_Save(TH1D, TH1D, TH1D, TH1D);
 		void     Draw_and_Save(TH2D, char* addtional_info="");
 
+		void     DrawPlots(vector< TString >);
+
+		void     Draw_and_Print_All();
+
 };
 
 class RealVarArray{
 	public:
-	TString name;
-	Int_t nbin;
-	Double_t xmin;
-	Double_t xmax;
-	std::vector< Double_t > vect_x;
-	std::vector< Double_t > vect_weight;
+		TString name;
+		Int_t nbin;
+		Double_t xmin;
+		Double_t xmax;
+		std::vector< Double_t > vect_x;
+		std::vector< Double_t > vect_weight;
 
-	RealVarArray(const char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax);
-	RealVarArray();
-	~RealVarArray(){};
+		RealVarArray(const char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax);
+		RealVarArray();
+		~RealVarArray(){};
 };
 
 typedef map<TString, RealVarArray> MAP_REALVARARRAY;
@@ -924,8 +930,12 @@ bool match_dR(double a1, double a2, double b1, double b2, double delta=0.3, TH1D
 //MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted, char* plot_dir) : fChain(0) 
 MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Int_t in_isBoosted, char* plot_dir) : fChain(0) 
 {
+	//fout = new TFile(Form("%s/out_%s.root", plot_Dir_DateTime , boostedlable.Data()), "RECREATE");
+	fout = new TFile(Form("%s/out.root", plot_Dir_DateTime.Data() ), "RECREATE");
+
 	// if parameter tree is not specified (or zero), connect the file
 	// used to generate this class and read the Tree.
+
 	if (tree == 0) {
 		TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("zmumujetsanalysisntuple.root");
 		if (!f || !f->IsOpen()) {
@@ -1693,11 +1703,10 @@ void Table_Tool::Insert(TString x_name, TString y_name, Double_t value){
 
 	table_value[x_pos][y_pos]=value;
 
-
 }
 
 void Table_Tool::PrintTable(ofstream &fout)
-//void Table_Tool::PrintTable()
+		//void Table_Tool::PrintTable()
 {
 	//first line
 	fout<<"Table \t";
