@@ -197,6 +197,7 @@ ewk::GroomedJetFiller::GroomedJetFiller(const char *name,
 	SetBranch( jetmass_rhoGArea, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoGArea");
 	SetBranch( jetmass_rho4A, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rho4A");
 	SetBranch( jetmass_rhoG4A, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhoG4A");
+	SetBranch( jetmass_rhom4Am, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_rhom4Am");
 	SetBranch( jetmass_shapesubtraction, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_shapesubtraction");
 	SetBranch( jetmass_trimmingshapesubtraction, lableGen + "GroomedJet_" + jetAlgorithmLabel_ + additionalLabel + "_mass_trimmingshapesubtraction");
 
@@ -521,6 +522,7 @@ void ewk::GroomedJetFiller::Init(){
 		jetmass_rhoGArea[j] = -1.;
 		jetmass_rho4A[j] = -1.;
 		jetmass_rhoG4A[j] = -1.;
+		jetmass_rhom4Am[j] = -1.;
 		jetmass_shapesubtraction[j] = -1.;
 		jetmass_trimmingshapesubtraction[j] = -1.;
 
@@ -695,6 +697,7 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 	//for jet constituents PID and charge
 	for(size_t i = 0; i < FJparticles.size(); ++ i) {
 		fastjet::PseudoJet  P = FJparticles[i];
+		//print_p4(P, "constituents", 1);
 		PF_id_handle.push_back(P.user_info<PseudoJetUserInfo>().pdg_id());
 		if(isGenJ)charge_handle_Gen.push_back(P.user_info<PseudoJetUserInfo>().charge());
 	}
@@ -803,18 +806,27 @@ void ewk::GroomedJetFiller::fill(const edm::Event& iEvent, std::vector<fastjet::
 		fastjet::PseudoJet jet_corr_grid = (*subtractor_grid)(out_jets.at(j));
 		//print_p4(jet_corr_medi,      "--jet after medi rho4A corr"); print_p4(jet_corr_grid,      "--jet after grid rho4A corr");
 
+		//print_p4(jet_corr_medi, "rho medi");
 		jetpt_rho4A[j]= jet_corr_medi.pt();
 		jetmass_rho4A[j]= jet_corr_medi.m();
 		jetmass_rhoG4A[j]= jet_corr_grid.m();
 		//cout<<"rho*A4: "<<jetpt_rho4A[j]<<" , "<<jetmass_rho4A[j]<<endl;
 
 		//Generic Shape correction, arXiv 1211.2811
-		do_GenericShapeSubtract_correction(out_jets.at(j), mBgeMedi.get(), jetpt_shapesubtraction[j], jetmass_shapesubtraction[j], tau2tau1_shapesubtraction[j]);
+		Double_t rhom=0.0;
+		do_GenericShapeSubtract_correction(out_jets.at(j), mBgeMedi.get(), jetpt_shapesubtraction[j], jetmass_shapesubtraction[j], tau2tau1_shapesubtraction[j], rhom);
 		//cout<<"shapesubtraction: "<<jetpt_shapesubtraction[j]<<" , "<<jetmass_shapesubtraction[j]<<endl;
+		
+		//modified 4A for jet mass: p_sub = p_raw -rho*A4 - rhom*A4m
+		fastjet::PseudoJet area_4vector=out_jets.at(j).area_4vector();
+		fastjet::PseudoJet jet_corr_rhom4Am;
+		jet_corr_rhom4Am.reset( jet_corr_medi.px(), jet_corr_medi.py(), jet_corr_medi.pz()-rhom*area_4vector.pz(), jet_corr_medi.E()-rhom*area_4vector.E());
+		//print_p4(jet_corr_rhom4Am, "rhom4Am");
+		jetmass_rhom4Am[j]= jet_corr_rhom4Am.m();
 
 		//Trimming+Shapesubtraction
 		fastjet::PseudoJet out_jets_trimming=trimmer1( out_jets.at(j) );
-		do_GenericShapeSubtract_correction(out_jets_trimming, mBgeMedi.get(), jetpt_trimmingshapesubtraction[j], jetmass_trimmingshapesubtraction[j], tau2tau1_trimmingshapesubtraction[j]);
+		do_GenericShapeSubtract_correction(out_jets_trimming, mBgeMedi.get(), jetpt_trimmingshapesubtraction[j], jetmass_trimmingshapesubtraction[j], tau2tau1_trimmingshapesubtraction[j], rhom);
 		//cout<<"trimmingshapesubtraction: "<<jetpt_trimmingshapesubtraction[j]<<" , "<<jetmass_trimmingshapesubtraction[j]<<endl;
 
 
@@ -1382,7 +1394,7 @@ fastjet::PseudoJet ewk::GroomedJetFiller::do_rhoA_correction(fastjet::PseudoJet 
 
 
 
-void ewk::GroomedJetFiller::do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtraction)
+void ewk::GroomedJetFiller::do_GenericShapeSubtract_correction(fastjet::PseudoJet jet_origin, fastjet::BackgroundEstimatorBase* bge_rho, float& jetpt_new, float& jetmass_new, float& tau2tau1_shapesubtraction, Double_t& rhom)
 {
 	Mass jetshape_mass; 
 	Pt   jetshape_pt;
@@ -1415,6 +1427,7 @@ void ewk::GroomedJetFiller::do_GenericShapeSubtract_correction(fastjet::PseudoJe
 	  cout << "  1st order: " << info.first_order_subtracted() << endl;
 	  cout << "# step used: " << info.ghost_scale_used() << endl;
 	  */
+	  
 
 	jetmass_new = gen_sub(jetshape_mass, jet_origin, info);
 	/*cout<< "uncorr mass = " << jetshape_mass(jet_origin) << endl;
@@ -1428,11 +1441,12 @@ void ewk::GroomedJetFiller::do_GenericShapeSubtract_correction(fastjet::PseudoJe
 	  cout << "# step used: " << info.ghost_scale_used() << endl;
 	  */
 	  
+	  
 
 	//cout<<"unsubtracted jets: "<<tau21(jet_origin)<<endl;
 	//cout<<"  subtracted jets: "<<gen_sub(tau21, jet_origin)<<endl;
 	tau2tau1_shapesubtraction = gen_sub(tau21, jet_origin); 
-
+	rhom=info.rhom();
 }
 
 void  ewk::GroomedJetFiller::get_nsubjettiness(fastjet::PseudoJet jet_origin, float &tau1, float &tau2, float &tau3, float &tau4, float & tau2tau1){
