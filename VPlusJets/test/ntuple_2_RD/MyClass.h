@@ -820,7 +820,7 @@ class MyClass {
 		//MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
 		MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Int_t in_isBoosted,char* plot_dir); //JetType: AK5 AK8, PF PFCHS 
 		virtual ~MyClass();
-		virtual Int_t    Cut(Long64_t entry);
+		//virtual Int_t    Cut(Long64_t entry);
 		virtual Bool_t   preSelect();
 		virtual Int_t    GetEntry(Long64_t entry);
 		virtual Long64_t LoadTree(Long64_t entry);
@@ -885,49 +885,6 @@ class JetCorrectionTool{
 
 };
 
-
-class mean_rms_tool{
-	public:
-		string name;
-		Int_t nbinx;
-		Double_t xmin;
-		Double_t xmax;
-		TH1D hist;
-		std::vector<Double_t> vector_x;
-		std::vector< std::vector<Double_t> > vectors_y;
-		mean_rms_tool(char* in_name, Int_t in_nbinx, Double_t in_xmin, Double_t in_xmax, Int_t in_nbiny=1, Double_t in_ymin=0, Double_t in_ymax=0);
-		~mean_rms_tool(){};
-		void Fill(Double_t in_x, Double_t in_y);
-		TH1D get_hist1D();
-		TH1D get_mr_hist();
-		TH1D get_mr_hist(Double_t y_min, Double_t y_max);
-};
-
-class correlation_tool{
-	public:
-		string name;
-
-		Int_t xnbin;
-		Double_t xmin;
-		Double_t xmax;
-		Int_t ynbin;
-		Double_t ymin;
-		Double_t ymax;
-		TGraph gr;
-		Int_t nPoints;//for gr
-		TH2D hist2D;
-		TH1D hist1D;
-		TH1D hist1D_response;
-
-		correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax);
-		correlation_tool(char* in_name, char* in_title, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax);
-		~correlation_tool(){}//{if(hist2D)delete hist2D;}
-		void Fill(Double_t in_x, Double_t in_y);
-		TH2D get_hist2D();
-		TH1D get_hist1D();
-		TH1D get_hist1D_response();
-		TGraph get_graph();
-};
 
 bool equal(double a1, double a2, double delta=1e-3);
 bool match_dR(double a1, double a2, double b1, double b2, double delta=0.3, TH1D* h1=NULL);
@@ -1399,98 +1356,13 @@ void MyClass::Show(Long64_t entry)
 	if (!fChain) return;
 	fChain->Show(entry);
 }
-Int_t MyClass::Cut(Long64_t entry)
+/*Int_t MyClass::Cut(Long64_t entry)
 {
 	// This function may be called from Loop.
 	// returns  1 if entry is accepted.
 	// returns -1 otherwise.
 	return 1;
-}
-
-
-//		std::vector<Double_t> vector_x;
-//		std::vector<std::vector<Double_t>> vectors_y;
-mean_rms_tool::mean_rms_tool(char* in_name, Int_t in_nbinx, Double_t in_xmin, Double_t in_xmax, Int_t in_nbiny, Double_t in_ymin, Double_t in_ymax){
-	name=in_name;
-	nbinx=in_nbinx;
-	xmax=in_xmax;
-	xmin=in_xmin;
-	hist=TH1D(Form("h1_%s", in_name), Form("h1_%s", in_name), in_nbiny, in_ymin, in_ymax);
-	for(Int_t i=0;i<=in_nbinx;i++){
-		vector_x.push_back( in_xmin + (in_xmax- in_xmin)/in_nbinx * i) ;
-		if(i>0){
-			std::vector<Double_t> tmp_vect_y;
-			vectors_y.push_back(tmp_vect_y);
-		}
-	}
-}
-void mean_rms_tool::Fill(Double_t in_x, Double_t in_y){
-	if( in_x <xmin || in_x >= xmax)return;
-
-	for(Int_t i=0;i<nbinx;i++){
-		if( in_x >=vector_x[i] && in_x <vector_x[i+1]  ){
-			vectors_y[i].push_back(in_y);
-		}
-	}
-	hist.Fill(in_y);
-}
-TH1D mean_rms_tool::get_hist1D(){ return hist;}
-TH1D mean_rms_tool::get_mr_hist(){
-	TH1D h1(name.c_str(), name.c_str(), nbinx, xmin, xmax);
-	//cout<<"mrt "<<name.c_str()<<" :"<<endl; 
-	for(Int_t i=0;i<nbinx;i++){
-		Int_t n_y=vectors_y[i].size(); 
-		Double_t * array_y=new Double_t[n_y];
-		for(Int_t k=0;k<n_y;k++)array_y[k]=vectors_y[i][k];
-		Double_t mean=TMath::Mean(n_y, array_y);
-		Double_t rms=TMath::RMS(n_y, array_y);
-		h1.SetBinContent(i+1,mean);
-		h1.SetBinError(i+1, rms);
-		//cout<<"    point "<<i+1<<" :{ "<<mean<<" , "<<rms<<" }"<<endl; 
-	}
-	return h1;
-}
-
-TH1D mean_rms_tool::get_mr_hist(Double_t y_min, Double_t y_max){
-	TH1D h1=get_mr_hist();
-	h1.GetYaxis()->SetRangeUser(y_min, y_max);
-	return h1;
-}
-
-
-correlation_tool::correlation_tool(char* in_name, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax){
-	hist2D=TH2D(Form("h2_%s",in_name), Form("h2_%s",in_name), in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
-	hist1D=TH1D(Form("h1_%s",in_name), Form("h1_%s",in_name), in_ynbin, in_ymin, in_ymax);
-	hist1D_response=TH1D(Form("h1_%s_response",in_name), Form("h1_%s_response",in_name), 300, 0., 3.);
-	xnbin=in_xnbin; xmin =in_xmin; xmax =in_xmax;
-	ynbin=in_ynbin; ymin =in_ymin; ymax =in_ymax;
-	nPoints=0;
-}
-
-correlation_tool::correlation_tool(char* in_name, char* in_title, Int_t in_xnbin, Double_t in_xmin, Double_t in_xmax, Int_t in_ynbin, Double_t in_ymin, Double_t in_ymax){
-	hist2D=TH2D(Form("h2_%s",in_name), Form("h2_%s",in_title), in_xnbin, in_xmin, in_xmax, in_ynbin, in_ymin, in_ymax);
-	hist1D=TH1D(Form("h1_%s",in_name), Form("h1_%s",in_name), in_ynbin, in_ymin, in_ymax);
-	hist1D_response=TH1D(Form("h1_%s_response",in_name), Form("h1_%s_response",in_name), 100, 0., 2.);
-	xnbin=in_xnbin; xmin =in_xmin; xmax =in_xmax;
-	ynbin=in_ynbin; ymin =in_ymin; ymax =in_ymax;
-	nPoints=0;
-}
-
-void correlation_tool::Fill(Double_t in_x, Double_t in_y){
-	if( in_x > xmin && in_x <xmax && in_y>ymin && in_y <ymax){
-		hist2D.Fill(in_x, in_y);
-		hist1D.Fill(in_y);
-		hist1D_response.Fill(in_y/in_x);
-		gr.SetPoint(nPoints, in_x, in_y);
-		nPoints++;
-	}
-};
-
-TH2D correlation_tool::get_hist2D(){return hist2D;}
-TH1D correlation_tool::get_hist1D(){return hist1D;}
-TH1D correlation_tool::get_hist1D_response(){return hist1D_response;}
-TGraph correlation_tool::get_graph(){return gr;}
-
+}*/
 
 
 Efficiency_Tool::Efficiency_Tool(){
@@ -1549,8 +1421,7 @@ void JetCorrectionTool::addVar( RealVarArray x) {
 }
 
 Bool_t JetCorrectionTool::fill( TString var_name, Double_t in_val, Double_t eventweight, Bool_t debug){
-	MAP_REALVARARRAY::iterator it=map_obs.find(var_name);
-
+	//MAP_REALVARARRAY::iterator it=map_obs.find(var_name);
 	if ( !find_var_in_map(map_obs, var_name) ) { cout<<"When fill, fail to find "<<var_name.Data()<<endl; return 0;}
 	else {
 		if(debug) cout<<var_name.Data()<<" = "<<in_val<<endl;
@@ -1573,7 +1444,7 @@ TH1D JetCorrectionTool::get_hist1D(TString var_name){
 	if ( !find_var_in_map(map_obs, var_name) ) { cout<<"When get_hist1D, fail to find "<<var_name.Data()<<endl;TH1D("h1","h1",1,0,1);}
 
 	TH1D h1(Form("h1_JCT_%s_%s", name.Data(),var_name.Data()), Form("h1_JCT_%s_%s;%s;Event Number", name.Data(),var_name.Data(), var_name.Data()), map_obs[var_name].nbin, map_obs[var_name].xmin, map_obs[var_name].xmax );
-	for(Int_t k=0;k<map_obs[var_name].vect_x.size();k++){
+	for(Int_t k=0;k<Int_t(map_obs[var_name].vect_x.size());k++){
 		h1.Fill( map_obs[var_name].vect_x[k], map_obs[var_name].vect_weight[k] ); 
 	}
 	return h1;
@@ -1586,7 +1457,7 @@ TH1D JetCorrectionTool::get_hist1D_response( TString xdenominator_var_name,TStri
 
 	TH1D h1(Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), Form("h1response_JCT_%s_%s_%s;%s/%s;Event Number", name.Data(),xnumerator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), nbin, xmin, xmax);
 	if( map_obs[xdenominator_var_name].vect_x.size() == map_obs[xnumerator_var_name].vect_x.size() ){
-		for(Int_t k=0;k<map_obs[xdenominator_var_name].vect_x.size();k++){
+		for(Int_t k=0;k<Int_t(map_obs[xdenominator_var_name].vect_x.size());k++){
 			h1.Fill( map_obs[xnumerator_var_name].vect_x[k]/ map_obs[xdenominator_var_name].vect_x[k], map_obs[xnumerator_var_name].vect_weight[k] ); 
 		}
 		return h1;
@@ -1600,7 +1471,7 @@ TH2D JetCorrectionTool::get_hist2D( TString x_var_name,TString y_var_name ){
 
 	TH2D h2(Form("h2_JCT_%s_%s_%s", name.Data(),y_var_name.Data(),x_var_name.Data()), Form("h2_JCT_%s_%s_%s;%s;%s;", name.Data(),y_var_name.Data(),x_var_name.Data(), x_var_name.Data(), y_var_name.Data()), map_obs[x_var_name].nbin, map_obs[x_var_name].xmin, map_obs[x_var_name].xmax, map_obs[y_var_name].nbin, map_obs[y_var_name].xmin, map_obs[y_var_name].xmax  );
 	if( map_obs[x_var_name].vect_x.size() == map_obs[y_var_name].vect_x.size() ){
-		for(Int_t k=0;k<map_obs[x_var_name].vect_x.size();k++){
+		for(Int_t k=0;k<Int_t(map_obs[x_var_name].vect_x.size());k++){
 			h2.Fill( map_obs[x_var_name].vect_x[k], map_obs[y_var_name].vect_x[k], map_obs[y_var_name].vect_weight[k]); 
 		}
 		return h2;
@@ -1615,7 +1486,7 @@ TGraph JetCorrectionTool::get_graph( TString x_var_name,TString y_var_name ){
 	if ( !find_var_in_map(map_obs, y_var_name) ) { cout<<"When get_graph, fail to find "<<y_var_name.Data()<<endl; return gr;}
 
 	if( map_obs[x_var_name].vect_x.size() == map_obs[y_var_name].vect_x.size() ){
-		for(Int_t k=0;k<map_obs[x_var_name].vect_x.size();k++){
+		for(Int_t k=0;k<Int_t(map_obs[x_var_name].vect_x.size());k++){
 			gr.SetPoint( k,  map_obs[x_var_name].vect_x[k], map_obs[y_var_name].vect_x[k]); 
 		}
 		return gr;
@@ -1643,7 +1514,7 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 		}
 
 
-		for(Int_t k=0;k<map_obs[x_var_name].vect_x.size();k++){
+		for(Int_t k=0;k<Int_t(map_obs[x_var_name].vect_x.size());k++){
 			if( map_obs[x_var_name].vect_x[k] < map_obs[x_var_name].xmin || map_obs[x_var_name].vect_x[k] > map_obs[x_var_name].xmax ) continue;
 
 			for(Int_t i=1;i<=map_obs[x_var_name].nbin;i++){
