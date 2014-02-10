@@ -194,8 +194,9 @@ class MyClass {
 		Float_t         GroomedJet_mass[6];
 		Float_t         GroomedJet_mass_rhoArea[6];
 		Float_t         GroomedJet_mass_rhoGArea[6];
-		Float_t         GroomedJet_mass_rho4Area[6];
-		Float_t         GroomedJet_mass_rhoG4Area[6];
+		Float_t         GroomedJet_mass_rho4A[6];
+		Float_t         GroomedJet_mass_rhoG4A[6];
+		Float_t         GroomedJet_mass_rhom4Am[6];
 		Float_t         GroomedJet_mass_shapesubtraction[6];
 		Float_t         GroomedJet_mass_trimmingshapesubtraction[6];
 		Float_t         GroomedJet_mass_tr[6];
@@ -281,8 +282,9 @@ class MyClass {
 		Float_t         GenGroomedJet_mass[6];
 		Float_t         GenGroomedJet_mass_rhoArea[6];
 		Float_t         GenGroomedJet_mass_rhoGArea[6];
-		Float_t         GenGroomedJet_mass_rho4Area[6];
-		Float_t         GenGroomedJet_mass_rhoG4Area[6];
+		Float_t         GenGroomedJet_mass_rho4A[6];
+		Float_t         GenGroomedJet_mass_rhoG4A[6];
+		Float_t         GenGroomedJet_mass_rhom4Am[6];
 		Float_t         GenGroomedJet_mass_shapesubtraction[6];
 		Float_t         GenGroomedJet_mass_trimmingshapesubtraction[6];
 		Float_t         GenGroomedJet_mass_tr[6];
@@ -567,8 +569,9 @@ class MyClass {
 		TBranch        *b_GroomedJet_mass;   //!
 		TBranch        *b_GroomedJet_mass_rhoArea;   //!
 		TBranch        *b_GroomedJet_mass_rhoGArea;   //!
-		TBranch        *b_GroomedJet_mass_rho4Area;   //!
-		TBranch        *b_GroomedJet_mass_rhoG4Area;   //!
+		TBranch        *b_GroomedJet_mass_rho4A;   //!
+		TBranch        *b_GroomedJet_mass_rhoG4A;   //!
+		TBranch        *b_GroomedJet_mass_rhom4Am;   //!
 		TBranch        *b_GroomedJet_mass_shapesubtraction;   //!
 		TBranch        *b_GroomedJet_mass_trimmingshapesubtraction;   //!
 		TBranch        *b_GroomedJet_mass_tr;   //!
@@ -652,8 +655,9 @@ class MyClass {
 		TBranch        *b_GenGroomedJet_mass;   //!
 		TBranch        *b_GenGroomedJet_mass_rhoArea;   //!
 		TBranch        *b_GenGroomedJet_mass_rhoGArea;   //!
-		TBranch        *b_GenGroomedJet_mass_rho4Area;   //!
-		TBranch        *b_GenGroomedJet_mass_rhoG4Area;   //!
+		TBranch        *b_GenGroomedJet_mass_rho4A;   //!
+		TBranch        *b_GenGroomedJet_mass_rhoG4A;   //!
+		TBranch        *b_GenGroomedJet_mass_rhom4Am;   //!
 		TBranch        *b_GenGroomedJet_mass_shapesubtraction;   //!
 		TBranch        *b_GenGroomedJet_mass_trimmingshapesubtraction;   //!
 		TBranch        *b_GenGroomedJet_mass_tr;   //!
@@ -934,6 +938,7 @@ bool match_dR(double a1, double a2, double b1, double b2, double delta=0.3, TH1D
 //MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Bool_t in_isBoosted, char* plot_dir) : fChain(0) 
 MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfType, Int_t in_isBoosted, char* plot_dir) : fChain(0) 
 {
+	plot_Dir_DateTime=plot_dir;
 	//fout = new TFile(Form("%s/out_%s.root", plot_Dir_DateTime , boostedlable.Data()), "RECREATE");
 	fout = new TFile(Form("%s/out.root", plot_Dir_DateTime.Data() ), "RECREATE");
 
@@ -948,7 +953,6 @@ MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfTyp
 		f->GetObject("ZJet",tree);
 
 	}
-	plot_Dir_DateTime=plot_dir;
 	FinalState=inFinalState;
 	JetType=inJetType;
 	PfType =inPfType;
@@ -1124,8 +1128,9 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass", JetType.Data(), PfType.Data()), GroomedJet_mass, &b_GroomedJet_mass);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rhoArea", JetType.Data(), PfType.Data()), GroomedJet_mass_rhoArea, &b_GroomedJet_mass_rhoArea);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rhoGArea", JetType.Data(), PfType.Data()), GroomedJet_mass_rhoGArea, &b_GroomedJet_mass_rhoGArea);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rho4Area", JetType.Data(), PfType.Data()), GroomedJet_mass_rho4Area, &b_GroomedJet_mass_rho4Area);
-	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rhoG4Area", JetType.Data(), PfType.Data()), GroomedJet_mass_rhoG4Area, &b_GroomedJet_mass_rhoG4Area);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rho4A", JetType.Data(), PfType.Data()), GroomedJet_mass_rho4A, &b_GroomedJet_mass_rho4A);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rhoG4A", JetType.Data(), PfType.Data()), GroomedJet_mass_rhoG4A, &b_GroomedJet_mass_rhoG4A);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_rhom4Am", JetType.Data(), PfType.Data()), GroomedJet_mass_rhom4Am, &b_GroomedJet_mass_rhom4Am);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_shapesubtraction", JetType.Data(), PfType.Data()), GroomedJet_mass_shapesubtraction, &b_GroomedJet_mass_shapesubtraction);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_trimmingshapesubtraction", JetType.Data(), PfType.Data()), GroomedJet_mass_trimmingshapesubtraction, &b_GroomedJet_mass_trimmingshapesubtraction);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_tr", JetType.Data(), PfType.Data()), GroomedJet_mass_tr, &b_GroomedJet_mass_tr);
@@ -1210,8 +1215,9 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass", JetType.Data() ), GenGroomedJet_mass, &b_GenGroomedJet_mass);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rhoArea", JetType.Data() ), GenGroomedJet_mass_rhoArea, &b_GenGroomedJet_mass_rhoArea);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rhoGArea", JetType.Data() ), GenGroomedJet_mass_rhoGArea, &b_GenGroomedJet_mass_rhoGArea);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rho4Area", JetType.Data() ), GenGroomedJet_mass_rho4Area, &b_GenGroomedJet_mass_rho4Area);
-	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rhoG4Area", JetType.Data() ), GenGroomedJet_mass_rhoG4Area, &b_GenGroomedJet_mass_rhoG4Area);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rho4A", JetType.Data() ), GenGroomedJet_mass_rho4A, &b_GenGroomedJet_mass_rho4A);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rhoG4A", JetType.Data() ), GenGroomedJet_mass_rhoG4A, &b_GenGroomedJet_mass_rhoG4A);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_rhom4Am", JetType.Data() ), GenGroomedJet_mass_rhom4Am, &b_GenGroomedJet_mass_rhom4Am);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_shapesubtraction", JetType.Data() ), GenGroomedJet_mass_shapesubtraction, &b_GenGroomedJet_mass_shapesubtraction);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_trimmingshapesubtraction", JetType.Data() ), GenGroomedJet_mass_trimmingshapesubtraction, &b_GenGroomedJet_mass_trimmingshapesubtraction);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_tr", JetType.Data() ), GenGroomedJet_mass_tr, &b_GenGroomedJet_mass_tr);
