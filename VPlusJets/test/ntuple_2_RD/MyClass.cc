@@ -571,55 +571,6 @@ void MyClass::Loop() {
 	DrawPlots(vect_pt_corrected);
 
 	cout<<"=========== Draw Response Plots ============="<<endl; // pt, mass, tau2tau1 responce
-/*	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_A4L1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jecAll", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jecL1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing2", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing3", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing4", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing5", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing6", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing7", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing8", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_jetcleansing9", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_comb", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_raw", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_rhoGridL1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_rhoHand2L1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_rhoHandL1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_rhoswL1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_pt", "reco_pt_shapesubtraction", nbin_ratio, ratio_min, ratio_max));
-
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_A4L1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_A4mL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jecAll", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing2", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing3", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing4", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing5", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing6", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing7", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing8", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_jetcleansing9", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_raw", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_rhoGridL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_rhoHandL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_mass", "reco_mass_shapesubtraction", nbin_ratio_mass, ratio_mass_min, ratio_mass_max));
-
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing1", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing2", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing3", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing4", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing5", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing6", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing7", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing8", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_jetcleansing9", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_raw", nbin_ratio, ratio_min, ratio_max));
-	Draw_and_Save( jct.get_hist1D_response("gen_tau2tau1", "reco_tau2tau1_shapesubtraction", nbin_ratio, ratio_min, ratio_max));
-*/
 	SaveResponse( jct, "gen_pt", "reco_pt_A4L1", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse( jct, "gen_pt", "reco_pt_jecAll", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse( jct, "gen_pt", "reco_pt_jecL1", nbin_ratio, ratio_min, ratio_max);
@@ -668,56 +619,6 @@ void MyClass::Loop() {
 	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing9", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_raw", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_shapesubtraction", nbin_ratio, ratio_min, ratio_max);
-
-	cout<<"=========== Draw 2D Plots ============="<<endl; // pt, mass, tau2tau1 2D: reco vs gen
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_A4L1"  		), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_A4L1"  		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jecAll"		), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jecAll"		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jecL1"			), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jecL1"			).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing1" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing1" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing2" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing2" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing3" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing3" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing4" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing4" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing5" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing5" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing6" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing6" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing7" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing7" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing8" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing8" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_jetcleansing9" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_jetcleansing9" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_comb" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_comb" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_raw"			), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_raw"			).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_rhoGridL1"		), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_rhoGridL1"		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_rhoHand2L1"	), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_rhoHand2L1"	).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_rhoHandL1"		), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_rhoHandL1"		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_rhoswL1"		), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_rhoswL1"		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_pt", "reco_pt_shapesubtraction" ), Form("%g correlated", jct.get_graph("gen_pt", "reco_pt_shapesubtraction" ).GetCorrelationFactor()) );
-
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_A4L1"			), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_A4L1"			).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_A4mL1"			), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_A4mL1"			).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jecAll"		), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jecAll"		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing1" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing1" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing2" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing2" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing3" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing3" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing4" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing4" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing5" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing5" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing6" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing6" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing7" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing7" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing8" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing8" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_jetcleansing9" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_jetcleansing9" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_raw"			), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_raw"			).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_rhoGridL1"		), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_rhoGridL1"		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_rhoHandL1"		), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_rhoHandL1"		).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_mass", "reco_mass_shapesubtraction" ), Form("%g correlated", jct.get_graph("gen_mass", "reco_mass_shapesubtraction" ).GetCorrelationFactor()) );
-
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing1" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing1" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing2" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing2" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing3" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing3" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing4" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing4" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing5" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing5" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing6" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing6" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing7" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing7" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing8" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing8" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_jetcleansing9" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_jetcleansing9" ).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_raw"			), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_raw"			).GetCorrelationFactor()) );
-	Draw_and_Save( jct.get_hist2D("gen_tau2tau1", "reco_tau2tau1_shapesubtraction" ), Form("%g correlated", jct.get_graph("gen_tau2tau1", "reco_tau2tau1_shapesubtraction" ).GetCorrelationFactor()) );
 
 
 	cout<<"=========== Draw Eta-Depenence Plots ============="<<endl; // pt, mass, tau2tau1 vs eta
@@ -843,5 +744,6 @@ void MyClass::Draw_and_Print_All() { }
 void MyClass::SaveResponse(JetCorrectionTool &jct, TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin, Double_t xmin, Double_t xmax ){
 	RESPONSE responce= jct.get_response(xdenominator_var_name.Data(), xnumerator_var_name.Data(), nbin, xmin, xmax);
 	Draw_and_Save( responce.hist, Form("Mean=%g, RMS=%g", responce.mean, responce.rms ));
+	Draw_and_Save( responce.hist2D, Form("%g correlated", responce.correlationfactor) );
 }
 
