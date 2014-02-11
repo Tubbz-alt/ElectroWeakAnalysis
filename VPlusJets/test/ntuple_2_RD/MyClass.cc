@@ -80,23 +80,39 @@ void MyClass::Draw_and_Save(TH2D h2, char* addtional_info){
 	delete c1;
 }
 
-void MyClass::DrawPlots(vector< TString > plotnames)
+void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title)
 {
 	TString finalname("");
 	//TCanvas *c1 = new TCanvas(Form("c1_%s",h2.GetTitle()),Form("c1_%s",h2.GetTitle()),200,10,600,600);
 	TCanvas *c1 = new TCanvas(Form("c1_multiplots"),Form("c1_multiplots"),200,10,600,600);
 	c1->cd();
 
-	for(Int_t i=0; i< Int_t(plotnames.size()); i++){
-		finalname+=plotnames[i];
+	vector<TH1*> vect_hist;
+	TLegend *leg=new TLegend(0.6,0.5,0.9,0.9);
+	Double_t max_yval=0.;
+	for(Int_t i=0; i< Int_t(plotconfig.size()); i++){
+		finalname+=plotconfig[i].name;
 		TH1* h1;
-		cout<<"plotnames[i]="<<plotnames[i]<<endl;
-		fout->GetObject(plotnames[i].Data(), h1);
+		cout<<"plotconfig[i]="<<plotconfig[i].name.Data()<<endl;
+		fout->GetObject(plotconfig[i].name.Data(), h1);
 		if(h1){
-			if (i==0) h1->Draw();
-			else h1->Draw("same");
-		}else{ cout<<"Can't find "<<plotnames[i].Data()<<endl; }
+			h1->SetLineColor( plotconfig[i].linecolor);
+			h1->SetLineStyle( plotconfig[i].linestyle);
+			vect_hist.push_back(h1);
+			leg->AddEntry(h1,plotconfig[i].title,"lep");
+			Double_t tmpmax=h1->GetMaximum();
+			if(tmpmax>max_yval) max_yval=tmpmax;
+			//if (i==0) h1->Draw(); else h1->Draw("same");
+		}else{ cout<<"Can't find "<<plotconfig[i].name.Data()<<endl; }
 	}
+
+	vect_hist[0]->GetYaxis()->SetRangeUser(0., max_yval*1.2);
+	if(xaxis_title)vect_hist[0]->GetXaxis()->SetTitle(xaxis_title);
+	for(Int_t i=0; i< Int_t(vect_hist.size()); i++){
+		if (i==0) vect_hist[i]->Draw(); 
+		else vect_hist[i]->Draw("same");
+	}
+	leg->Draw();
 
 	c1->Print(Form("%s/multiplots_%s_%s_%s.png",plot_Dir_DateTime.Data(), JetType.Data(), PfType.Data(),finalname.Data()));
 	delete c1;
@@ -561,14 +577,22 @@ void MyClass::Loop() {
 	}
 
 	cout<<"=========== Draw Plots for comparing diff. correction ============="<<endl;
-	vector< TString > vect_pt_corrected;
+	Int_t colorlist[10]={1,2,3,4,6,7,8,10,13,15};
+	vector< PlotConfig > vect_pt_corrected;
 	vect_pt_corrected.clear();
-	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt")) );
-	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_A4L1")) );
-	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jecL1")) );
-	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_comb")) );
-	vect_pt_corrected.push_back( TString(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jetcleansing2")) );
-	DrawPlots(vect_pt_corrected);
+	PlotConfig plot0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt"),                        "Gen",colorlist[0],1);
+	PlotConfig plot1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_raw"),              "RECO RAW",colorlist[1],2);
+	PlotConfig plot2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_A4L1"),          "4-vect area",colorlist[2],3);
+	PlotConfig plot3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jecL1"),               "JECL1",colorlist[3],4);  
+	PlotConfig plot4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_comb"),                 "Comb",colorlist[4],5);
+	PlotConfig plot5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jetcleansing2"),"JetCleansing",colorlist[5],6); 
+	vect_pt_corrected.push_back( plot0);
+	vect_pt_corrected.push_back( plot1);
+	vect_pt_corrected.push_back( plot2);
+	vect_pt_corrected.push_back( plot3);
+	vect_pt_corrected.push_back( plot4);
+	vect_pt_corrected.push_back( plot5);
+	DrawPlots(vect_pt_corrected, "pT");
 
 	cout<<"=========== Draw Response Plots ============="<<endl; // pt, mass, tau2tau1 responce
 	SaveResponse( jct, "gen_pt", "reco_pt_A4L1", nbin_ratio, ratio_min, ratio_max);
