@@ -75,8 +75,10 @@ typedef map<TString, RealVarArray> MAP_REALVARARRAY;
 
 struct RESPONSE{
 	TH1D hist;
+	TH2D hist2D;
 	Double_t mean;
 	Double_t rms;
+	Double_t correlationfactor;
 };
 typedef map<TString, RESPONSE> MAP_RESPONSE;
 
@@ -1524,6 +1526,7 @@ RESPONSE JetCorrectionTool::get_response( TString xdenominator_var_name,TString 
 		if( find_var_in_map( map_response, Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()) ) ){ 
 			return map_response[Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data())];
 		}else{
+			//1D plots
 			TH1D h1(Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), Form("h1response_JCT_%s_%s_%s;%s/%s;Event Number", name.Data(),xnumerator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), nbin, xmin, xmax);
 
 			Int_t tmp_size= Int_t(map_obs[xdenominator_var_name].vect_x.size());
@@ -1551,6 +1554,19 @@ RESPONSE JetCorrectionTool::get_response( TString xdenominator_var_name,TString 
 			response0.mean=mean_weight;
 			response0.rms=rms_weight;
 
+			//2D plots
+			TH2D h2(Form("h2_JCT_%s_%s_%s", name.Data(),xnumerator_var_name.Data(),xdenominator_var_name.Data()), Form("h2_JCT_%s_%s_%s;%s;%s;", name.Data(),xnumerator_var_name.Data(),xdenominator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data()), map_obs[xdenominator_var_name].nbin, map_obs[xdenominator_var_name].xmin, map_obs[xdenominator_var_name].xmax, map_obs[xnumerator_var_name].nbin, map_obs[xnumerator_var_name].xmin, map_obs[xnumerator_var_name].xmax  );
+			TGraph gr;
+
+			for(Int_t k=0;k<Int_t(map_obs[xdenominator_var_name].vect_x.size());k++){
+				h2.Fill( map_obs[xdenominator_var_name].vect_x[k], map_obs[xnumerator_var_name].vect_x[k], map_obs[xnumerator_var_name].vect_weight[k]); 
+				gr.SetPoint( k,  map_obs[xdenominator_var_name].vect_x[k], map_obs[xnumerator_var_name].vect_x[k]); 
+			}
+			response0.hist2D=h2;
+			response0.correlationfactor=gr.GetCorrelationFactor();
+			//correlation factor in 2D plots
+
+			//add to map
 			map_response.insert( MAP_RESPONSE::value_type(h1.GetTitle(), response0) );
 			return response0;
 		}
