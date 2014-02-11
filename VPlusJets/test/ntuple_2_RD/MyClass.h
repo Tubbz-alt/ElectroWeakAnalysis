@@ -56,6 +56,65 @@ class Table_Tool{ //print out tables into txt
 };
 
 
+class RealVarArray{
+	public:
+		TString name;
+		Int_t nbin;
+		Double_t xmin;
+		Double_t xmax;
+		std::vector< Double_t > vect_x;
+		std::vector< Double_t > vect_weight;
+
+		RealVarArray(const char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax);
+		RealVarArray();
+		~RealVarArray(){};
+};
+
+typedef map<TString, RealVarArray> MAP_REALVARARRAY;
+
+
+struct RESPONSE{
+	TH1D hist;
+	Double_t mean;
+	Double_t rms;
+};
+typedef map<TString, RESPONSE> MAP_RESPONSE;
+
+Bool_t find_var_in_map(MAP_REALVARARRAY &map_obs,  TString var_name){
+	MAP_REALVARARRAY::iterator it=map_obs.find(var_name);
+	if (it == map_obs.end() ) { return 0;}
+	else { return 1; }
+}
+Bool_t find_var_in_map(MAP_RESPONSE &map_obs,  TString var_name){
+	MAP_RESPONSE::iterator it=map_obs.find(var_name);
+	if (it == map_obs.end() ) { return 0;}
+	else { return 1; }
+}
+class JetCorrectionTool{
+	private:
+		TString name;
+		MAP_REALVARARRAY map_obs; // reco pt, mass, jet shape, gen pt, eta, phi
+
+	public:
+		JetCorrectionTool(const char* in_name);
+		~JetCorrectionTool(){};
+
+		void addVar( RealVarArray x );
+		Bool_t fill( TString var_name, Double_t in_val, Double_t eventweight=1.0, Bool_t debug=0);
+
+		vector< TString > get_allvar_name();
+		TH1D get_hist1D(TString var_name);
+		TH1D get_hist1D_response( TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin=100, Double_t xmin=0, Double_t xmax=2. );
+		RESPONSE get_response( TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin=100, Double_t xmin=0, Double_t xmax=2. );
+		TH2D get_hist2D( TString x_var_name,TString y_var_name );
+		TGraph get_graph( TString x_var_name,TString y_var_name );
+		TH1D get_mean_rms_hist( TString x_var_name, TString ydenominator_var_name, TString ynumerator_var_name, Double_t ymin=0, Double_t ymax=2.0 );
+
+		MAP_RESPONSE map_response;
+
+};
+
+
 class MyClass {
 	public :
 		TFile *fout;
@@ -829,7 +888,7 @@ class MyClass {
 		virtual Bool_t   Notify();
 		virtual void     Show(Long64_t entry = -1);
 
-		void     Draw_and_Save(TH1D);
+		void     Draw_and_Save(TH1D, char* addtional_info="");
 		void     Draw_and_Save(TH1D, TH1D);
 		void     Draw_and_Save(TH1D, TH1D, TH1D);
 		void     Draw_and_Save(TH1D, TH1D, TH1D, TH1D);
@@ -839,52 +898,9 @@ class MyClass {
 
 		void     Draw_and_Print_All();
 
-};
-
-class RealVarArray{
-	public:
-		TString name;
-		Int_t nbin;
-		Double_t xmin;
-		Double_t xmax;
-		std::vector< Double_t > vect_x;
-		std::vector< Double_t > vect_weight;
-
-		RealVarArray(const char* in_name, Int_t in_nbin, Double_t in_xmin, Double_t in_xmax);
-		RealVarArray();
-		~RealVarArray(){};
-};
-
-typedef map<TString, RealVarArray> MAP_REALVARARRAY;
-
-Bool_t find_var_in_map(MAP_REALVARARRAY &map_obs,  TString var_name){
-	MAP_REALVARARRAY::iterator it=map_obs.find(var_name);
-	if (it == map_obs.end() ) { return 0;}
-	else { return 1; }
-}
-
-
-class JetCorrectionTool{
-	private:
-		TString name;
-		MAP_REALVARARRAY map_obs; // reco pt, mass, jet shape, gen pt, eta, phi
-
-	public:
-		JetCorrectionTool(const char* in_name);
-		~JetCorrectionTool(){};
-
-		void addVar( RealVarArray x );
-		Bool_t fill( TString var_name, Double_t in_val, Double_t eventweight=1.0, Bool_t debug=0);
-
-		vector< TString > get_allvar_name();
-		TH1D get_hist1D(TString var_name);
-		TH1D get_hist1D_response( TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin=100, Double_t xmin=0, Double_t xmax=2. );
-		TH2D get_hist2D( TString x_var_name,TString y_var_name );
-		TGraph get_graph( TString x_var_name,TString y_var_name );
-		TH1D get_mean_rms_hist( TString x_var_name, TString ydenominator_var_name, TString ynumerator_var_name, Double_t ymin=0, Double_t ymax=2.0 );
+		void     SaveResponse(JetCorrectionTool& jct, TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin=100, Double_t xmin=0, Double_t xmax=2. );
 
 };
-
 
 bool equal(double a1, double a2, double delta=1e-3);
 bool match_dR(double a1, double a2, double b1, double b2, double delta=0.3, TH1D* h1=NULL);
@@ -1450,6 +1466,18 @@ TH1D JetCorrectionTool::get_hist1D(TString var_name){
 	return h1;
 }
 
+Double_t RMS_weight(Int_t n, Double_t* array, Double_t* array_weight){
+
+		Double_t mean=TMath::Mean(n, array, array_weight);
+		Double_t rms=0.; //TMath::RMS(tmp_size, array_x);
+		Double_t totalweight=0.;
+		for(Int_t i=0;i<n;i++){
+			rms+=(array[i]-mean)*(array[i]-mean)*array_weight[i]*array_weight[i];
+			totalweight+=array_weight[i]*array_weight[i];
+		}
+		rms=TMath::Sqrt(rms/totalweight);
+		return rms;
+};
 
 TH1D JetCorrectionTool::get_hist1D_response( TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin, Double_t xmin, Double_t xmax ){
 	if ( !find_var_in_map(map_obs, xdenominator_var_name) ) { cout<<"When get_hist1D_response, fail to find "<<xdenominator_var_name.Data()<<endl;return TH1D("h1","h1",1,0,1);}
@@ -1457,11 +1485,76 @@ TH1D JetCorrectionTool::get_hist1D_response( TString xdenominator_var_name,TStri
 
 	TH1D h1(Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), Form("h1response_JCT_%s_%s_%s;%s/%s;Event Number", name.Data(),xnumerator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), nbin, xmin, xmax);
 	if( map_obs[xdenominator_var_name].vect_x.size() == map_obs[xnumerator_var_name].vect_x.size() ){
-		for(Int_t k=0;k<Int_t(map_obs[xdenominator_var_name].vect_x.size());k++){
-			h1.Fill( map_obs[xnumerator_var_name].vect_x[k]/ map_obs[xdenominator_var_name].vect_x[k], map_obs[xnumerator_var_name].vect_weight[k] ); 
+
+
+		Int_t tmp_size= Int_t(map_obs[xdenominator_var_name].vect_x.size());
+		Double_t * array_x=new Double_t[tmp_size];
+		Double_t * array_x_weight=new Double_t[tmp_size];
+
+		for(Int_t k=0;k<tmp_size;k++){
+			Double_t tmp = map_obs[xnumerator_var_name].vect_x[k]/ map_obs[xdenominator_var_name].vect_x[k]; 
+			Double_t tmp_weight = map_obs[xnumerator_var_name].vect_weight[k] ;
+			array_x[k]=tmp;
+			array_x_weight[k]=tmp_weight;
+			h1.Fill( tmp, tmp_weight); 
 		}
+		//Double_t mean=TMath::Mean(tmp_size, array_x);
+		//Double_t rms=TMath::RMS(tmp_size, array_x);
+
+		//Double_t mean_weight=TMath::Mean(tmp_size, array_x, array_x_weight);
+		//Double_t rms_weight=RMS_weight(tmp_size, array_x, array_x_weight);
+
+		//cout<<"======= Draw TH1-response: ========"<<h1.GetTitle()<<endl;
+		//cout<<"     TH1 mean, rms, relative-rms= "<<h1.GetMean()<<", "<<h1.GetRMS()<<", "<<h1.GetRMS()/h1.GetMean()<<endl;
+		//cout<<"         mean, rms, relative-rms= "<<mean<<", "<<rms<<", "<<rms/mean<<endl;
+		//cout<<"Weighted mean, rms, relative-rms= "<<mean_weight<<", "<<rms_weight<<", "<<rms_weight/mean_weight<<endl;
+
 		return h1;
 	}else { cout<<"When get_hist1D_response, Two var didn't match: "<<xnumerator_var_name.Data()<<" , "<<xdenominator_var_name.Data()<<endl;return TH1D("h1","h1",1,0,1);}
+
+}
+
+RESPONSE JetCorrectionTool::get_response( TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin, Double_t xmin, Double_t xmax ){
+	RESPONSE response0;
+	if ( !find_var_in_map(map_obs, xdenominator_var_name) ) { cout<<"When get_response, fail to find "<<xdenominator_var_name.Data()<<endl;return response0;}
+	if ( !find_var_in_map(map_obs, xnumerator_var_name) ) { cout<<"When get_response, fail to find "<<xnumerator_var_name.Data()<<endl;return response0;}
+
+	if( map_obs[xdenominator_var_name].vect_x.size() == map_obs[xnumerator_var_name].vect_x.size() ){
+
+		if( find_var_in_map( map_response, Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()) ) ){ 
+			return map_response[Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data())];
+		}else{
+			TH1D h1(Form("h1response_JCT_%s_%s_%s", name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), Form("h1response_JCT_%s_%s_%s;%s/%s;Event Number", name.Data(),xnumerator_var_name.Data(), xdenominator_var_name.Data(), xnumerator_var_name.Data(), xdenominator_var_name.Data()), nbin, xmin, xmax);
+
+			Int_t tmp_size= Int_t(map_obs[xdenominator_var_name].vect_x.size());
+			Double_t * array_x=new Double_t[tmp_size];
+			Double_t * array_x_weight=new Double_t[tmp_size];
+
+			for(Int_t k=0;k<tmp_size;k++){
+				Double_t tmp = map_obs[xnumerator_var_name].vect_x[k]/ map_obs[xdenominator_var_name].vect_x[k]; 
+				Double_t tmp_weight = map_obs[xnumerator_var_name].vect_weight[k] ;
+				array_x[k]=tmp;
+				array_x_weight[k]=tmp_weight;
+				h1.Fill( tmp, tmp_weight); 
+			}
+			Double_t mean=TMath::Mean(tmp_size, array_x);
+			Double_t rms=TMath::RMS(tmp_size, array_x);
+
+			Double_t mean_weight=TMath::Mean(tmp_size, array_x, array_x_weight);
+			Double_t rms_weight=RMS_weight(tmp_size, array_x, array_x_weight);
+
+			cout<<"======= Draw TH1-response: "<<h1.GetTitle()<<endl;
+			cout<<"     TH1 mean, rms, relative-rms= "<<h1.GetMean()<<", "<<h1.GetRMS()<<", "<<h1.GetRMS()/h1.GetMean()<<endl;
+			cout<<"         mean, rms, relative-rms= "<<mean<<", "<<rms<<", "<<rms/mean<<endl;
+			cout<<"Weighted mean, rms, relative-rms= "<<mean_weight<<", "<<rms_weight<<", "<<rms_weight/mean_weight<<endl;
+			response0.hist=h1;
+			response0.mean=mean_weight;
+			response0.rms=rms_weight;
+
+			map_response.insert( MAP_RESPONSE::value_type(h1.GetTitle(), response0) );
+			return response0;
+		}
+	}else { cout<<"When get_response, Two var didn't match: "<<xnumerator_var_name.Data()<<" , "<<xdenominator_var_name.Data()<<endl;return response0;}
 
 }
 
