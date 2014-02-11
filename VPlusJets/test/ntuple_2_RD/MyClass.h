@@ -20,6 +20,7 @@
 #include <TMath.h>
 #include <map>
 #include "fstream"
+#include <TLegend.h>
 using namespace std;
 
 // Header file for the classes stored in the TTree if any.
@@ -114,6 +115,16 @@ class JetCorrectionTool{
 
 		MAP_RESPONSE map_response;
 
+};
+
+class PlotConfig{
+	public:
+		PlotConfig(char* in_name, char* in_title, Int_t in_color=1, Int_t in_style=1);
+		~PlotConfig(){};
+		TString name;
+		TString title;
+		Int_t linecolor;
+		Int_t linestyle;
 };
 
 
@@ -896,7 +907,8 @@ class MyClass {
 		void     Draw_and_Save(TH1D, TH1D, TH1D, TH1D);
 		void     Draw_and_Save(TH2D, char* addtional_info="");
 
-		void     DrawPlots(vector< TString >);
+		//void     DrawPlots(vector< TString >, char* xaxis_title="");
+		void     DrawPlots(vector< PlotConfig >, char* xaxis_title="");
 
 		void     Draw_and_Print_All();
 
@@ -1714,6 +1726,12 @@ void Table_Tool::PrintTable(ofstream &fout)
 		fout<<endl;
 	}
 	fout<<endl;
+}
+
+
+PlotConfig::PlotConfig(char* in_name, char* in_title, Int_t in_color, Int_t in_style){
+	name=in_name; title=in_title;
+	linecolor=in_color; linestyle=in_style;
 }
 
 #endif // #ifdef MyClass_cxx
