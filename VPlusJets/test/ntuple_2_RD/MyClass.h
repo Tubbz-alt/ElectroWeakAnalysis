@@ -52,8 +52,8 @@ class Table_Tool{ //print out tables into txt
 		Table_Tool();
 		~Table_Tool(){};
 		void Insert(TString x_name, TString y_name, Double_t value);
-		void PrintTable(ofstream &fout);
-		//void PrintTable();
+		//void PrintTable(ofstream &fout);
+		void PrintTable();
 };
 
 
@@ -912,7 +912,7 @@ class MyClass {
 
 		void     Draw_and_Print_All();
 
-		void     SaveResponse(JetCorrectionTool& jct, TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin=100, Double_t xmin=0, Double_t xmax=2. );
+		void     SaveResponse(Table_Tool& table, JetCorrectionTool& jct, TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin=100, Double_t xmin=0, Double_t xmax=2. );
 
 };
 
@@ -1648,8 +1648,8 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 
 		}
 
+			cout<<"(x, y_mean, y_rms)= ";
 		for(Int_t j=0; j<map_obs[x_var_name].nbin; j++){ 
-
 			Int_t n_y=vectors_y[j].size(); 
 			if(n_y==0) {
 				h1.SetBinContent(j+1, 0.);
@@ -1661,9 +1661,10 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 				Double_t rms=TMath::RMS(n_y, array_y);
 				h1.SetBinContent(j+1,mean);
 				h1.SetBinError(j+1, rms);
-				cout<<"x="<<h1.GetBinLowEdge(j+1)<<" y_mean="<<mean<<", y_rms="<<rms<<endl;
+				cout<<"("<<h1.GetBinLowEdge(j+1)<<", "<<mean<<", "<<rms<<")";
 			}
 		}
+			cout<<endl;
 
 		h1.GetYaxis()->SetRangeUser(ymin, ymax);
 
@@ -1683,7 +1684,6 @@ Table_Tool::Table_Tool(){
 		}
 	}
 }
-
 void Table_Tool::Insert(TString x_name, TString y_name, Double_t value){
 	Int_t x_pos=-1; Int_t y_pos=-1;
 	for(Int_t m=0;m<iter_x;m++){
@@ -1709,23 +1709,23 @@ void Table_Tool::Insert(TString x_name, TString y_name, Double_t value){
 
 }
 
-void Table_Tool::PrintTable(ofstream &fout)
-		//void Table_Tool::PrintTable()
+//void Table_Tool::PrintTable(ofstream &fout)
+void Table_Tool::PrintTable()
 {
 	//first line
-	fout<<"Table \t";
+	cout<<"Table \t";
 	for(Int_t i=0; i< iter_x; i++)
-	  fout<<xaxis[i]<<" \t";
-	fout<<endl;
+	  cout<<xaxis[i]<<" \t";
+	cout<<endl;
 
 	for(Int_t j=0; j< iter_y; j++){
-		fout<<yaxis[j]<<" \t";
+		cout<<yaxis[j]<<" \t";
 		for(Int_t k=0; k<iter_x; k++){
-			fout<<table_value[k][j]<<" \t";
+			cout<<table_value[k][j]<<" \t";
 		}
-		fout<<endl;
+		cout<<endl;
 	}
-	fout<<endl;
+	cout<<endl;
 }
 
 
