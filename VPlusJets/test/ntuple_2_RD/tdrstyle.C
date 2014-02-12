@@ -48,7 +48,7 @@ void setTDRStyle() {
   // tdrStyle->SetHistFillStyle(0);
   tdrStyle->SetHistLineColor(1);
   tdrStyle->SetHistLineStyle(0);
-  tdrStyle->SetHistLineWidth(1);
+  tdrStyle->SetHistLineWidth(2);
   // tdrStyle->SetLegoInnerR(Float_t rad = 0.5);
   // tdrStyle->SetNumberContours(Int_t number = 20);
 
@@ -72,7 +72,8 @@ void setTDRStyle() {
 
 // For the statistics box:
   tdrStyle->SetOptFile(0);
-  tdrStyle->SetOptStat(0); // To display the mean and RMS:   SetOptStat("mr");
+  tdrStyle->SetOptStat(); // To display the mean and RMS:   SetOptStat("mr");
+  //tdrStyle->SetOptStat("mr"); // To display the mean and RMS:   SetOptStat("mr");
   tdrStyle->SetStatColor(kWhite);
   tdrStyle->SetStatFont(42);
   tdrStyle->SetStatFontSize(0.025);
