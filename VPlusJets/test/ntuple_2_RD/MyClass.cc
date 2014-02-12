@@ -527,6 +527,11 @@ void MyClass::Loop() {
 			//if( GroomedJet_tau2tau1_shapesubtraction[0]<0. || GroomedJet_tau2tau1_shapesubtraction[0] >2 ) GroomedJet_tau2tau1_shapesubtraction[0]=0. ;
 			if( GroomedJet_tau2tau1_shapesubtraction[0]<0. ) GroomedJet_tau2tau1_shapesubtraction[0]=0. ;
 			jct.fill( "reco_tau2tau1_shapesubtraction", GroomedJet_tau2tau1_shapesubtraction[0], EventWeight, debug);
+
+			//because sometimes cleansing+Trimming will totally remove all the consitituents in a jet, so, pt=0, mass=0, tau2tau1=nan. Need to set tau2tau1=0.
+			for(Int_t iz=0;iz<9;iz++){
+				if( GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[iz]]==0 )GroomedJet_tau2tau1_JetCleansing_DiffMode[cleansing_diff_mode[iz]]=0.;
+			}
 			jct.fill( "reco_tau2tau1_jetcleansing1", GroomedJet_tau2tau1_JetCleansing_DiffMode[cleansing_diff_mode[0]], EventWeight, debug);
 			jct.fill( "reco_tau2tau1_jetcleansing2", GroomedJet_tau2tau1_JetCleansing_DiffMode[cleansing_diff_mode[1]], EventWeight, debug);
 			jct.fill( "reco_tau2tau1_jetcleansing3", GroomedJet_tau2tau1_JetCleansing_DiffMode[cleansing_diff_mode[2]], EventWeight, debug);
