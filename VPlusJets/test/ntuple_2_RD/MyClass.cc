@@ -88,8 +88,13 @@ void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title)
 	c1->cd();
 
 	vector<TH1*> vect_hist;
-	TLegend *leg=new TLegend(0.6,0.5,0.9,0.9);
+	TLegend *leg=new TLegend(0.65,0.6,0.9,0.9);
 	Double_t max_yval=0.;
+
+	leg->SetName("theLegend"); leg->SetBorderSize(0); leg->SetLineColor(0); leg->SetFillColor(0);
+	leg->SetFillStyle(0); leg->SetLineWidth(0); leg->SetLineStyle(0); leg->SetTextFont(42);
+	leg->SetTextSize(.045);
+
 	for(Int_t i=0; i< Int_t(plotconfig.size()); i++){
 		finalname+=plotconfig[i].name;
 		TH1* h1;
@@ -417,8 +422,8 @@ void MyClass::Loop() {
 	Int_t cleansing_diff_mode[9]={0, 2, 3, 12, 13, 14, 15, 16, 17};
 
 	Long64_t nbytes = 0, nb = 0;
-	//for (Long64_t jentry=0; jentry<nentries;jentry++)
-	for (Long64_t jentry=0; jentry<nentries && jentry <20000;jentry++)
+	for (Long64_t jentry=0; jentry<nentries;jentry++)
+	//for (Long64_t jentry=0; jentry<nentries && jentry <20000;jentry++)
 	{
 		//cout<<"jentry="<<jentry<<endl;
 		Long64_t ientry = LoadTree(jentry);
@@ -580,69 +585,107 @@ void MyClass::Loop() {
 	Int_t colorlist[10]={1,2,3,4,6,7,8,10,13,15};
 	vector< PlotConfig > vect_pt_corrected;
 	vect_pt_corrected.clear();
-	PlotConfig plot0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt"),                        "Gen",colorlist[0],1);
-	PlotConfig plot1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_raw"),              "RECO RAW",colorlist[1],2);
-	PlotConfig plot2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_A4L1"),          "4-vect area",colorlist[2],3);
-	PlotConfig plot3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jecL1"),               "JECL1",colorlist[3],4);  
-	PlotConfig plot4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_comb"),                 "Comb",colorlist[4],5);
-	PlotConfig plot5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jetcleansing2"),"JetCleansing",colorlist[5],6); 
-	vect_pt_corrected.push_back( plot0);
-	vect_pt_corrected.push_back( plot1);
-	vect_pt_corrected.push_back( plot2);
-	vect_pt_corrected.push_back( plot3);
-	vect_pt_corrected.push_back( plot4);
-	vect_pt_corrected.push_back( plot5);
+	PlotConfig plot_pt_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt"),                        "Gen",colorlist[0],1);
+	PlotConfig plot_pt_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_raw"),              "RECO RAW",colorlist[1],2);
+	PlotConfig plot_pt_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_A4L1"),          "4-vect area",colorlist[2],3);
+	PlotConfig plot_pt_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jecL1"),               "JECL1",colorlist[3],4);  
+	PlotConfig plot_pt_4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_shapesubtraction"), "Shape Subtraction",colorlist[4],5);
+	PlotConfig plot_pt_5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jetcleansing2"),"JetCleansing",colorlist[5],6); 
+	vect_pt_corrected.push_back( plot_pt_0);
+	vect_pt_corrected.push_back( plot_pt_1);
+	vect_pt_corrected.push_back( plot_pt_2);
+	vect_pt_corrected.push_back( plot_pt_3);
+	vect_pt_corrected.push_back( plot_pt_4);
+	vect_pt_corrected.push_back( plot_pt_5);
 	DrawPlots(vect_pt_corrected, "pT");
 
+	vector< PlotConfig > vect_mass_corrected;
+	vect_mass_corrected.clear();
+	PlotConfig plot_mass_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_mass"),                        "Gen",colorlist[0],1);
+	PlotConfig plot_mass_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_raw"),              "RECO RAW",colorlist[1],2);
+	PlotConfig plot_mass_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_A4L1"),          "4-vect area",colorlist[2],3);
+	PlotConfig plot_mass_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jecAll"),               "JEC",colorlist[3],4);  
+	PlotConfig plot_mass_4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_shapesubtraction"), "Shape Subtraction",colorlist[4],5);
+	PlotConfig plot_mass_5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing2"),"JetCleansing",colorlist[5],6); 
+	vect_mass_corrected.push_back( plot_mass_0);
+	vect_mass_corrected.push_back( plot_mass_1);
+	vect_mass_corrected.push_back( plot_mass_2);
+	vect_mass_corrected.push_back( plot_mass_3);
+	vect_mass_corrected.push_back( plot_mass_4);
+	vect_mass_corrected.push_back( plot_mass_5);
+	DrawPlots(vect_mass_corrected, "mass");
+
+	vector< PlotConfig > vect_tau2tau1_corrected;
+	vect_tau2tau1_corrected.clear();
+	PlotConfig plot_tau2tau1_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_tau2tau1"),                        "Gen",colorlist[0],1);
+	PlotConfig plot_tau2tau1_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_raw"),              "RECO RAW",colorlist[1],2);
+	PlotConfig plot_tau2tau1_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_shapesubtraction"), "Shape Subtraction",colorlist[2],3);
+	PlotConfig plot_tau2tau1_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_jetcleansing2"),"JetCleansing",colorlist[5],6); 
+	vect_tau2tau1_corrected.push_back( plot_tau2tau1_0);
+	vect_tau2tau1_corrected.push_back( plot_tau2tau1_1);
+	vect_tau2tau1_corrected.push_back( plot_tau2tau1_2);
+	vect_tau2tau1_corrected.push_back( plot_tau2tau1_3);
+	DrawPlots(vect_tau2tau1_corrected, "tau2tau1");
+
 	cout<<"=========== Draw Response Plots ============="<<endl; // pt, mass, tau2tau1 responce
-	SaveResponse( jct, "gen_pt", "reco_pt_A4L1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jecAll", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jecL1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing2", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing3", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing4", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing5", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing6", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing7", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing8", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_jetcleansing9", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_comb", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_raw", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_rhoGridL1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_rhoHand2L1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_rhoHandL1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_rhoswL1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_pt", "reco_pt_shapesubtraction", nbin_ratio, ratio_min, ratio_max);
+	//Print out a table of different correction response
+	Table_Tool table_ptreponse;
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_A4L1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jecAll", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jecL1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing2", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing3", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing4", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing5", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing6", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing7", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing8", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_jetcleansing9", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_comb", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_raw", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_rhoGridL1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_rhoHand2L1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_rhoHandL1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_rhoswL1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_shapesubtraction", nbin_ratio, ratio_min, ratio_max);
+	table_ptreponse.PrintTable();
 
-	SaveResponse( jct, "gen_mass", "reco_mass_A4L1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_A4mL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jecAll", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing2", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing3", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing4", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing5", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing6", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing7", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing8", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_jetcleansing9", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_raw", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_rhoGridL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_rhoHandL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	SaveResponse( jct, "gen_mass", "reco_mass_shapesubtraction", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	Table_Tool table_massreponse;
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_A4L1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_A4mL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jecAll", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing2", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing3", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing4", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing5", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing6", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing7", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing8", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_jetcleansing9", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_raw", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_rhoGridL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_rhoHandL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_shapesubtraction", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
+	table_massreponse.PrintTable();
 
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing1", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing2", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing3", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing4", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing5", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing6", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing7", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing8", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing9", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_raw", nbin_ratio, ratio_min, ratio_max);
-	SaveResponse( jct, "gen_tau2tau1", "reco_tau2tau1_shapesubtraction", nbin_ratio, ratio_min, ratio_max);
+	Table_Tool table_tau2tau1reponse;
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing1", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing2", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing3", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing4", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing5", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing6", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing7", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing8", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing9", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_raw", nbin_ratio, ratio_min, ratio_max);
+	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_shapesubtraction", nbin_ratio, ratio_min, ratio_max);
+	table_tau2tau1reponse.PrintTable();
+
+
+
 
 
 	cout<<"=========== Draw Eta-Depenence Plots ============="<<endl; // pt, mass, tau2tau1 vs eta
@@ -765,9 +808,16 @@ void MyClass::Loop() {
 
 void MyClass::Draw_and_Print_All() { }
 
-void MyClass::SaveResponse(JetCorrectionTool &jct, TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin, Double_t xmin, Double_t xmax ){
+void MyClass::SaveResponse(Table_Tool& table, JetCorrectionTool &jct, TString xdenominator_var_name,TString xnumerator_var_name , Int_t nbin, Double_t xmin, Double_t xmax ){
 	RESPONSE responce= jct.get_response(xdenominator_var_name.Data(), xnumerator_var_name.Data(), nbin, xmin, xmax);
 	Draw_and_Save( responce.hist, Form("Mean=%g, RMS=%g", responce.mean, responce.rms ));
 	Draw_and_Save( responce.hist2D, Form("%g correlated", responce.correlationfactor) );
+
+	TString x_mean=xdenominator_var_name+"_mean";
+	TString x_rms=xdenominator_var_name+"_rms";
+	TString x_co=xdenominator_var_name+"_correlation";
+	table.Insert(x_mean, xnumerator_var_name, responce.mean);
+	table.Insert(x_rms, xnumerator_var_name, responce.rms/responce.mean);
+	table.Insert(x_co, xnumerator_var_name, responce.correlationfactor);
 }
 
