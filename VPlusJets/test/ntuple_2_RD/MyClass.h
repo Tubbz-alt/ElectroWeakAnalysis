@@ -135,6 +135,7 @@ class MyClass {
 		Efficiency_Tool efftool;//efficiency tool
 		//Bool_t   isBoosted;//boosted Z or not
 		Int_t   isBoosted;//boosted Z or not
+		static const Int_t NUM_JETCLEANSING_DIFFMODE =200; 
 		TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 		Int_t           fCurrent; //!current Tree number in a TChain
 
@@ -384,7 +385,6 @@ class MyClass {
 		Float_t         GroomedJet_planarflow[11][6];
 		Float_t         GroomedJet_qjetmass[50];
 		Float_t         GroomedJet_qjetmassdrop[50];
-		static const Int_t NUM_JETCLEANSING_DIFFMODE =200; 
 		Float_t         GroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
 		Float_t         GroomedJet_eta_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
@@ -932,7 +932,7 @@ class MyClass {
 		void     Draw_and_Save(TH2D, char* addtional_info="");
 
 		//void     DrawPlots(vector< TString >, char* xaxis_title="");
-		void     DrawPlots(vector< PlotConfig >, char* xaxis_title="");
+		void     DrawPlots(vector< PlotConfig >, char* xaxis_title="", char* title="");
 
 		void     Draw_and_Print_All();
 
@@ -1663,7 +1663,9 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 
 		cout<<" get_mean_rms_hist: "<<x_var_name.Data()<<", "<<ydenominator_var_name.Data()<<", "<<ynumerator_var_name.Data()<<", "<<endl;
 
-		TH1D h1(Form("h1_JCT_%s_mean_rms_%s_%s", name.Data(),ynumerator_var_name.Data(),x_var_name.Data()), Form("h1_JCT_%s_mean_rms_%s_%s_%s;%s;%s/%s;", name.Data(),ynumerator_var_name.Data(),ydenominator_var_name.Data(),x_var_name.Data(),x_var_name.Data(), ynumerator_var_name.Data(), ydenominator_var_name.Data()), map_obs[x_var_name].nbin, map_obs[x_var_name].xmin, map_obs[x_var_name].xmax);
+		//TH1D h1(Form("h1_JCT_%s_mean_rms_%s_%s", name.Data(),x_var_name.Data(),ynumerator_var_name.Data()), Form("h1_JCT_%s_mean_rms_%s_%s_%s;%s;%s/%s;", name.Data(),ynumerator_var_name.Data(),ydenominator_var_name.Data(),x_var_name.Data(),x_var_name.Data(), ynumerator_var_name.Data(), ydenominator_var_name.Data()), map_obs[x_var_name].nbin, map_obs[x_var_name].xmin, map_obs[x_var_name].xmax);
+		TH1D h1(Form("h1_JCT_%s_mean_rms_%s_%s", name.Data(),x_var_name.Data(),ynumerator_var_name.Data()), Form("h1_JCT_%s_mean_rms_%s_%s;%s;%s/%s;", name.Data(),x_var_name.Data(),ynumerator_var_name.Data(),x_var_name.Data(), ynumerator_var_name.Data(), ydenominator_var_name.Data()), map_obs[x_var_name].nbin, map_obs[x_var_name].xmin, map_obs[x_var_name].xmax);
+		cout<<"hist name and title: "<<h1.GetName()<<", "<<h1.GetTitle()<<endl;
 
 		std::vector< std::vector<Double_t> > vectors_y;
 		for(Int_t j=0; j<map_obs[x_var_name].nbin; j++){ 
