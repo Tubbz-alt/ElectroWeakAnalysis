@@ -80,9 +80,9 @@ void MyClass::Draw_and_Save(TH2D h2, char* addtional_info){
 	delete c1;
 }
 
-void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title)
+void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title, char* title)
 {
-	TString finalname("");
+	//TString finalname("");
 	//TCanvas *c1 = new TCanvas(Form("c1_%s",h2.GetTitle()),Form("c1_%s",h2.GetTitle()),200,10,600,600);
 	TCanvas *c1 = new TCanvas(Form("c1_multiplots"),Form("c1_multiplots"),200,10,600,600);
 	c1->cd();
@@ -96,7 +96,7 @@ void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title)
 	leg->SetTextSize(.03);
 
 	for(Int_t i=0; i< Int_t(plotconfig.size()); i++){
-		finalname+=plotconfig[i].name;
+		//finalname+=plotconfig[i].name;
 		TH1* h1;
 		cout<<"plotconfig[i]="<<plotconfig[i].name.Data()<<endl;
 		fout->GetObject(plotconfig[i].name.Data(), h1);
@@ -119,7 +119,7 @@ void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title)
 	}
 	leg->Draw();
 
-	c1->Print(Form("%s/multiplots_%s_%s_%s.png",plot_Dir_DateTime.Data(), JetType.Data(), PfType.Data(),finalname.Data()));
+	c1->Print(Form("%s/multiplots_%s_%s_%s_%s.png",plot_Dir_DateTime.Data(), JetType.Data(), PfType.Data(),xaxis_title, title));
 	delete c1;
 }
 
@@ -242,7 +242,7 @@ void MyClass::Loop() {
 	  nbin_pt=30; jetpt_min=0; jetpt_max=1050.;
 	  }*/
 	Int_t nbin_rho=60; Double_t rho_min=0.; Double_t rho_max=60.;
-	Int_t nbin_nPV=60; Double_t nPV_min=0.; Double_t nPV_max=60.;
+	Int_t nbin_nPV=20; Double_t nPV_min=0.; Double_t nPV_max=60.;
 	Int_t nbin_mass=50;Double_t jetmass_min=-10;Double_t jetmass_max=340.;
 	Int_t nbin_pt=30;Double_t jetpt_min=0;Double_t jetpt_max= 900.;
 	Int_t nbin_ratio=100; Double_t ratio_min=-1; Double_t ratio_max=3.; 
@@ -304,7 +304,6 @@ void MyClass::Loop() {
 	RealVarArray rva_reco_tau2tau1_jetcleansing7("reco_tau2tau1_jetcleansing7",nbin_tau2tau1, jettau2tau1_min, jettau2tau1_max);
 	RealVarArray rva_reco_tau2tau1_jetcleansing8("reco_tau2tau1_jetcleansing8",nbin_tau2tau1, jettau2tau1_min, jettau2tau1_max);
 	RealVarArray rva_reco_tau2tau1_jetcleansing9("reco_tau2tau1_jetcleansing9",nbin_tau2tau1, jettau2tau1_min, jettau2tau1_max);
-	RealVarArray rva_reco_eta4tau2tau1("reco_eta4tau2tau1",nbin_eta, jeteta_min, jeteta_max);
 
 	jct.addVar(rva_reco_pt_raw); 
 	jct.addVar(rva_reco_pt_jecL1);
@@ -354,11 +353,12 @@ void MyClass::Loop() {
 	jct.addVar(rva_reco_tau2tau1_jetcleansing7);
 	jct.addVar(rva_reco_tau2tau1_jetcleansing8);
 	jct.addVar(rva_reco_tau2tau1_jetcleansing9);
-	jct.addVar(rva_reco_eta4tau2tau1);
 
 	RealVarArray rva_nPV("nPV",nbin_nPV, nPV_min, nPV_max);
+	RealVarArray rva_nPV4tau2tau1("nPV4tau2tau1",nbin_nPV, nPV_min, nPV_max);
 	RealVarArray rva_rho("rho",nbin_rho, rho_min, rho_max);
 	RealVarArray rva_reco_eta("reco_eta",nbin_eta, jeteta_min, jeteta_max);
+	RealVarArray rva_reco_eta4tau2tau1("reco_eta4tau2tau1",nbin_eta, jeteta_min, jeteta_max);
 	RealVarArray rva_reco_phi("reco_phi",nbin_phi, jetphi_min, jetphi_max);
 	RealVarArray rva_gen_eta("gen_eta",nbin_eta, jeteta_min, jeteta_max);
 	RealVarArray rva_gen_phi("gen_phi",nbin_phi, jetphi_min, jetphi_max);
@@ -387,8 +387,10 @@ void MyClass::Loop() {
 	RealVarArray rva_reco_phi_jetcleansing9("reco_phi_jetcleansing9",nbin_phi, jetphi_min, jetphi_max);
 
 	jct.addVar(rva_nPV);
+	jct.addVar(rva_nPV4tau2tau1);
 	jct.addVar(rva_rho);
 	jct.addVar(rva_reco_eta);
+	jct.addVar(rva_reco_eta4tau2tau1);
 	jct.addVar(rva_reco_phi);
 	jct.addVar(rva_gen_eta);
 	jct.addVar(rva_gen_phi);
@@ -423,8 +425,8 @@ void MyClass::Loop() {
 	Int_t cleansing_diff_mode[9]={1, 3, 5, 7, 9, 11, 13, 15, 17};//r=0.2
 
 	Long64_t nbytes = 0, nb = 0;
-	for (Long64_t jentry=0; jentry<nentries;jentry++)
-	//for (Long64_t jentry=0; jentry<nentries && jentry <20000;jentry++)
+	//for (Long64_t jentry=0; jentry<nentries;jentry++)
+	for (Long64_t jentry=0; jentry<nentries && jentry <20000;jentry++)
 	{
 		//cout<<"jentry="<<jentry<<endl;
 		Long64_t ientry = LoadTree(jentry);
@@ -544,6 +546,7 @@ void MyClass::Loop() {
 			jct.fill( "reco_tau2tau1_jetcleansing9", GroomedJet_tau2tau1_JetCleansing_DiffMode[cleansing_diff_mode[8]], EventWeight, debug);
 			jct.fill( "gen_tau2tau1", GenGroomedJet_tau2tau1[num_genreco_matching], EventWeight, debug);
 			jct.fill( "reco_eta4tau2tau1", GroomedJet_eta[0], EventWeight, debug);
+			jct.fill( "nPV4tau2tau1", event_nPV, EventWeight, debug);
 		}
 
 		jct.fill( "gen_eta", GenGroomedJet_eta[num_genreco_matching], EventWeight, debug);
@@ -718,8 +721,6 @@ void MyClass::Loop() {
 
 
 
-
-
 	cout<<"=========== Draw Eta-Depenence Plots ============="<<endl; // pt, mass, tau2tau1 vs eta
 	Draw_and_Save( jct.get_mean_rms_hist("reco_eta","gen_pt", "reco_pt_A4L1", ratio_mrt_min, ratio_mrt_max));
 	Draw_and_Save( jct.get_mean_rms_hist("reco_eta","gen_pt", "reco_pt_jecAll", ratio_mrt_min, ratio_mrt_max));
@@ -757,6 +758,86 @@ void MyClass::Loop() {
 	Draw_and_Save( jct.get_mean_rms_hist("reco_eta","gen_mass", "reco_mass_rhoGridL1", ratio_mass_mrt_min, ratio_mass_mrt_max));
 	Draw_and_Save( jct.get_mean_rms_hist("reco_eta","gen_mass", "reco_mass_rhoHandL1", ratio_mass_mrt_min, ratio_mass_mrt_max));
 	Draw_and_Save( jct.get_mean_rms_hist("reco_eta","gen_mass", "reco_mass_shapesubtraction", ratio_mass_mrt_min, ratio_mass_mrt_max));
+
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing1", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing2", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing3", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing4", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing5", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing6", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing7", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing8", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing9", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_raw", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_shapesubtraction", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+
+	cout<<"=========== Draw nPV-Depenence Plots ============="<<endl; // pt, mass, tau2tau1 vs eta
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_A4L1", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jecAll", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jecL1", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing1", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing2", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing3", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing4", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing5", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing6", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing7", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing8", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_jetcleansing9", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_comb", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_raw", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_rhoGridL1", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_rhoHand2L1", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_rhoHandL1", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_rhoswL1", ratio_mrt_min, ratio_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_pt", "reco_pt_shapesubtraction", ratio_mrt_min, ratio_mrt_max));
+
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_A4L1", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_A4mL1", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jecAll", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing1", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing2", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing3", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing4", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing5", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing6", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing7", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing8", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_jetcleansing9", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_raw", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_rhoGridL1", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_rhoHandL1", ratio_mass_mrt_min, ratio_mass_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV","gen_mass", "reco_mass_shapesubtraction", ratio_mass_mrt_min, ratio_mass_mrt_max));
+
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing1", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing2", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing3", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing4", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing5", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing6", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing7", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing8", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing9", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_raw", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+	Draw_and_Save( jct.get_mean_rms_hist("nPV4tau2tau1","gen_tau2tau1", "reco_tau2tau1_shapesubtraction", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
+
+
+	vector< PlotConfig > vect_nPV_mass_corrected;
+	vect_nPV_mass_corrected.clear();
+	PlotConfig plot_nPV_mass_1(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_raw"),                       "RECO RAW",colorlist[1],linestylelist[1]);
+	PlotConfig plot_nPV_mass_2(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_A4L1"),                   "4-vect area",colorlist[2],linestylelist[2]);
+	PlotConfig plot_nPV_mass_3(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_A4mL1"),                  "4-vect mass",colorlist[3],linestylelist[3]);
+	PlotConfig plot_nPV_mass_4(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_jecAll"),                         "JEC",colorlist[4],linestylelist[4]);  
+	PlotConfig plot_nPV_mass_5(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_shapesubtraction"), "Shape Subtraction",colorlist[5],linestylelist[5]);
+	PlotConfig plot_nPV_mass_6(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_jetcleansing2"),         "JetCleansing",colorlist[6],linestylelist[6]); 
+	vect_nPV_mass_corrected.push_back( plot_nPV_mass_1);
+	vect_nPV_mass_corrected.push_back( plot_nPV_mass_2);
+	vect_nPV_mass_corrected.push_back( plot_nPV_mass_3);
+	vect_nPV_mass_corrected.push_back( plot_nPV_mass_4);
+	vect_nPV_mass_corrected.push_back( plot_nPV_mass_5);
+	vect_nPV_mass_corrected.push_back( plot_nPV_mass_6);
+	DrawPlots(vect_nPV_mass_corrected, "nPV","mass_response");
+
 
 	/*// pt, mass, tau2tau1 vs pt 
 	  Draw_and_Save( jct.get_mean_rms_hist("gen_pt","gen_pt", "reco_pt_A4L1", ratio_mrt_min, ratio_mrt_max));
@@ -797,17 +878,6 @@ void MyClass::Loop() {
 	  Draw_and_Save( jct.get_mean_rms_hist("gen_pt","gen_mass", "reco_mass_shapesubtraction", ratio_mass_mrt_min, ratio_mass_mrt_max));
 	  */
 
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing1", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing2", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing3", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing4", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing5", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing6", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing7", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing8", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_jetcleansing9", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_raw", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
-	Draw_and_Save( jct.get_mean_rms_hist("reco_eta4tau2tau1","gen_tau2tau1", "reco_tau2tau1_shapesubtraction", ratio_tau2tau1_mrt_min, ratio_tau2tau1_mrt_max));
 
 	cout<<"=========== Draw other suport Plots ============="<<endl; 
 	Draw_and_Save( efftool.Get_Eff_hist() );
