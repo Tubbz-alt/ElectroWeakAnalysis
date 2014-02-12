@@ -93,7 +93,7 @@ void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title)
 
 	leg->SetName("theLegend"); leg->SetBorderSize(0); leg->SetLineColor(0); leg->SetFillColor(0);
 	leg->SetFillStyle(0); leg->SetLineWidth(0); leg->SetLineStyle(0); leg->SetTextFont(42);
-	leg->SetTextSize(.045);
+	leg->SetTextSize(.03);
 
 	for(Int_t i=0; i< Int_t(plotconfig.size()); i++){
 		finalname+=plotconfig[i].name;
@@ -104,7 +104,7 @@ void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title)
 			h1->SetLineColor( plotconfig[i].linecolor);
 			h1->SetLineStyle( plotconfig[i].linestyle);
 			vect_hist.push_back(h1);
-			leg->AddEntry(h1,plotconfig[i].title,"lep");
+			leg->AddEntry(h1,plotconfig[i].title,"l");
 			Double_t tmpmax=h1->GetMaximum();
 			if(tmpmax>max_yval) max_yval=tmpmax;
 			//if (i==0) h1->Draw(); else h1->Draw("same");
@@ -243,13 +243,13 @@ void MyClass::Loop() {
 	  }*/
 	Int_t nbin_rho=60; Double_t rho_min=0.; Double_t rho_max=60.;
 	Int_t nbin_nPV=60; Double_t nPV_min=0.; Double_t nPV_max=60.;
-	Int_t nbin_mass=50;Double_t jetmass_min=-10;Double_t jetmass_max=290.;
+	Int_t nbin_mass=50;Double_t jetmass_min=-10;Double_t jetmass_max=340.;
 	Int_t nbin_pt=30;Double_t jetpt_min=0;Double_t jetpt_max= 900.;
 	Int_t nbin_ratio=100; Double_t ratio_min=-1; Double_t ratio_max=3.; 
 	Int_t nbin_ratio_mass=150; Double_t ratio_mass_min=-1; Double_t ratio_mass_max=5.; 
 	Int_t nbin_eta=10;Double_t jeteta_min=-2.4;Double_t jeteta_max=2.4;
 	Int_t nbin_phi=10;Double_t jetphi_min=-3.5;Double_t jetphi_max=7.0;
-	Int_t nbin_tau2tau1=40;Double_t jettau2tau1_min=-0.2;Double_t jettau2tau1_max=1.2;
+	Int_t nbin_tau2tau1=40;Double_t jettau2tau1_min=-0.2;Double_t jettau2tau1_max=1.4;
 	Double_t ratio_mrt_min=0.5; Double_t ratio_mrt_max=2.0; 
 	Double_t ratio_mass_mrt_min=0.; Double_t ratio_mass_mrt_max=4.0; 
 	Double_t ratio_tau2tau1_mrt_min=0.; Double_t ratio_tau2tau1_mrt_max=3.0; 
@@ -419,7 +419,8 @@ void MyClass::Loop() {
 	// gen and reco jet deltaR
 	TH1D h1_RecoGen_matching("h1_RecoGen_matching","h1_RecoGen_matching; #delta R( reco j, gen j)",40,0,4.); h1_RecoGen_matching.SetLineColor(kRed);//matching with GEN
 	//Cleansing Diff-Mode array
-	Int_t cleansing_diff_mode[9]={0, 2, 3, 12, 13, 14, 15, 16, 17};
+	//Int_t cleansing_diff_mode[9]={0, 2, 4, 6, 8, 10, 12, 14, 16};//r=0.3
+	Int_t cleansing_diff_mode[9]={1, 3, 5, 7, 9, 11, 13, 15, 17};//r=0.2
 
 	Long64_t nbytes = 0, nb = 0;
 	for (Long64_t jentry=0; jentry<nentries;jentry++)
@@ -489,15 +490,15 @@ void MyClass::Loop() {
 		jct.fill( "reco_pt_rhoGridL1", GroomedJet_pt_L1_rhoGrid[0], EventWeight, debug);
 		jct.fill( "reco_pt_A4L1", GroomedJet_pt_rho4A[0], EventWeight, debug);
 		jct.fill( "reco_pt_shapesubtraction", GroomedJet_pt_shapesubtraction[0], EventWeight, debug);
-		jct.fill( "reco_pt_jetcleansing1", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[0]], EventWeight, debug);//jvf r=0.3
-		jct.fill( "reco_pt_jetcleansing2", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[1]], EventWeight, debug);;//jvf r=0.2 
-		jct.fill( "reco_pt_jetcleansing3", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[2]], EventWeight, debug);//linear r=0.3, gamma0=0.55
-		jct.fill( "reco_pt_jetcleansing4", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[3]], EventWeight, debug);//linear r=0.2, gamma0=0.55 
-		jct.fill( "reco_pt_jetcleansing5", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[4]], EventWeight, debug);//jvf r=0.3
-		jct.fill( "reco_pt_jetcleansing6", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[5]], EventWeight, debug);;//jvf r=0.2 
-		jct.fill( "reco_pt_jetcleansing7", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[6]], EventWeight, debug);//linear r=0.3, gamma0=0.55
-		jct.fill( "reco_pt_jetcleansing8", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[7]], EventWeight, debug);//linear r=0.2, gamma0=0.55 
-		jct.fill( "reco_pt_jetcleansing9", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[8]], EventWeight, debug);//linear r=0.2, gamma0=0.55 
+		jct.fill( "reco_pt_jetcleansing1", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[0]], EventWeight, debug);
+		jct.fill( "reco_pt_jetcleansing2", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[1]], EventWeight, debug);
+		jct.fill( "reco_pt_jetcleansing3", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[2]], EventWeight, debug);
+		jct.fill( "reco_pt_jetcleansing4", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[3]], EventWeight, debug); 
+		jct.fill( "reco_pt_jetcleansing5", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[4]], EventWeight, debug);
+		jct.fill( "reco_pt_jetcleansing6", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[5]], EventWeight, debug);
+		jct.fill( "reco_pt_jetcleansing7", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[6]], EventWeight, debug);
+		jct.fill( "reco_pt_jetcleansing8", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[7]], EventWeight, debug); 
+		jct.fill( "reco_pt_jetcleansing9", GroomedJet_pt_JetCleansing_DiffMode[cleansing_diff_mode[8]], EventWeight, debug); 
 		jct.fill( "reco_pt_comb", (GroomedJet_pt_JECL1[0]+GroomedJet_pt_JetCleansing_DiffMode[2])/2., EventWeight, debug);//linear r=0.2, gamma0=0.55 
 
 		jct.fill( "reco_mass_raw", GroomedJet_mass_uncorr[0], EventWeight, debug);
@@ -587,15 +588,16 @@ void MyClass::Loop() {
 	}
 
 	cout<<"=========== Draw Plots for comparing diff. correction ============="<<endl;
-	Int_t colorlist[10]={1,2,3,4,6,7,8,10,13,15};
+	Int_t colorlist[8]={ kBlack, kRed, kGreen+3, kBlue, kMagenta-3, kYellow+2, kPink-9, kOrange-3};
+	Int_t linestylelist[8]={ 1,2,1,2,1,2,1, 2};
 	vector< PlotConfig > vect_pt_corrected;
 	vect_pt_corrected.clear();
-	PlotConfig plot_pt_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt"),                        "Gen",colorlist[0],1);
-	PlotConfig plot_pt_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_raw"),              "RECO RAW",colorlist[1],2);
-	PlotConfig plot_pt_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_A4L1"),          "4-vect area",colorlist[2],3);
-	PlotConfig plot_pt_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jecL1"),               "JECL1",colorlist[3],4);  
-	PlotConfig plot_pt_4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_shapesubtraction"), "Shape Subtraction",colorlist[4],5);
-	PlotConfig plot_pt_5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jetcleansing2"),"JetCleansing",colorlist[5],6); 
+	PlotConfig plot_pt_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt"),                                 "Gen",colorlist[0],linestylelist[0]);
+	PlotConfig plot_pt_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_raw"),                       "RECO RAW",colorlist[1],linestylelist[1]);
+	PlotConfig plot_pt_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_A4L1"),                   "4-vect area",colorlist[2],linestylelist[2]);
+	PlotConfig plot_pt_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jecL1"),                        "JECL1",colorlist[3],linestylelist[3]);  
+	PlotConfig plot_pt_4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_shapesubtraction"), "Shape Subtraction",colorlist[4],linestylelist[4]);
+	PlotConfig plot_pt_5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_pt_jetcleansing2"),         "JetCleansing",colorlist[5],linestylelist[5]); 
 	vect_pt_corrected.push_back( plot_pt_0);
 	vect_pt_corrected.push_back( plot_pt_1);
 	vect_pt_corrected.push_back( plot_pt_2);
@@ -606,31 +608,56 @@ void MyClass::Loop() {
 
 	vector< PlotConfig > vect_mass_corrected;
 	vect_mass_corrected.clear();
-	PlotConfig plot_mass_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_mass"),                        "Gen",colorlist[0],1);
-	PlotConfig plot_mass_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_raw"),              "RECO RAW",colorlist[1],2);
-	PlotConfig plot_mass_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_A4L1"),          "4-vect area",colorlist[2],3);
-	PlotConfig plot_mass_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jecAll"),               "JEC",colorlist[3],4);  
-	PlotConfig plot_mass_4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_shapesubtraction"), "Shape Subtraction",colorlist[4],5);
-	PlotConfig plot_mass_5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing2"),"JetCleansing",colorlist[5],6); 
+	PlotConfig plot_mass_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_mass"),                                 "Gen",colorlist[0],linestylelist[0]);
+	PlotConfig plot_mass_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_raw"),                       "RECO RAW",colorlist[1],linestylelist[1]);
+	PlotConfig plot_mass_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_A4L1"),                   "4-vect area",colorlist[2],linestylelist[2]);
+	PlotConfig plot_mass_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_A4mL1"),                  "4-vect mass",colorlist[3],linestylelist[3]);
+	PlotConfig plot_mass_4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jecAll"),                         "JEC",colorlist[4],linestylelist[4]);  
+	PlotConfig plot_mass_5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_shapesubtraction"), "Shape Subtraction",colorlist[5],linestylelist[5]);
+	PlotConfig plot_mass_6(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing2"),         "JetCleansing",colorlist[6],linestylelist[6]); 
 	vect_mass_corrected.push_back( plot_mass_0);
 	vect_mass_corrected.push_back( plot_mass_1);
 	vect_mass_corrected.push_back( plot_mass_2);
 	vect_mass_corrected.push_back( plot_mass_3);
 	vect_mass_corrected.push_back( plot_mass_4);
 	vect_mass_corrected.push_back( plot_mass_5);
+	vect_mass_corrected.push_back( plot_mass_6);
 	DrawPlots(vect_mass_corrected, "mass");
 
 	vector< PlotConfig > vect_tau2tau1_corrected;
 	vect_tau2tau1_corrected.clear();
-	PlotConfig plot_tau2tau1_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_tau2tau1"),                        "Gen",colorlist[0],1);
-	PlotConfig plot_tau2tau1_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_raw"),              "RECO RAW",colorlist[1],2);
-	PlotConfig plot_tau2tau1_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_shapesubtraction"), "Shape Subtraction",colorlist[2],3);
-	PlotConfig plot_tau2tau1_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_jetcleansing2"),"JetCleansing",colorlist[5],6); 
+	PlotConfig plot_tau2tau1_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_tau2tau1"),                                 "Gen",colorlist[0],linestylelist[0]);
+	PlotConfig plot_tau2tau1_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_raw"),                       "RECO RAW",colorlist[1],linestylelist[1]);
+	PlotConfig plot_tau2tau1_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_shapesubtraction"), "Shape Subtraction",colorlist[2],linestylelist[2]);
+	PlotConfig plot_tau2tau1_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_tau2tau1_jetcleansing2"),         "JetCleansing",colorlist[5],linestylelist[3]); 
 	vect_tau2tau1_corrected.push_back( plot_tau2tau1_0);
 	vect_tau2tau1_corrected.push_back( plot_tau2tau1_1);
 	vect_tau2tau1_corrected.push_back( plot_tau2tau1_2);
 	vect_tau2tau1_corrected.push_back( plot_tau2tau1_3);
 	DrawPlots(vect_tau2tau1_corrected, "tau2tau1");
+
+
+	vector< PlotConfig > vect_masscleansing_corrected;
+	vect_masscleansing_corrected.clear();
+	PlotConfig plot_masscleansing_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_mass"),                                 "Gen",colorlist[0],linestylelist[0]);
+	PlotConfig plot_masscleansing_1(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing1"),        "JetCleansing1",colorlist[1],linestylelist[1]); 
+	PlotConfig plot_masscleansing_2(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing2"),        "JetCleansing2",colorlist[2],linestylelist[2]); 
+	//PlotConfig plot_masscleansing_3(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing3"),        "JetCleansing3",colorlist[3],linestylelist[3]); 
+	//PlotConfig plot_masscleansing_4(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing6"),        "JetCleansing6",colorlist[4],linestylelist[4]); 
+	PlotConfig plot_masscleansing_5(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing7"),        "JetCleansing7",colorlist[5],linestylelist[5]); 
+	PlotConfig plot_masscleansing_6(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing8"),        "JetCleansing8",colorlist[6],linestylelist[6]); 
+	//PlotConfig plot_masscleansing_7(Form("h1_JCT_%s_%s", FinalState.Data(), "reco_mass_jetcleansing9"),        "JetCleansing9",colorlist[7],linestylelist[7]); 
+	vect_masscleansing_corrected.push_back( plot_masscleansing_0);
+	vect_masscleansing_corrected.push_back( plot_masscleansing_1);
+	vect_masscleansing_corrected.push_back( plot_masscleansing_2);
+	//vect_masscleansing_corrected.push_back( plot_masscleansing_3);
+	//vect_masscleansing_corrected.push_back( plot_masscleansing_4);
+	vect_masscleansing_corrected.push_back( plot_masscleansing_5);
+	vect_masscleansing_corrected.push_back( plot_masscleansing_6);
+	//vect_masscleansing_corrected.push_back( plot_masscleansing_7);
+	DrawPlots(vect_masscleansing_corrected, "mass");
+
+
 
 	cout<<"=========== Draw Response Plots ============="<<endl; // pt, mass, tau2tau1 responce
 	//Print out a table of different correction response
@@ -654,7 +681,7 @@ void MyClass::Loop() {
 	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_rhoHandL1", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_rhoswL1", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse(table_ptreponse, jct, "gen_pt", "reco_pt_shapesubtraction", nbin_ratio, ratio_min, ratio_max);
-	table_ptreponse.PrintTable();
+	table_ptreponse.PrintTable(ftextout);
 
 	Table_Tool table_massreponse;
 	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_A4L1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
@@ -673,7 +700,7 @@ void MyClass::Loop() {
 	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_rhoGridL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
 	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_rhoHandL1", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
 	SaveResponse(table_massreponse, jct, "gen_mass", "reco_mass_shapesubtraction", nbin_ratio_mass, ratio_mass_min, ratio_mass_max);
-	table_massreponse.PrintTable();
+	table_massreponse.PrintTable(ftextout);
 
 	Table_Tool table_tau2tau1reponse;
 	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing1", nbin_ratio, ratio_min, ratio_max);
@@ -687,7 +714,7 @@ void MyClass::Loop() {
 	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_jetcleansing9", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_raw", nbin_ratio, ratio_min, ratio_max);
 	SaveResponse(table_tau2tau1reponse, jct, "gen_tau2tau1", "reco_tau2tau1_shapesubtraction", nbin_ratio, ratio_min, ratio_max);
-	table_tau2tau1reponse.PrintTable();
+	table_tau2tau1reponse.PrintTable(ftextout);
 
 
 
