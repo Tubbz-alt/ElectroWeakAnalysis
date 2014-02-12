@@ -52,8 +52,7 @@ class Table_Tool{ //print out tables into txt
 		Table_Tool();
 		~Table_Tool(){};
 		void Insert(TString x_name, TString y_name, Double_t value);
-		//void PrintTable(ofstream &fout);
-		void PrintTable();
+		void PrintTable(ofstream &fout);// void PrintTable();
 };
 
 
@@ -131,6 +130,7 @@ class PlotConfig{
 class MyClass {
 	public :
 		TFile *fout;
+		ofstream ftextout;
 
 		Efficiency_Tool efftool;//efficiency tool
 		//Bool_t   isBoosted;//boosted Z or not
@@ -928,6 +928,7 @@ MyClass::MyClass(TTree *tree, char* inFinalState, char* inJetType, char* inPfTyp
 	plot_Dir_DateTime=plot_dir;
 	//fout = new TFile(Form("%s/out_%s.root", plot_Dir_DateTime , boostedlable.Data()), "RECREATE");
 	fout = new TFile(Form("%s/out.root", plot_Dir_DateTime.Data() ), "RECREATE");
+	ftextout.open(Form("%s/out.txt", plot_Dir_DateTime.Data() ));
 
 	// if parameter tree is not specified (or zero), connect the file
 	// used to generate this class and read the Tree.
@@ -1709,23 +1710,22 @@ void Table_Tool::Insert(TString x_name, TString y_name, Double_t value){
 
 }
 
-//void Table_Tool::PrintTable(ofstream &fout)
-void Table_Tool::PrintTable()
+void Table_Tool::PrintTable(ofstream &fout) //void Table_Tool::PrintTable()
 {
 	//first line
-	cout<<"Table \t";
+	fout<<"Table \t";
 	for(Int_t i=0; i< iter_x; i++)
-	  cout<<xaxis[i]<<" \t";
-	cout<<endl;
+	  fout<<xaxis[i]<<" \t";
+	fout<<endl;
 
 	for(Int_t j=0; j< iter_y; j++){
-		cout<<yaxis[j]<<" \t";
+		fout<<yaxis[j]<<" \t";
 		for(Int_t k=0; k<iter_x; k++){
-			cout<<table_value[k][j]<<" \t";
+			fout<<table_value[k][j]<<" \t";
 		}
-		cout<<endl;
+		fout<<endl;
 	}
-	cout<<endl;
+	fout<<endl;
 }
 
 
