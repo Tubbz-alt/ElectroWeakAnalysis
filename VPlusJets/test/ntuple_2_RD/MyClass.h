@@ -213,12 +213,110 @@ class MyClass {
 		Float_t         JetPFCor_PtD[8];
 		Float_t         JetPFCor_QGLikelihood[8];
 
+		Float_t         GenGroomedJet_pt_uncorr[6];
+		Int_t           GenGroomedJet_number_jet_central;
+		Float_t         GenGroomedJet_mass_uncorr[6];
+		Float_t         GenGroomedJet_mass_tr_uncorr[6];
+		Float_t         GenGroomedJet_mass_tr1_uncorr[6];
+		Float_t         GenGroomedJet_mass_tr2_uncorr[6];
+		Float_t         GenGroomedJet_mass_tr3_uncorr[6];
+		Float_t         GenGroomedJet_mass_ft_uncorr[6];
+		Float_t         GenGroomedJet_mass_pr_uncorr[6];
+		Float_t         GenGroomedJet_mass_pr1_uncorr[6];
+		Float_t         GenGroomedJet_mass_pr2_uncorr[6];
+		Float_t         GenGroomedJet_mass_pr3_uncorr[6];
+		Float_t         GenGroomedJet_tau2tau1[6];
+		Float_t         GenGroomedJet_tau2tau1_shapesubtraction[6];
+		Float_t         GenGroomedJet_tau1[6];
+		Float_t         GenGroomedJet_tau2[6];
+		Float_t         GenGroomedJet_tau3[6];
+		Float_t         GenGroomedJet_tau4[6];
+		Float_t         GenGroomedJet_massdrop_pr_uncorr[6];
+		Float_t         GenGroomedJet_pt[6];
+		Float_t         GenGroomedJet_eta[6];
+		Float_t         GenGroomedJet_phi[6];
+		Float_t         GenGroomedJet_e[6];
+		Float_t         GenGroomedJet_pt_L1_rhoSW[6];
+		Float_t         GenGroomedJet_pt_L1_rhoHand[6];
+		Float_t         GenGroomedJet_pt_L1_rhoHand2[6];
+		Float_t         GenGroomedJet_pt_L1_rhoGrid[6];
+		Float_t         GenGroomedJet_pt_rho4A[6];
+		Float_t         GenGroomedJet_pt_shapesubtraction[6];
+		Float_t         GenGroomedJet_pt_tr_uncorr[6];
+		Float_t         GenGroomedJet_pt_tr[6];
+		Float_t         GenGroomedJet_eta_tr[6];
+		Float_t         GenGroomedJet_phi_tr[6];
+		Float_t         GenGroomedJet_e_tr[6];
+		Float_t         GenGroomedJet_pt_ft_uncorr[6];
+		Float_t         GenGroomedJet_pt_ft[6];
+		Float_t         GenGroomedJet_eta_ft[6];
+		Float_t         GenGroomedJet_phi_ft[6];
+		Float_t         GenGroomedJet_e_ft[6];
+		Float_t         GenGroomedJet_pt_pr_uncorr[6];
+		Float_t         GenGroomedJet_pt_pr[6];
+		Float_t         GenGroomedJet_eta_pr[6];
+		Float_t         GenGroomedJet_phi_pr[6];
+		Float_t         GenGroomedJet_e_pr[6];
+		Float_t         GenGroomedJet_prsubjet1_px[6];
+		Float_t         GenGroomedJet_prsubjet1_py[6];
+		Float_t         GenGroomedJet_prsubjet1_pz[6];
+		Float_t         GenGroomedJet_prsubjet1_e[6];
+		Float_t         GenGroomedJet_prsubjet2_px[6];
+		Float_t         GenGroomedJet_prsubjet2_py[6];
+		Float_t         GenGroomedJet_prsubjet2_pz[6];
+		Float_t         GenGroomedJet_prsubjet2_e[6];
+		Float_t         GenGroomedJet_mass[6];
+		Float_t         GenGroomedJet_mass_rhoArea[6];
+		Float_t         GenGroomedJet_mass_rhoGArea[6];
+		Float_t         GenGroomedJet_mass_rho4A[6];
+		Float_t         GenGroomedJet_mass_rhoG4A[6];
+		Float_t         GenGroomedJet_mass_rhom4Am[6];
+		Float_t         GenGroomedJet_mass_shapesubtraction[6];
+		Float_t         GenGroomedJet_mass_trimmingshapesubtraction[6];
+		Float_t         GenGroomedJet_mass_tr[6];
+		Float_t         GenGroomedJet_mass_ft[6];
+		Float_t         GenGroomedJet_mass_pr[6];
+		Float_t         GenGroomedJet_massdrop_pr[6];
+		Float_t         GenGroomedJet_area[6];
+		Float_t         GenGroomedJet_area_tr[6];
+		Float_t         GenGroomedJet_area_ft[6];
+		Float_t         GenGroomedJet_area_pr[6];
+		Float_t         GenGroomedJet_jetconstituents[6];
+		Float_t         GenGroomedJet_jetcharge[6];
+		Float_t         GenGroomedJet_rcores[11][6];
+		Float_t         GenGroomedJet_ptcores[11][6];
+		Float_t         GenGroomedJet_planarflow[11][6];
+		Float_t         GenGroomedJet_qjetmass[50];
+		Float_t         GenGroomedJet_qjetmassdrop[50];
+		Float_t         GenGroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_eta_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_phi_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
+		Float_t         GenGroomedJet_constituents0_eta[100];
+		Float_t         GenGroomedJet_constituents0_phi[100];
+		Float_t         GenGroomedJet_constituents0_e[100];
+		Int_t           GenGroomedJet_nconstituents0;
+		Float_t         GenGroomedJet_constituents0pr_eta[100];
+		Float_t         GenGroomedJet_constituents0pr_phi[100];
+		Float_t         GenGroomedJet_constituents0pr_e[100];
+		Int_t           GenGroomedJet_nconstituents0pr;
+		Double_t        GenGroomedJet_rhoSW;
+		Double_t        GenGroomedJet_rhohand;
+		Double_t        GenGroomedJet_rhohand2;
+		Double_t        GenGroomedJet_rhogrid;
 		Float_t         GroomedJet_pt_uncorr[6];
 		Int_t           GroomedJet_number_jet_central;
 		Float_t         GroomedJet_mass_uncorr[6];
 		Float_t         GroomedJet_mass_tr_uncorr[6];
+		Float_t         GroomedJet_mass_tr1_uncorr[6];
+		Float_t         GroomedJet_mass_tr2_uncorr[6];
+		Float_t         GroomedJet_mass_tr3_uncorr[6];
 		Float_t         GroomedJet_mass_ft_uncorr[6];
 		Float_t         GroomedJet_mass_pr_uncorr[6];
+		Float_t         GroomedJet_mass_pr1_uncorr[6];
+		Float_t         GroomedJet_mass_pr2_uncorr[6];
+		Float_t         GroomedJet_mass_pr3_uncorr[6];
 		Float_t         GroomedJet_tau2tau1[6];
 		Float_t         GroomedJet_tau2tau1_shapesubtraction[6];
 		Float_t         GroomedJet_tau1[6];
@@ -305,92 +403,6 @@ class MyClass {
 		Double_t        GroomedJet_rhohand2;
 		Double_t        GroomedJet_rhogrid;
 
-		Float_t         GenGroomedJet_pt_uncorr[6];
-		Int_t           GenGroomedJet_number_jet_central;
-		Float_t         GenGroomedJet_mass_uncorr[6];
-		Float_t         GenGroomedJet_mass_tr_uncorr[6];
-		Float_t         GenGroomedJet_mass_ft_uncorr[6];
-		Float_t         GenGroomedJet_mass_pr_uncorr[6];
-		Float_t         GenGroomedJet_tau2tau1[6];
-		Float_t         GenGroomedJet_tau2tau1_shapesubtraction[6];
-		Float_t         GenGroomedJet_tau1[6];
-		Float_t         GenGroomedJet_tau2[6];
-		Float_t         GenGroomedJet_tau3[6];
-		Float_t         GenGroomedJet_tau4[6];
-		Float_t         GenGroomedJet_massdrop_pr_uncorr[6];
-		Float_t         GenGroomedJet_pt[6];
-		Float_t         GenGroomedJet_eta[6];
-		Float_t         GenGroomedJet_phi[6];
-		Float_t         GenGroomedJet_e[6];
-		Float_t         GenGroomedJet_pt_L1_rhoSW[6];
-		Float_t         GenGroomedJet_pt_L1_rhoHand[6];
-		Float_t         GenGroomedJet_pt_L1_rhoHand2[6];
-		Float_t         GenGroomedJet_pt_L1_rhoGrid[6];
-		Float_t         GenGroomedJet_pt_rho4A[6];
-		Float_t         GenGroomedJet_pt_shapesubtraction[6];
-		Float_t         GenGroomedJet_pt_tr_uncorr[6];
-		Float_t         GenGroomedJet_pt_tr[6];
-		Float_t         GenGroomedJet_eta_tr[6];
-		Float_t         GenGroomedJet_phi_tr[6];
-		Float_t         GenGroomedJet_e_tr[6];
-		Float_t         GenGroomedJet_pt_ft_uncorr[6];
-		Float_t         GenGroomedJet_pt_ft[6];
-		Float_t         GenGroomedJet_eta_ft[6];
-		Float_t         GenGroomedJet_phi_ft[6];
-		Float_t         GenGroomedJet_e_ft[6];
-		Float_t         GenGroomedJet_pt_pr_uncorr[6];
-		Float_t         GenGroomedJet_pt_pr[6];
-		Float_t         GenGroomedJet_eta_pr[6];
-		Float_t         GenGroomedJet_phi_pr[6];
-		Float_t         GenGroomedJet_e_pr[6];
-		Float_t         GenGroomedJet_prsubjet1_px[6];
-		Float_t         GenGroomedJet_prsubjet1_py[6];
-		Float_t         GenGroomedJet_prsubjet1_pz[6];
-		Float_t         GenGroomedJet_prsubjet1_e[6];
-		Float_t         GenGroomedJet_prsubjet2_px[6];
-		Float_t         GenGroomedJet_prsubjet2_py[6];
-		Float_t         GenGroomedJet_prsubjet2_pz[6];
-		Float_t         GenGroomedJet_prsubjet2_e[6];
-		Float_t         GenGroomedJet_mass[6];
-		Float_t         GenGroomedJet_mass_rhoArea[6];
-		Float_t         GenGroomedJet_mass_rhoGArea[6];
-		Float_t         GenGroomedJet_mass_rho4A[6];
-		Float_t         GenGroomedJet_mass_rhoG4A[6];
-		Float_t         GenGroomedJet_mass_rhom4Am[6];
-		Float_t         GenGroomedJet_mass_shapesubtraction[6];
-		Float_t         GenGroomedJet_mass_trimmingshapesubtraction[6];
-		Float_t         GenGroomedJet_mass_tr[6];
-		Float_t         GenGroomedJet_mass_ft[6];
-		Float_t         GenGroomedJet_mass_pr[6];
-		Float_t         GenGroomedJet_massdrop_pr[6];
-		Float_t         GenGroomedJet_area[6];
-		Float_t         GenGroomedJet_area_tr[6];
-		Float_t         GenGroomedJet_area_ft[6];
-		Float_t         GenGroomedJet_area_pr[6];
-		Float_t         GenGroomedJet_jetconstituents[6];
-		Float_t         GenGroomedJet_jetcharge[6];
-		Float_t         GenGroomedJet_rcores[11][6];
-		Float_t         GenGroomedJet_ptcores[11][6];
-		Float_t         GenGroomedJet_planarflow[11][6];
-		Float_t         GenGroomedJet_qjetmass[50];
-		Float_t         GenGroomedJet_qjetmassdrop[50];
-		Float_t         GenGroomedJet_mass_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
-		Float_t         GenGroomedJet_pt_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
-		Float_t         GenGroomedJet_eta_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
-		Float_t         GenGroomedJet_phi_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
-		Float_t         GenGroomedJet_tau2tau1_JetCleansing_DiffMode[NUM_JETCLEANSING_DIFFMODE];
-		Float_t         GenGroomedJet_constituents0_eta[100];
-		Float_t         GenGroomedJet_constituents0_phi[100];
-		Float_t         GenGroomedJet_constituents0_e[100];
-		Int_t           GenGroomedJet_nconstituents0;
-		Float_t         GenGroomedJet_constituents0pr_eta[100];
-		Float_t         GenGroomedJet_constituents0pr_phi[100];
-		Float_t         GenGroomedJet_constituents0pr_e[100];
-		Int_t           GenGroomedJet_nconstituents0pr;
-		Double_t        GenGroomedJet_rhoSW;
-		Double_t        GenGroomedJet_rhohand;
-		Double_t        GenGroomedJet_rhohand2;
-		Double_t        GenGroomedJet_rhogrid;
 
 
 		Float_t         Z_mass;
@@ -592,8 +604,14 @@ class MyClass {
 		TBranch        *b_GroomedJet_number_jet_central;   //!
 		TBranch        *b_GroomedJet_mass_uncorr;   //!
 		TBranch        *b_GroomedJet_mass_tr_uncorr;   //!
+		TBranch        *b_GroomedJet_mass_tr1_uncorr;   //!
+		TBranch        *b_GroomedJet_mass_tr2_uncorr;   //!
+		TBranch        *b_GroomedJet_mass_tr3_uncorr;   //!
 		TBranch        *b_GroomedJet_mass_ft_uncorr;   //!
 		TBranch        *b_GroomedJet_mass_pr_uncorr;   //!
+		TBranch        *b_GroomedJet_mass_pr1_uncorr;   //!
+		TBranch        *b_GroomedJet_mass_pr2_uncorr;   //!
+		TBranch        *b_GroomedJet_mass_pr3_uncorr;   //!
 		TBranch        *b_GroomedJet_tau2tau1;   //!
 		TBranch        *b_GroomedJet_tau2tau1_shapesubtraction;   //!
 		TBranch        *b_GroomedJet_tau1;   //!
@@ -682,8 +700,14 @@ class MyClass {
 		TBranch        *b_GenGroomedJet_number_jet_central;   //!
 		TBranch        *b_GenGroomedJet_mass_uncorr;   //!
 		TBranch        *b_GenGroomedJet_mass_tr_uncorr;   //!
+		TBranch        *b_GenGroomedJet_mass_tr1_uncorr;   //!
+		TBranch        *b_GenGroomedJet_mass_tr2_uncorr;   //!
+		TBranch        *b_GenGroomedJet_mass_tr3_uncorr;   //!
 		TBranch        *b_GenGroomedJet_mass_ft_uncorr;   //!
 		TBranch        *b_GenGroomedJet_mass_pr_uncorr;   //!
+		TBranch        *b_GenGroomedJet_mass_pr1_uncorr;   //!
+		TBranch        *b_GenGroomedJet_mass_pr2_uncorr;   //!
+		TBranch        *b_GenGroomedJet_mass_pr3_uncorr;   //!
 		TBranch        *b_GenGroomedJet_tau2tau1;   //!
 		TBranch        *b_GenGroomedJet_tau2tau1_shapesubtraction;   //!
 		TBranch        *b_GenGroomedJet_tau1;   //!
@@ -1067,8 +1091,14 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_number_jet_central", JetType.Data(), PfType.Data()), &GroomedJet_number_jet_central, &b_GroomedJet_number_jet_central);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_uncorr, &b_GroomedJet_mass_uncorr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_tr_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_tr_uncorr, &b_GroomedJet_mass_tr_uncorr);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_tr1_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_tr1_uncorr, &b_GroomedJet_mass_tr1_uncorr);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_tr2_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_tr2_uncorr, &b_GroomedJet_mass_tr2_uncorr);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_tr3_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_tr3_uncorr, &b_GroomedJet_mass_tr3_uncorr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_ft_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_ft_uncorr, &b_GroomedJet_mass_ft_uncorr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_pr_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_pr_uncorr, &b_GroomedJet_mass_pr_uncorr);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_pr1_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_pr1_uncorr, &b_GroomedJet_mass_pr1_uncorr);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_pr2_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_pr2_uncorr, &b_GroomedJet_mass_pr2_uncorr);
+	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_mass_pr3_uncorr", JetType.Data(), PfType.Data()), GroomedJet_mass_pr3_uncorr, &b_GroomedJet_mass_pr3_uncorr);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau2tau1", JetType.Data(), PfType.Data()), GroomedJet_tau2tau1, &b_GroomedJet_tau2tau1);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau2tau1_shapesubtraction", JetType.Data(), PfType.Data()), GroomedJet_tau2tau1_shapesubtraction, &b_GroomedJet_tau2tau1_shapesubtraction);
 	fChain->SetBranchAddress(Form("GroomedJet_%s_%s_tau1", JetType.Data(), PfType.Data()), GroomedJet_tau1, &b_GroomedJet_tau1);
@@ -1158,8 +1188,14 @@ void MyClass::Init(TTree *tree)
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_number_jet_central", JetType.Data() ), &GenGroomedJet_number_jet_central, &b_GenGroomedJet_number_jet_central);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_uncorr", JetType.Data() ), GenGroomedJet_mass_uncorr, &b_GenGroomedJet_mass_uncorr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_tr_uncorr", JetType.Data() ), GenGroomedJet_mass_tr_uncorr, &b_GenGroomedJet_mass_tr_uncorr);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_tr1_uncorr", JetType.Data() ), GenGroomedJet_mass_tr1_uncorr, &b_GenGroomedJet_mass_tr1_uncorr);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_tr2_uncorr", JetType.Data() ), GenGroomedJet_mass_tr2_uncorr, &b_GenGroomedJet_mass_tr2_uncorr);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_tr3_uncorr", JetType.Data() ), GenGroomedJet_mass_tr3_uncorr, &b_GenGroomedJet_mass_tr3_uncorr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_ft_uncorr", JetType.Data() ), GenGroomedJet_mass_ft_uncorr, &b_GenGroomedJet_mass_ft_uncorr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_pr_uncorr", JetType.Data() ), GenGroomedJet_mass_pr_uncorr, &b_GenGroomedJet_mass_pr_uncorr);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_pr1_uncorr", JetType.Data() ), GenGroomedJet_mass_pr1_uncorr, &b_GenGroomedJet_mass_pr1_uncorr);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_pr2_uncorr", JetType.Data() ), GenGroomedJet_mass_pr2_uncorr, &b_GenGroomedJet_mass_pr2_uncorr);
+	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_mass_pr3_uncorr", JetType.Data() ), GenGroomedJet_mass_pr3_uncorr, &b_GenGroomedJet_mass_pr3_uncorr);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau2tau1", JetType.Data() ), GenGroomedJet_tau2tau1, &b_GenGroomedJet_tau2tau1);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau2tau1_shapesubtraction", JetType.Data() ), GenGroomedJet_tau2tau1_shapesubtraction, &b_GenGroomedJet_tau2tau1_shapesubtraction);
 	fChain->SetBranchAddress(Form("GenGroomedJet_%s_GEN_tau1", JetType.Data() ), GenGroomedJet_tau1, &b_GenGroomedJet_tau1);
