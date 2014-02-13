@@ -80,7 +80,7 @@ void MyClass::Draw_and_Save(TH2D h2, char* addtional_info){
 	delete c1;
 }
 
-void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title, char* title)
+void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title, char* title, char* drawopt)
 {
 	//TString finalname("");
 	//TCanvas *c1 = new TCanvas(Form("c1_%s",h2.GetTitle()),Form("c1_%s",h2.GetTitle()),200,10,600,600);
@@ -102,9 +102,11 @@ void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title, char
 		fout->GetObject(plotconfig[i].name.Data(), h1);
 		if(h1){
 			h1->SetLineColor( plotconfig[i].linecolor);
+			h1->SetMarkerColor( plotconfig[i].linecolor);
 			h1->SetLineStyle( plotconfig[i].linestyle);
+			h1->SetMarkerStyle( plotconfig[i].markerstyle);
 			vect_hist.push_back(h1);
-			leg->AddEntry(h1,plotconfig[i].title,"l");
+			leg->AddEntry(h1,plotconfig[i].title,Form("l%s",drawopt));
 			Double_t tmpmax=h1->GetMaximum();
 			if(tmpmax>max_yval) max_yval=tmpmax;
 			//if (i==0) h1->Draw(); else h1->Draw("same");
@@ -114,8 +116,8 @@ void MyClass::DrawPlots(vector< PlotConfig > plotconfig, char* xaxis_title, char
 	vect_hist[0]->GetYaxis()->SetRangeUser(0., max_yval*1.2);
 	if(xaxis_title)vect_hist[0]->GetXaxis()->SetTitle(xaxis_title);
 	for(Int_t i=0; i< Int_t(vect_hist.size()); i++){
-		if (i==0) vect_hist[i]->Draw(); 
-		else vect_hist[i]->Draw("same");
+		if (i==0) vect_hist[i]->Draw(drawopt); 
+		else vect_hist[i]->Draw(Form("%s same",drawopt));
 	}
 	leg->Draw();
 
@@ -593,6 +595,7 @@ void MyClass::Loop() {
 	cout<<"=========== Draw Plots for comparing diff. correction ============="<<endl;
 	Int_t colorlist[8]={ kBlack, kRed, kGreen+3, kBlue, kMagenta-3, kYellow+2, kPink-9, kOrange-3};
 	Int_t linestylelist[8]={ 1,2,1,2,1,2,1, 2};
+	Int_t markerstylelist[8]={ 20, 21, 22, 23, 24, 25, 26, 27};
 	vector< PlotConfig > vect_pt_corrected;
 	vect_pt_corrected.clear();
 	PlotConfig plot_pt_0(Form("h1_JCT_%s_%s", FinalState.Data(), "gen_pt"),                                 "Gen",colorlist[0],linestylelist[0]);
@@ -824,19 +827,19 @@ void MyClass::Loop() {
 
 	vector< PlotConfig > vect_nPV_mass_corrected;
 	vect_nPV_mass_corrected.clear();
-	PlotConfig plot_nPV_mass_1(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_raw"),                       "RECO RAW",colorlist[1],linestylelist[1]);
-	PlotConfig plot_nPV_mass_2(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_A4L1"),                   "4-vect area",colorlist[2],linestylelist[2]);
-	PlotConfig plot_nPV_mass_3(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_A4mL1"),                  "4-vect mass",colorlist[3],linestylelist[3]);
-	PlotConfig plot_nPV_mass_4(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_jecAll"),                         "JEC",colorlist[4],linestylelist[4]);  
-	PlotConfig plot_nPV_mass_5(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_shapesubtraction"), "Shape Subtraction",colorlist[5],linestylelist[5]);
-	PlotConfig plot_nPV_mass_6(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_jetcleansing2"),         "JetCleansing",colorlist[6],linestylelist[6]); 
+	PlotConfig plot_nPV_mass_1(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_raw"),                       "RECO RAW",colorlist[1],linestylelist[1], markerstylelist[1]);
+	PlotConfig plot_nPV_mass_2(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_A4L1"),                   "4-vect area",colorlist[2],linestylelist[2], markerstylelist[2]);
+	PlotConfig plot_nPV_mass_3(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_A4mL1"),                  "4-vect mass",colorlist[3],linestylelist[3], markerstylelist[3]);
+	PlotConfig plot_nPV_mass_4(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_jecAll"),                         "JEC",colorlist[4],linestylelist[4], markerstylelist[4]);  
+	PlotConfig plot_nPV_mass_5(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_shapesubtraction"), "Shape Subtraction",colorlist[5],linestylelist[5], markerstylelist[5]);
+	PlotConfig plot_nPV_mass_6(Form("h1_JCT_%s_mean_rms_%s_%s", FinalState.Data(), "nPV", "reco_mass_jetcleansing2"),         "JetCleansing",colorlist[6],linestylelist[6], markerstylelist[6]); 
 	vect_nPV_mass_corrected.push_back( plot_nPV_mass_1);
 	vect_nPV_mass_corrected.push_back( plot_nPV_mass_2);
 	vect_nPV_mass_corrected.push_back( plot_nPV_mass_3);
 	vect_nPV_mass_corrected.push_back( plot_nPV_mass_4);
 	vect_nPV_mass_corrected.push_back( plot_nPV_mass_5);
 	vect_nPV_mass_corrected.push_back( plot_nPV_mass_6);
-	DrawPlots(vect_nPV_mass_corrected, "nPV","mass_response");
+	DrawPlots(vect_nPV_mass_corrected, "nPV","mass_response","lp");
 
 
 	/*// pt, mass, tau2tau1 vs pt 
