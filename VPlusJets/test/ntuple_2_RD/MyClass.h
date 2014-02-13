@@ -118,12 +118,13 @@ class JetCorrectionTool{
 
 class PlotConfig{
 	public:
-		PlotConfig(char* in_name, char* in_title, Int_t in_color=1, Int_t in_style=1);
+		PlotConfig(char* in_name, char* in_title, Int_t in_color=1, Int_t in_linestyle=1, Int_t in_markerstyle=20);
 		~PlotConfig(){};
 		TString name;
 		TString title;
 		Int_t linecolor;
 		Int_t linestyle;
+		Int_t markerstyle;
 };
 
 
@@ -932,7 +933,7 @@ class MyClass {
 		void     Draw_and_Save(TH2D, char* addtional_info="");
 
 		//void     DrawPlots(vector< TString >, char* xaxis_title="");
-		void     DrawPlots(vector< PlotConfig >, char* xaxis_title="", char* title="");
+		void     DrawPlots(vector< PlotConfig >, char* xaxis_title="", char* title="", char* drawopt="");
 
 		void     Draw_and_Print_All();
 
@@ -1692,14 +1693,14 @@ TH1D JetCorrectionTool::get_mean_rms_hist( TString x_var_name, TString ydenomina
 			Int_t n_y=vectors_y[j].size(); 
 			if(n_y==0) {
 				h1.SetBinContent(j+1, 0.);
-				h1.SetBinError(j+1, 0.);
+				//h1.SetBinError(j+1, 0.);
 			}else{
 				Double_t * array_y=new Double_t[n_y];
 				for(Int_t k=0;k<n_y;k++)array_y[k]=vectors_y[j][k];
 				Double_t mean=TMath::Mean(n_y, array_y);
 				Double_t rms=TMath::RMS(n_y, array_y);
 				h1.SetBinContent(j+1,mean);
-				h1.SetBinError(j+1, rms);
+				//h1.SetBinError(j+1, rms);
 				cout<<"("<<h1.GetBinLowEdge(j+1)<<", "<<mean<<", "<<rms<<")";
 			}
 		}
@@ -1767,9 +1768,9 @@ void Table_Tool::PrintTable(ofstream &fout) //void Table_Tool::PrintTable()
 }
 
 
-PlotConfig::PlotConfig(char* in_name, char* in_title, Int_t in_color, Int_t in_style){
+PlotConfig::PlotConfig(char* in_name, char* in_title, Int_t in_color, Int_t in_linestyle, Int_t in_markerstyle) {
 	name=in_name; title=in_title;
-	linecolor=in_color; linestyle=in_style;
+	linecolor=in_color; linestyle=in_linestyle; markerstyle=in_markerstyle;
 }
 
 #endif // #ifdef MyClass_cxx
